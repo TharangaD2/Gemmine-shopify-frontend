@@ -23,7 +23,6 @@ import {
 } from 'lucide-react';
 import {toast} from 'sonner';
 import {MOCK_USER} from '~/api/mockData';
-// import type {Route} from './+types/collections.all';
 import type {
   CollectionItemFragment,
 } from 'storefrontapi.generated';
@@ -56,19 +55,15 @@ export async function loader({context, request}: LoaderFunctionArgs) {
 export default function Collection() {
   const {products} = useLoaderData<typeof loader>();
 
-  // Inject sample product
-  const productsWithSample = useMemo(() => {
-    return {
-      ...products,
-      nodes: [...products.nodes],
-    };
-  }, [products]);
-
   const location = useLocation();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState('newest');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [filters, setFilters] = useState({
+    priceRange: [0, 35000] as [number, number],
+    materials: [] as string[],
+  });
 
   const categories = [
     {id: 'all', name: 'All Jewellery', path: '/collections/all'},
@@ -84,6 +79,36 @@ export default function Collection() {
     const active = categories.find((cat) => location.pathname.includes(cat.path));
     return active ? active.id : 'all';
   }, [location.pathname, categories]);
+
+  const processedProducts = useMemo(() => {
+    let result = [...products.nodes];
+
+    // Sort products
+    result.sort((a, b) => {
+      const aPrice = parseFloat(a.priceRange.minVariantPrice.amount);
+      const bPrice = parseFloat(b.priceRange.minVariantPrice.amount);
+
+      switch (sortBy) {
+        case 'price-low':
+          return aPrice - bPrice;
+        case 'price-high':
+          return bPrice - aPrice;
+        case 'name':
+          return a.title.localeCompare(b.title);
+        case 'newest':
+        default:
+          return 0;
+      }
+    });
+
+    // Apply price filter
+    result = result.filter((product) => {
+      const price = parseFloat(product.priceRange.minVariantPrice.amount);
+      return price >= filters.priceRange[0] && price <= filters.priceRange[1];
+    });
+
+    return result;
+  }, [products.nodes, sortBy, filters]);
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
@@ -149,9 +174,14 @@ export default function Collection() {
             >
               <SlidersHorizontal className="w-4 h-4" />
               Filters
+              {(filters.materials.length > 0 || filters.priceRange[0] > 0 || filters.priceRange[1] < 35000) && (
+                <span className="ml-1 bg-[#d4a89a] text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                  {filters.materials.length + (filters.priceRange[0] > 0 || filters.priceRange[1] < 35000 ? 1 : 0)}
+                </span>
+              )}
             </button>
             <span className="text-gray-400 text-sm font-light">
-              Showing {products.nodes.length} products
+              Showing {processedProducts.length} products
             </span>
           </div>
 
@@ -200,7 +230,10 @@ export default function Collection() {
 
         {/* Products Grid */}
         <PaginatedResourceSection<CollectionItemFragment>
-          connection={productsWithSample}
+          connection={{
+            ...products,
+            nodes: processedProducts,
+          }}
           resourcesClassName={
             viewMode === 'grid'
               ? 'grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8'
@@ -232,7 +265,21 @@ export default function Collection() {
       {/* Filter Sidebar (Mobile & Desktop) */}
       <AnimatePresence>
         {isFilterOpen && (
-          <FilterSidebar onClose={() => setIsFilterOpen(false)} />
+          <FilterSidebar
+            filters={filters}
+            onClose={() => setIsFilterOpen(false)}
+            onApply={(newFilters) => {
+              setFilters(newFilters);
+              setIsFilterOpen(false);
+            }}
+            onReset={() => {
+              setFilters({
+                priceRange: [0, 35000],
+                materials: [],
+              });
+              setIsFilterOpen(false);
+            }}
+          />
         )}
       </AnimatePresence>
     </div>
@@ -262,13 +309,14 @@ function ProductCard({
 
     const newItem = {
       id: `c_${Date.now()}`,
-      product_id: product.id.split('/').pop() || '1', // Fallback to 1 for demo
+      product_id: product.id.split('/').pop() || '1',
       quantity: 1,
       user_email: user.email,
     };
 
     cartItems.push(newItem);
     localStorage.setItem(`cart_${user.email}`, JSON.stringify(cartItems));
+    window.dispatchEvent(new Event('cartUpdated'));
     toast.success('Added to cart');
   };
 
@@ -296,6 +344,7 @@ function ProductCard({
 
     wishlistItems.push(newItem);
     localStorage.setItem(`wishlist_${user.email}`, JSON.stringify(wishlistItems));
+    window.dispatchEvent(new Event('wishlistUpdated'));
     toast.success('Added to wishlist');
   };
 
@@ -398,6 +447,7 @@ function QuickView({product, onClose}: {product: CollectionItemFragment; onClose
 
     cartItems.push(newItem);
     localStorage.setItem(`cart_${user.email}`, JSON.stringify(cartItems));
+    window.dispatchEvent(new Event('cartUpdated'));
     toast.success('Added to cart');
     onClose();
   };
@@ -426,6 +476,7 @@ function QuickView({product, onClose}: {product: CollectionItemFragment; onClose
 
     wishlistItems.push(newItem);
     localStorage.setItem(`wishlist_${user.email}`, JSON.stringify(wishlistItems));
+    window.dispatchEvent(new Event('wishlistUpdated'));
     toast.success('Added to wishlist');
   };
 
@@ -474,11 +525,11 @@ function QuickView({product, onClose}: {product: CollectionItemFragment; onClose
           <div className="text-2xl text-[#1e2a47]/90 mb-8 font-light">
             <Money data={product.priceRange.minVariantPrice} />
           </div>
-          
+
           <div className="space-y-6 mb-10">
             <p className="text-gray-500 leading-relaxed font-light">
-              This exquisite piece from Gem Mine embodies the perfect harmony of 
-              traditional craftsmanship and contemporary design. Hand-selected for its 
+              This exquisite piece from Gem Mine embodies the perfect harmony of
+              traditional craftsmanship and contemporary design. Hand-selected for its
               brilliance and clarity.
             </p>
             <div className="grid grid-cols-2 gap-4 text-sm">
@@ -523,7 +574,25 @@ function QuickView({product, onClose}: {product: CollectionItemFragment; onClose
   );
 }
 
-function FilterSidebar({onClose}: {onClose: () => void}) {
+function FilterSidebar({
+  filters,
+  onClose,
+  onApply,
+  onReset,
+}: {
+  filters: {
+    priceRange: [number, number];
+    materials: string[];
+  };
+  onClose: () => void;
+  onApply: (newFilters: typeof filters) => void;
+  onReset: () => void;
+}) {
+  const [localFilters, setLocalFilters] = useState(filters);
+  const [tempPriceRange, setTempPriceRange] = useState(filters.priceRange);
+
+  const allMaterials = ['Gold', 'Silver', 'Platinum', 'Rose Gold'];
+
   return (
     <div className="fixed inset-0 z-[100]">
       <motion.div
@@ -547,18 +616,46 @@ function FilterSidebar({onClose}: {onClose: () => void}) {
           </button>
         </div>
 
-        <div className="space-y-10">
+        <div className="space-y-10 mb-32">
           <div>
             <h4 className="font-medium text-[#1e2a47] mb-6 uppercase tracking-wider text-sm">Price Range</h4>
             <div className="space-y-4">
               <div className="h-1.5 bg-gray-100 rounded-full relative">
-                <div className="absolute left-0 right-1/4 top-0 bottom-0 bg-[#d4a89a] rounded-full" />
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-[#d4a89a] rounded-full shadow-sm cursor-pointer" />
-                <div className="absolute right-1/4 top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-[#d4a89a] rounded-full shadow-sm cursor-pointer" />
+                <div
+                  className="absolute top-0 bottom-0 bg-[#d4a89a] rounded-full"
+                  style={{
+                    left: `${(tempPriceRange[0] / 35000) * 100}%`,
+                    right: `${100 - (tempPriceRange[1] / 35000) * 100}%`,
+                  }}
+                />
+                <input
+                  type="range"
+                  min={0}
+                  max={35000}
+                  value={tempPriceRange[0]}
+                  onChange={(e) => setTempPriceRange([Number(e.target.value), tempPriceRange[1]])}
+                  className="absolute top-0 left-0 right-0 w-full h-full opacity-0 cursor-pointer"
+                />
+                <input
+                  type="range"
+                  min={0}
+                  max={35000}
+                  value={tempPriceRange[1]}
+                  onChange={(e) => setTempPriceRange([tempPriceRange[0], Number(e.target.value)])}
+                  className="absolute top-0 left-0 right-0 w-full h-full opacity-0 cursor-pointer"
+                />
+                <div
+                  className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-[#d4a89a] rounded-full shadow-sm cursor-pointer"
+                  style={{left: `${(tempPriceRange[0] / 35000) * 100}%`}}
+                />
+                <div
+                  className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-[#d4a89a] rounded-full shadow-sm cursor-pointer"
+                  style={{left: `${(tempPriceRange[1] / 35000) * 100}%`}}
+                />
               </div>
               <div className="flex justify-between text-sm text-gray-500 font-light">
-                <span>$0</span>
-                <span>$35,000</span>
+                <span>${tempPriceRange[0].toLocaleString()}</span>
+                <span>${tempPriceRange[1].toLocaleString()}</span>
               </div>
             </div>
           </div>
@@ -566,39 +663,45 @@ function FilterSidebar({onClose}: {onClose: () => void}) {
           <div>
             <h4 className="font-medium text-[#1e2a47] mb-6 uppercase tracking-wider text-sm">Material</h4>
             <div className="flex flex-wrap gap-2">
-              {['Gold', 'Silver', 'Platinum', 'Rose Gold'].map((mat) => (
+              {allMaterials.map((mat) => (
                 <button
                   key={mat}
-                  className="px-4 py-2 border border-gray-100 rounded-xl text-sm hover:border-[#d4a89a] hover:text-[#d4a89a] transition-all"
+                  onClick={() => {
+                    setLocalFilters((prev) => {
+                      const isSelected = prev.materials.includes(mat);
+                      return {
+                        ...prev,
+                        materials: isSelected
+                          ? prev.materials.filter((m) => m !== mat)
+                          : [...prev.materials, mat],
+                      };
+                    });
+                  }}
+                  className={`px-4 py-2 border rounded-xl text-sm transition-all ${
+                    localFilters.materials.includes(mat)
+                      ? 'bg-[#1e2a47] border-[#1e2a47] text-white'
+                      : 'border-gray-100 hover:border-[#d4a89a] hover:text-[#d4a89a]'
+                  }`}
                 >
                   {mat}
                 </button>
               ))}
             </div>
           </div>
-
-          <div>
-            <h4 className="font-medium text-[#1e2a47] mb-6 uppercase tracking-wider text-sm">Sort By</h4>
-            <div className="space-y-2">
-              {['Newest', 'Price: Low to High', 'Price: High to Low'].map((sort) => (
-                <button
-                  key={sort}
-                  className="w-full text-left px-4 py-3 rounded-xl hover:bg-gray-50 text-gray-600 transition-all flex justify-between items-center group"
-                >
-                  {sort}
-                  <div className="w-2 h-2 rounded-full bg-transparent group-hover:bg-[#d4a89a] transition-all" />
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
 
-        <div className="absolute bottom-8 left-8 right-8">
+        <div className="absolute bottom-8 left-8 right-8 space-y-3">
           <button
-            onClick={onClose}
-            className="w-full bg-[#1e2a47] text-white py-4 rounded-2xl font-medium shadow-lg shadow-[#1e2a47]/10"
+            onClick={() => onApply({...localFilters, priceRange: tempPriceRange})}
+            className="w-full bg-[#1e2a47] text-white py-4 rounded-2xl font-medium shadow-lg shadow-[#1e2a47]/10 hover:bg-[#2d3e6a] transition-all"
           >
             Apply Filters
+          </button>
+          <button
+            onClick={onReset}
+            className="w-full py-4 rounded-2xl font-medium text-gray-500 hover:text-gray-700 transition-all"
+          >
+            Reset All
           </button>
         </div>
       </motion.div>
