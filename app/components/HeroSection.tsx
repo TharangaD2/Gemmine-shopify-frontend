@@ -6,13 +6,13 @@ import { Link } from 'react-router';
 // Asset imports
 import n1_crop from '~/assets/img/n1_crop.jpeg';
 import r1 from '~/assets/img/r1.jpeg';
-import green2 from '~/assets/img/green2.jpeg';
+
 import rounde2 from '~/assets/img/rounde2.jpeg';
 import ringp from '~/assets/img/ringp.jpeg';
 import e1 from '~/assets/img/e1.jpeg';
 import bluering from '~/assets/img/bluering.jpeg';
 
-const carouselImages = [bluering, n1_crop, r1, green2, rounde2, ringp, e1];
+const carouselImages = [bluering, n1_crop, r1, r1, rounde2, ringp, e1];
 
 const Button = ({
   variant = 'default',
