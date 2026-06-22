@@ -2,65 +2,56 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Diamond, Award, Globe, Users, PenTool, Settings } from 'lucide-react';
 
-// Asset imports
-import n1 from '~/assets/img/n1.jpeg';
-import bluering from '~/assets/img/bluering.jpeg';
-import diamond from '~/assets/img/diamond.jpg';
-import rounde1 from '~/assets/img/rounde1.jpeg';
-import img7 from '~/assets/img/img7.png';
+const icons = [Diamond, Award, Users, Globe, PenTool, Settings];
 
-const curatedCategories = [
-  {
-    id: 'precious-gemstones',
-    title: 'Precious Gemstones',
-    description:
-      'Ceylon sapphires in an array of colours—royal blue, pastel pink, golden yellow, vivid green, and the coveted padparadscha—are at the heart of our collection. We also feature rare and radiant rubies, brilliant white and champagne diamonds, and stunning emeralds.',
-    image: n1,
-    icon: Diamond,
-  },
-  {
-    id: 'semi-precious',
-    title: 'Semi-Precious Gemstones',
-    description:
-      'We source and cut exceptional garnets, amethysts, aquamarines, topaz, tourmalines, spinels, moonstones, peridots, and more, each piece handpicked for its unique hue, brilliance, and authenticity.',
-    image: n1,
-    icon: Award,
-  },
-  {
-    id: 'exquisite-jewellery',
-    title: 'Exquisite Jewellery',
-    description:
-      "Intricately designed rings, earrings, pendants, necklaces, bracelets, and chains, from traditional heirlooms to sleek, contemporary pieces. Whether you're looking for a solitaire engagement ring or a gemstone-studded statement piece.",
-    image: bluering,
-    icon: Users,
-  },
-  {
-    id: 'diamond-sets',
-    title: 'Diamond Jewellery Sets',
-    description:
-      'Premium diamond sets feature conflict-free, GIA-certified stones. Designed to radiate elegance and sophistication, these sets are ideal for weddings, high-end gifting, or legacy investments. Cut and polished to maximize brilliance.',
-    image: diamond,
-    icon: Globe,
-  },
-  {
-    id: 'bespoke-designs',
-    title: 'Bespoke and Custom Designs',
-    description:
-      'Personalized design services to turn your vision into a wearable masterpiece. From selecting stones to sketching the design and executing the final craft, we collaborate closely with clients to create meaningful pieces.',
-    image: rounde1,
-    icon: PenTool,
-  },
-  {
-    id: 'expert-repairs',
-    title: 'Expert Repairs & Redesigns',
-    description:
-      'Our in-house artisans provide meticulous jewellery repairs, resizing, polishing, and gemstone replacements, ensuring that your cherished pieces are well cared for and restored to perfection.',
-    image: img7,
-    icon: Settings,
-  },
-];
+export default function FeaturedSection({ page }: { page?: any }) {
+  const sectionTitle = page?.featureSecTitle?.value || 'Our curated range includes:';
 
-export default function FeaturedSection() {
+  const curatedCategories = [
+    {
+      id: 'feature-0',
+      title: page?.featureSecTitle1?.value || 'Missing: feature_sec_title1',
+      description: page?.featureCardPara1?.value || 'Missing: feature_card_para1',
+      image: page?.featureCardImg1?.reference?.image?.url || '',
+      icon: icons[0],
+    },
+    {
+      id: 'feature-1',
+      title: page?.featureSecTitle2?.value || 'Missing: feature_sec_title2',
+      description: page?.featureCardPara2?.value || 'Missing: feature_card_para2',
+      image: page?.featureCardImg2?.reference?.image?.url || '',
+      icon: icons[1],
+    },
+    {
+      id: 'feature-2',
+      title: page?.featureSecTitle3?.value || 'Missing: feature_sec_title3',
+      description: page?.featureCardPara3?.value || 'Missing: feature_card_para3',
+      image: page?.featureCardImg3?.reference?.image?.url || '',
+      icon: icons[2],
+    },
+    {
+      id: 'feature-3',
+      title: page?.featureSecTitle4?.value || 'Missing: feature_sec_title4',
+      description: page?.featureCardPara4?.value || 'Missing: feature_card_para4',
+      image: page?.featureCardImg4?.reference?.image?.url || '',
+      icon: icons[3],
+    },
+    {
+      id: 'feature-4',
+      title: page?.featureSecTitle5?.value || 'Missing: feature_sec_title5',
+      description: page?.featureCardPara5?.value || 'Missing: feature_card_para5',
+      image: page?.featureCardImg5?.reference?.image?.url || '',
+      icon: icons[4],
+    },
+    {
+      id: 'feature-5',
+      title: page?.featureSecTitle6?.value || 'Missing: feature_sec_title6',
+      description: page?.featureCardPara6?.value || 'Missing: feature_card_para6',
+      image: page?.featureCardImg6?.reference?.image?.url || '',
+      icon: icons[5],
+    },
+  ];
+
   return (
     <section className="py-24 bg-[#f8f5f0] overflow-hidden">
       <div className="px-6 md:px-12 lg:px-24 mb-16">
@@ -73,7 +64,7 @@ export default function FeaturedSection() {
         >
           <div>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#1a1a1a] mt-4">
-              Our curated range includes:
+              {sectionTitle}
             </h2>
           </div>
         </motion.div>

@@ -113,7 +113,7 @@ export default function HeroSection({ page }: { page?: any }) {
           >
             <Sparkles className="w-4 h-4 text-[#d4a89a]" />
             <span className="text-[#d4a89a] text-sm tracking-[0.2em] uppercase">
-              {page?.homeHeroTag?.value || "Sparkles Make You Smile"}
+              {page?.homeHeroTag?.value}
             </span>
           </motion.div>
 
@@ -125,7 +125,7 @@ export default function HeroSection({ page }: { page?: any }) {
           >
 
             <span className="block text-5xl md:text-7xl lg:text-8xl text-white font-light tracking-tight">
-              {page?.homeHeroTitle1?.value || "Timeless"}
+              {page?.homeHeroTitle1?.value}
             </span>
             <span className="inline-block text-5xl md:text-7xl lg:text-8xl text-transparent bg-clip-text bg-gradient-to-r from-[#d4a89a] via-[#e8c4b5] to-[#d4a89a] font-light italic mt-2 pb-4">
               {page?.homeHeroTitle2?.value || "Elegance"}

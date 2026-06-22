@@ -50,7 +50,7 @@ const CONTACT_PAGE_QUERY = `#graphql
       firstContentTag: metafield(namespace: "custom", key: "first_content_tag") {
         value
       }
-      heroVideo: metafield(namespace: "custom", key: "page_hero_video") {
+      heroVedio: metafield(namespace: "custom", key: "page_hero_vedio") {
         reference {
           ... on Video {
             sources {
@@ -142,9 +142,9 @@ export default function Contact() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const heroVideoUrl =
-    page?.heroVideo?.reference?.sources?.[0]?.url ||
-    page?.heroVideo?.reference?.url;
+  const heroVedioUrl =
+    page?.heroVedio?.reference?.sources?.[0]?.url ||
+    page?.heroVedio?.reference?.url;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -177,14 +177,14 @@ export default function Contact() {
       <div className="relative h-[75vh] bg-[#1a1a1a] overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent z-10" />
         <video
-          key={heroVideoUrl}
+          key={heroVedioUrl}
           autoPlay
           loop
           muted
           playsInline
           className="absolute inset-0 w-full h-full object-cover opacity-50"
         >
-          <source src={heroVideoUrl} type="video/mp4" />
+          <source src={heroVedioUrl} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
         <div className="absolute inset-0 flex items-center justify-center z-20">

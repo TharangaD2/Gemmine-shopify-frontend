@@ -1,21 +1,21 @@
-import {Await, Link} from 'react-router';
-import {Suspense, useId, useState, useEffect} from 'react';
+import { Await, Link } from 'react-router';
+import { Suspense, useId, useState, useEffect } from 'react';
 import type {
   CartApiQueryFragment,
   FooterQuery,
   HeaderQuery,
 } from 'storefrontapi.generated';
-import {Aside, useAside} from '~/components/Aside';
-import {Footer} from '~/components/Footer';
-import {Header} from '~/components/Header';
-import {CartMain} from '~/components/CartMain';
+import { Aside, useAside } from '~/components/Aside';
+import { Footer } from '~/components/Footer';
+import { Header } from '~/components/Header';
+import { CartMain } from '~/components/CartMain';
 import {
   SEARCH_ENDPOINT,
   SearchFormPredictive,
 } from '~/components/SearchFormPredictive';
-import {SearchResultsPredictive} from '~/components/SearchResultsPredictive';
-import {Minus, Plus, X, ShoppingBag, ArrowRight} from 'lucide-react';
-import {toast} from 'sonner';
+import { SearchResultsPredictive } from '~/components/SearchResultsPredictive';
+import { Minus, Plus, X, ShoppingBag, ArrowRight } from 'lucide-react';
+import { toast } from 'sonner';
 
 import img1 from '~/assets/img/img1.png';
 import img2 from '~/assets/img/img2.png';
@@ -108,7 +108,7 @@ function CartAside() {
 
 function LocalStorageCartDrawer() {
   const [cartItems, setCartItems] = useState<LocalCartItem[]>([]);
-  const {close} = useAside();
+  const { close } = useAside();
   const userEmail = 'customer@example.com';
 
   const updateCart = () => {
@@ -139,7 +139,7 @@ function LocalStorageCartDrawer() {
         updatedCart = updatedCart.filter((item) => item.id !== id);
         toast.success('Item removed from cart');
       } else {
-        updatedCart[index] = {...updatedCart[index], quantity: newQuantity};
+        updatedCart[index] = { ...updatedCart[index], quantity: newQuantity };
       }
       localStorage.setItem(`cart_${userEmail}`, JSON.stringify(updatedCart));
       setCartItems(updatedCart);
@@ -259,7 +259,7 @@ function SearchAside() {
       <div className="predictive-search">
         <br />
         <SearchFormPredictive>
-          {({fetchResults, goToSearch, inputRef}) => (
+          {({ fetchResults, goToSearch, inputRef }) => (
             <>
               <input
                 name="q"
@@ -277,8 +277,8 @@ function SearchAside() {
         </SearchFormPredictive>
 
         <SearchResultsPredictive>
-          {({items, total, term, state, closeSearch}) => {
-            const {articles, collections, pages, products, queries} = items;
+          {({ items, total, term, state, closeSearch }) => {
+            const { articles, collections, pages, products, queries } = items;
 
             if (state === 'loading' && term.current) {
               return <div>Loading...</div>;

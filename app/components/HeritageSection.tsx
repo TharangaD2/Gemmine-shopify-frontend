@@ -1,11 +1,8 @@
-import React, {useRef, useEffect} from 'react';
-import {motion} from 'framer-motion';
-import {ArrowRight} from 'lucide-react';
-import {Link} from 'react-router';
+import React, { useRef, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
+import { Link } from 'react-router';
 
-// Asset imports
-import ringp from '~/assets/img/ringp.jpeg';
-import pinkgem from '~/assets/vedio/pinkgem.mp4';
 
 const Button = ({
   className = '',
@@ -25,8 +22,14 @@ const Button = ({
   );
 };
 
-export default function HeritageSection() {
+export default function HeritageSection({ page }: { page?: any }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  const videoUrl = page?.heritageVideo?.reference?.sources?.[0]?.url || page?.heritageVideo?.reference?.url;
+  const imgUrl = page?.heritageImg?.reference?.image?.url;
+  const tagText = page?.heritageTag?.value;
+  const titleText = page?.heritageTitle?.value;
+  const paraText = page?.heritagePara?.value;
 
   useEffect(() => {
     if (videoRef.current) {
@@ -39,20 +42,20 @@ export default function HeritageSection() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
         {/* Images */}
         <motion.div
-          initial={{opacity: 0, x: -50}}
-          whileInView={{opacity: 1, x: 0}}
-          viewport={{once: true}}
-          transition={{duration: 0.8}}
+          initial={{ opacity: 0, x: -50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
           className="relative"
         >
           <div className="relative">
             <motion.div
-              whileHover={{scale: 1.02}}
+              whileHover={{ scale: 1.02 }}
               className="rounded-2xl overflow-hidden shadow-2xl bg-gray-200"
             >
               <video
                 ref={videoRef}
-                src={pinkgem}
+                src={videoUrl}
                 autoPlay
                 loop
                 muted
@@ -63,14 +66,14 @@ export default function HeritageSection() {
 
             {/* Floating smaller image */}
             <motion.div
-              initial={{opacity: 0, y: 20}}
-              whileInView={{opacity: 1, y: 0}}
-              viewport={{once: true}}
-              transition={{duration: 0.8, delay: 0.3}}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.3 }}
               className="absolute -bottom-8 -right-8 md:-right-12 w-40 h-40 md:w-56 md:h-56 rounded-2xl overflow-hidden shadow-xl border-4 border-white"
             >
               <img
-                src={ringp}
+                src={imgUrl}
                 alt="Jewellery Detail"
                 className="w-full h-full object-cover"
               />
@@ -83,44 +86,41 @@ export default function HeritageSection() {
 
         {/* Content */}
         <motion.div
-          initial={{opacity: 0, x: 50}}
-          whileInView={{opacity: 1, x: 0}}
-          viewport={{once: true}}
-          transition={{duration: 0.8}}
+          initial={{ opacity: 0, x: 50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
           className="lg:pl-12"
         >
           <span className="text-[#d4a89a] tracking-[0.3em] uppercase text-sm font-medium">
-            Our Heritage
+            {tagText}
           </span>
           <h2 className="text-4xl md:text-5xl font-serif text-[#1a1a1a] mt-4 leading-tight">
-            A Legacy of Excellence
+            {titleText}
           </h2>
 
-          <div className="mt-8 space-y-6 text-gray-600 leading-relaxed">
-            <p>
-              Since 2018, Gem Mine has been synonymous with exceptional
-              craftsmanship and timeless design in Sri Lanka. Our master artisans
-              blend traditional techniques with contemporary innovation.
-            </p>
-            <p>
-              Each piece that leaves our atelier carries the soul of its maker, a
-              testament to the dedication and passion that defines our brand.
-            </p>
+          <div className="mt-8 space-y-6 text-gray-600 leading-relaxed whitespace-pre-line">
+            {paraText ? (
+              <p>{paraText}</p>
+            ) : (
+              <>
+              </>
+            )}
           </div>
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-6 mt-10">
             {[
-              {value: '6+', label: 'Years'},
-              {value: '10K+', label: 'Pieces'},
-              {value: '50+', label: 'Artisans'},
+              { value: '6+', label: 'Years' },
+              { value: '10K+', label: 'Pieces' },
+              { value: '50+', label: 'Artisans' },
             ].map((stat, index) => (
               <motion.div
                 key={stat.label}
-                initial={{opacity: 0, y: 20}}
-                whileInView={{opacity: 1, y: 0}}
-                viewport={{once: true}}
-                transition={{duration: 0.5, delay: index * 0.1}}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
               >
                 <div className="text-3xl md:text-4xl font-light text-[#d4a89a]">
                   {stat.value}

@@ -27,7 +27,6 @@ import type { ProductItemFragment } from 'storefrontapi.generated';
 import { PaginatedResourceSection } from '~/components/PaginatedResourceSection';
 import { toast } from 'sonner';
 import { MOCK_USER } from '~/api/mockData';
-import collection_set from '~/assets/vedio/collection.mp4';
 
 
 
@@ -77,8 +76,7 @@ export default function Collection() {
     collection?.heroVedio?.reference?.sources?.[0]?.url ||
     collection?.heroVedio?.reference?.url ||
     page?.heroVedio?.reference?.sources?.[0]?.url ||
-    page?.heroVedio?.reference?.url ||
-    collection_set;
+    page?.heroVedio?.reference?.url;
 
   const categories = [
     { id: 'all', name: 'All Jewellery', path: '/collections/all' },
@@ -138,8 +136,8 @@ export default function Collection() {
               key={cat.id}
               to={cat.path}
               className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${activeCategoryId === cat.id
-                  ? 'bg-[#1e2a47] text-white shadow-lg'
-                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 shadow-sm'
+                ? 'bg-[#1e2a47] text-white shadow-lg'
+                : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 shadow-sm'
                 }`}
             >
               <motion.span
@@ -190,8 +188,8 @@ export default function Collection() {
               <button
                 onClick={() => setViewMode('grid')}
                 className={`p-2 rounded-full transition-all ${viewMode === 'grid'
-                    ? 'bg-white text-[#1e2a47] shadow-sm'
-                    : 'text-gray-400 hover:text-gray-600'
+                  ? 'bg-white text-[#1e2a47] shadow-sm'
+                  : 'text-gray-400 hover:text-gray-600'
                   }`}
               >
                 <Grid className="w-4 h-4" />
@@ -199,8 +197,8 @@ export default function Collection() {
               <button
                 onClick={() => setViewMode('list')}
                 className={`p-2 rounded-full transition-all ${viewMode === 'list'
-                    ? 'bg-white text-[#1e2a47] shadow-sm'
-                    : 'text-gray-400 hover:text-gray-600'
+                  ? 'bg-white text-[#1e2a47] shadow-sm'
+                  : 'text-gray-400 hover:text-gray-600'
                   }`}
               >
                 <List className="w-4 h-4" />

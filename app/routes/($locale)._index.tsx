@@ -73,7 +73,7 @@ const PAGE_QUERY = `#graphql
       homeHeroPara: metafield(namespace: "custom", key: "home_hero_para") {
         value
       }
-      homeHeroVideo: metafield(namespace: "custom", key: "home_hero_video") {
+      homeHeroVedio: metafield(namespace: "custom", key: "home_hero_vedio") {
         reference {
           ... on Video {
             sources {
@@ -166,6 +166,129 @@ const PAGE_QUERY = `#graphql
       homeSec2CardPara5: metafield(namespace: "custom", key: "home_sec2_card_para5") {
         value
       }
+      featureSecTitle: metafield(namespace: "custom", key: "feature_sec_title") {
+        value
+      }
+      featureSecTitle1: metafield(namespace: "custom", key: "feature_sec_title1") {
+        value
+      }
+      featureSecTitle2: metafield(namespace: "custom", key: "feature_sec_title2") {
+        value
+      }
+      featureSecTitle3: metafield(namespace: "custom", key: "feature_sec_title3") {
+        value
+      }
+      featureSecTitle4: metafield(namespace: "custom", key: "feature_sec_title4") {
+        value
+      }
+      featureSecTitle5: metafield(namespace: "custom", key: "feature_sec_title5") {
+        value
+      }
+      featureSecTitle6: metafield(namespace: "custom", key: "feature_sec_title6") {
+        value
+      }
+      featureCardPara1: metafield(namespace: "custom", key: "feature_card_para1") {
+        value
+      }
+      featureCardPara2: metafield(namespace: "custom", key: "feature_card_para2") {
+        value
+      }
+      featureCardPara3: metafield(namespace: "custom", key: "feature_card_para3") {
+        value
+      }
+      featureCardPara4: metafield(namespace: "custom", key: "feature_card_para4") {
+        value
+      }
+      featureCardPara5: metafield(namespace: "custom", key: "feature_card_para5") {
+        value
+      }
+      featureCardPara6: metafield(namespace: "custom", key: "feature_card_para6") {
+        value
+      }
+      featureCardImg1: metafield(namespace: "custom", key: "feature_card_img1") {
+        reference {
+          ... on MediaImage {
+            image {
+              url
+            }
+          }
+        }
+      }
+      featureCardImg2: metafield(namespace: "custom", key: "feature_card_img2") {
+        reference {
+          ... on MediaImage {
+            image {
+              url
+            }
+          }
+        }
+      }
+      featureCardImg3: metafield(namespace: "custom", key: "feature_card_img3") {
+        reference {
+          ... on MediaImage {
+            image {
+              url
+            }
+          }
+        }
+      }
+      featureCardImg4: metafield(namespace: "custom", key: "feature_card_img4") {
+        reference {
+          ... on MediaImage {
+            image {
+              url
+            }
+          }
+        }
+      }
+      featureCardImg5: metafield(namespace: "custom", key: "feature_card_img5") {
+        reference {
+          ... on MediaImage {
+            image {
+              url
+            }
+          }
+        }
+      }
+      featureCardImg6: metafield(namespace: "custom", key: "feature_card_img6") {
+        reference {
+          ... on MediaImage {
+            image {
+              url
+            }
+          }
+        }
+      }
+      heritageTag: metafield(namespace: "custom", key: "heritage_tag") {
+        value
+      }
+      heritageTitle: metafield(namespace: "custom", key: "heritage_title") {
+        value
+      }
+      heritagePara: metafield(namespace: "custom", key: "heritage_para") {
+        value
+      }
+      heritageImg: metafield(namespace: "custom", key: "heritage_img") {
+        reference {
+          ... on MediaImage {
+            image {
+              url
+            }
+          }
+        }
+      }
+      heritageVideo: metafield(namespace: "custom", key: "heritage_vedio") {
+        reference {
+          ... on Video {
+            sources {
+              url
+            }
+          }
+          ... on GenericFile {
+            url
+          }
+        }
+      }
       }
   }
 ` as const;
@@ -178,9 +301,9 @@ export default function Homepage() {
       <HeroSection page={data.page} />
       <CollectionsSection page={data.page} />
       <MarqueeSection />
-      <FeaturedSection />
+      <FeaturedSection page={data.page} />
       <FeaturesSection />
-      <HeritageSection />
+      <HeritageSection page={data.page} />
       <NewsletterSection />
     </div>
   );
