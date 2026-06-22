@@ -1,9 +1,8 @@
 import React from 'react';
-import {motion} from 'framer-motion';
-import {Diamond, Award, Globe, Users, PenTool, Settings} from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Diamond, Award, Globe, Users, PenTool, Settings } from 'lucide-react';
 
 // Asset imports
-import gemstone from '~/assets/img/gemstone.jpg';
 import n1 from '~/assets/img/n1.jpeg';
 import bluering from '~/assets/img/bluering.jpeg';
 import diamond from '~/assets/img/diamond.jpg';
@@ -16,7 +15,7 @@ const curatedCategories = [
     title: 'Precious Gemstones',
     description:
       'Ceylon sapphires in an array of colours—royal blue, pastel pink, golden yellow, vivid green, and the coveted padparadscha—are at the heart of our collection. We also feature rare and radiant rubies, brilliant white and champagne diamonds, and stunning emeralds.',
-    image: gemstone,
+    image: n1,
     icon: Diamond,
   },
   {
@@ -66,10 +65,10 @@ export default function FeaturedSection() {
     <section className="py-24 bg-[#f8f5f0] overflow-hidden">
       <div className="px-6 md:px-12 lg:px-24 mb-16">
         <motion.div
-          initial={{opacity: 0, y: 30}}
-          whileInView={{opacity: 1, y: 0}}
-          viewport={{once: true}}
-          transition={{duration: 0.8}}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
           className="flex flex-col md:flex-row justify-between items-start md:items-center"
         >
           <div>
@@ -85,7 +84,7 @@ export default function FeaturedSection() {
         <div className="flex overflow-hidden">
           <motion.div
             className="flex gap-6 px-4 shrink-0"
-            animate={{x: [0, -curatedCategories.length * 344]}}
+            animate={{ x: [0, -curatedCategories.length * 344] }}
             transition={{
               duration: 35,
               repeat: Infinity,

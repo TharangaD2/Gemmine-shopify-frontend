@@ -7,6 +7,7 @@ import type {
 import {AddToCartButton} from './AddToCartButton';
 import {useAside} from './Aside';
 import type {ProductFragment} from 'storefrontapi.generated';
+import {toast} from 'sonner';
 
 export function ProductForm({
   productOptions,
@@ -104,6 +105,34 @@ export function ProductForm({
       <AddToCartButton
         disabled={!selectedVariant || !selectedVariant.availableForSale}
         onClick={() => {
+          if (selectedVariant) {
+            const userEmail = 'customer@example.com';
+            const stored = localStorage.getItem(`cart_${userEmail}`);
+            const cartItems = stored ? (JSON.parse(stored) as any[]) : [];
+
+            const productId = selectedVariant.id.split('/').pop() || '1';
+            const existingIndex = cartItems.findIndex((item: any) => item.product_id === productId);
+
+            if (existingIndex > -1) {
+              cartItems[existingIndex].quantity += 1;
+            } else {
+              const newItem = {
+                id: `c_${Date.now()}`,
+                product_id: productId,
+                quantity: 1,
+                user_email: userEmail,
+                product_name: selectedVariant.product?.title || 'Selected Product',
+                product_price: parseFloat(selectedVariant.price?.amount || '0'),
+                product_image: selectedVariant.image?.url,
+                product_category: 'Gem Mine Exclusive',
+              };
+              cartItems.push(newItem);
+            }
+
+            localStorage.setItem(`cart_${userEmail}`, JSON.stringify(cartItems));
+            window.dispatchEvent(new Event('cartUpdated'));
+            toast.success('Added to cart');
+          }
           open('cart');
         }}
         lines={

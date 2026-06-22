@@ -1,17 +1,16 @@
-import {useState, useMemo} from 'react';
+import { useState, useMemo } from 'react';
 import {
   useLoaderData,
   Link,
   useLocation,
-  type MetaFunction,
-  type LoaderFunctionArgs,
 } from 'react-router';
+import type { Route } from './+types/($locale).collections.all';
 import {
   getPaginationVariables,
   Image,
   Money,
 } from '@shopify/hydrogen';
-import {motion, AnimatePresence} from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Heart,
   Eye,
@@ -21,39 +20,77 @@ import {
   ShoppingBag,
   X,
 } from 'lucide-react';
-import {toast} from 'sonner';
-import {MOCK_USER} from '~/api/mockData';
+import { toast } from 'sonner';
+import { MOCK_USER } from '~/api/mockData';
 import type {
   CollectionItemFragment,
 } from 'storefrontapi.generated';
-import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
-
-// Asset imports
-import collection_set from '~/assets/vedio/collection_set.mp4';
+import { PaginatedResourceSection } from '~/components/PaginatedResourceSection';
 
 
-export const meta: MetaFunction<typeof loader> = () => {
-  return [{title: `Gem Mine | Our Collections`}];
+
+
+export const meta: Route.MetaFunction = () => {
+  return [{ title: `Gem Mine | Our Collections` }];
 };
 
-export async function loader({context, request}: LoaderFunctionArgs) {
-  const {storefront} = context;
+export async function loader({ context, request }: Route.LoaderArgs) {
+  const { storefront } = context;
   const paginationVariables = getPaginationVariables(request, {
     pageBy: 24,
   });
 
-  const [{products}, {collections}] = await Promise.all([
+  const [{ products }, { collections }, { page }] = await Promise.all([
     storefront.query(CATALOG_QUERY, {
-      variables: {...paginationVariables},
+      variables: { ...paginationVariables },
     }),
     storefront.query(COLLECTIONS_QUERY),
+    storefront.query(COLLECTION_PAGE_QUERY, {
+      variables: { handle: 'collection-page' },
+    }),
   ]);
 
-  return {products, collections};
+  return { products, collections, page };
 }
 
+const COLLECTION_PAGE_QUERY = `#graphql
+  query CollectionPage(
+    $language: LanguageCode,
+    $country: CountryCode,
+    $handle: String!
+  )
+  @inContext(language: $language, country: $country) {
+    page(handle: $handle) {
+      id
+      title
+      body
+      heroTitle: metafield(namespace: "custom", key: "page_hero_title") {
+        value
+      }
+      heroTag: metafield(namespace: "custom", key: "page_hero_tag") {
+        value
+      }
+      heroPara: metafield(namespace: "custom", key: "page_hero_para") {
+        value
+      }
+      heroVedio: metafield(namespace: "custom", key: "page_hero_vedio") {
+        reference {
+          ... on Video {
+            sources {
+              url
+            }
+          }
+          ... on GenericFile {
+            url
+          }
+        }
+      }
+    }
+  }
+` as const;
+
 export default function Collection() {
-  const {products} = useLoaderData<typeof loader>();
+  const { products, page } = useLoaderData<typeof loader>();
 
   const location = useLocation();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -66,13 +103,13 @@ export default function Collection() {
   });
 
   const categories = [
-    {id: 'all', name: 'All Jewellery', path: '/collections/all'},
-    {id: 'rings', name: 'Rings', path: '/collections/rings'},
-    {id: 'necklaces', name: 'Necklaces', path: '/collections/necklaces'},
-    {id: 'earrings', name: 'Earrings', path: '/collections/earring'},
-    {id: 'bracelets', name: 'Bracelets', path: '/collections/bracelet'},
-    {id: 'bridal', name: 'Bridal', path: '/collections/bridal'},
-    {id: 'gem-stones', name: 'Gem Stones', path: '/collections/gem-stones'},
+    { id: 'all', name: 'All Jewellery', path: '/collections/all' },
+    { id: 'rings', name: 'Rings', path: '/collections/rings' },
+    { id: 'necklaces', name: 'Necklaces', path: '/collections/necklaces' },
+    { id: 'earrings', name: 'Earrings', path: '/collections/earring' },
+    { id: 'bracelets', name: 'Bracelets', path: '/collections/bracelet' },
+    { id: 'bridal', name: 'Bridal', path: '/collections/bridal' },
+    { id: 'gem-stones', name: 'Gem Stones', path: '/collections/gem-stones' },
   ];
 
   const activeCategoryId = useMemo(() => {
@@ -110,32 +147,37 @@ export default function Collection() {
     return result;
   }, [products.nodes, sortBy, filters]);
 
+  const heroVedioUrl =
+    page?.heroVedio?.reference?.sources?.[0]?.url ||
+    page?.heroVedio?.reference?.url;
+
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
       {/* Hero Banner */}
       <div className="relative h-[60vh] md:h-[75vh] bg-[#1a1a1a] overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent z-10" />
         <video
+          key={heroVedioUrl}
           autoPlay
           loop
           muted
           playsInline
           className="absolute inset-0 w-full h-full object-cover opacity-50"
         >
-          <source src={collection_set} type="video/mp4" />
+          <source src={heroVedioUrl} type="video/mp4" />
         </video>
         <div className="absolute inset-0 flex items-center justify-center z-20">
           <motion.div
-            initial={{opacity: 0, y: 30}}
-            animate={{opacity: 1, y: 0}}
-            transition={{duration: 0.8}}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
             className="text-center"
           >
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif text-white mb-4">
-              Our Collections
+              {page?.heroTitle?.value}
             </h1>
             <p className="text-gray-300 text-lg md:text-xl max-w-2xl mx-auto px-6 font-light tracking-wide">
-              Discover exquisite pieces crafted with passion and precision
+              {page?.heroPara?.value}
             </p>
           </motion.div>
         </div>
@@ -148,15 +190,14 @@ export default function Collection() {
             <Link
               key={cat.id}
               to={cat.path}
-              className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
-                activeCategoryId === cat.id
-                  ? 'bg-[#1e2a47] text-white shadow-lg'
-                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 shadow-sm'
-              }`}
+              className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${activeCategoryId === cat.id
+                ? 'bg-[#1e2a47] text-white shadow-lg'
+                : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 shadow-sm'
+                }`}
             >
               <motion.span
-                whileHover={{scale: 1.05}}
-                whileTap={{scale: 0.95}}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 className="block"
               >
                 {cat.name}
@@ -206,21 +247,19 @@ export default function Collection() {
             <div className="hidden md:flex items-center gap-1 bg-gray-50 rounded-full p-1 border border-gray-100">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-full transition-all ${
-                  viewMode === 'grid'
-                    ? 'bg-white text-[#1e2a47] shadow-sm'
-                    : 'text-gray-400 hover:text-gray-600'
-                }`}
+                className={`p-2 rounded-full transition-all ${viewMode === 'grid'
+                  ? 'bg-white text-[#1e2a47] shadow-sm'
+                  : 'text-gray-400 hover:text-gray-600'
+                  }`}
               >
                 <Grid className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-full transition-all ${
-                  viewMode === 'list'
-                    ? 'bg-white text-[#1e2a47] shadow-sm'
-                    : 'text-gray-400 hover:text-gray-600'
-                }`}
+                className={`p-2 rounded-full transition-all ${viewMode === 'list'
+                  ? 'bg-white text-[#1e2a47] shadow-sm'
+                  : 'text-gray-400 hover:text-gray-600'
+                  }`}
               >
                 <List className="w-4 h-4" />
               </button>
@@ -240,7 +279,7 @@ export default function Collection() {
               : 'flex flex-col gap-6'
           }
         >
-          {({node: product, index}) => (
+          {({ node: product, index }) => (
             <ProductCard
               key={product.id}
               product={product}
@@ -307,14 +346,25 @@ function ProductCard({
     const stored = localStorage.getItem(`cart_${user.email}`);
     const cartItems = stored ? (JSON.parse(stored) as any[]) : [];
 
-    const newItem = {
-      id: `c_${Date.now()}`,
-      product_id: product.id.split('/').pop() || '1',
-      quantity: 1,
-      user_email: user.email,
-    };
+    const productId = product.id.split('/').pop() || '1';
+    const existingIndex = cartItems.findIndex((item: any) => item.product_id === productId);
 
-    cartItems.push(newItem);
+    if (existingIndex > -1) {
+      cartItems[existingIndex].quantity += 1;
+    } else {
+      const newItem = {
+        id: `c_${Date.now()}`,
+        product_id: productId,
+        quantity: 1,
+        user_email: user.email,
+        product_name: product.title,
+        product_price: parseFloat(firstVariant?.price?.amount || product.priceRange?.minVariantPrice?.amount || '0'),
+        product_image: product.featuredImage?.url,
+        product_category: 'Gem Mine Exclusive',
+      };
+      cartItems.push(newItem);
+    }
+
     localStorage.setItem(`cart_${user.email}`, JSON.stringify(cartItems));
     window.dispatchEvent(new Event('cartUpdated'));
     toast.success('Added to cart');
@@ -340,6 +390,10 @@ function ProductCard({
       id: `w_${Date.now()}`,
       product_id: productId,
       user_email: user.email,
+      product_name: product.title,
+      product_price: parseFloat(product.priceRange?.minVariantPrice?.amount || '0'),
+      product_image: product.featuredImage?.url,
+      product_category: 'Gem Mine Exclusive',
     };
 
     wishlistItems.push(newItem);
@@ -350,17 +404,15 @@ function ProductCard({
 
   return (
     <motion.div
-      initial={{opacity: 0, y: 20}}
-      animate={{opacity: 1, y: 0}}
-      transition={{duration: 0.5, delay: (index % 8) * 0.05}}
-      className={`group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 ${
-        viewMode === 'list' ? 'flex flex-col sm:flex-row' : 'flex flex-col'
-      }`}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: (index % 8) * 0.05 }}
+      className={`group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 ${viewMode === 'list' ? 'flex flex-col sm:flex-row' : 'flex flex-col'
+        }`}
     >
       <div
-        className={`relative overflow-hidden ${
-          viewMode === 'list' ? 'sm:w-72 flex-shrink-0' : 'aspect-[4/5]'
-        }`}
+        className={`relative overflow-hidden ${viewMode === 'list' ? 'sm:w-72 flex-shrink-0' : 'aspect-[4/5]'
+          }`}
       >
         <Link to={`/products/${product.handle}`} className="block h-full w-full">
           {product.featuredImage && (
@@ -427,7 +479,7 @@ function ProductCard({
   );
 }
 
-function QuickView({product, onClose}: {product: CollectionItemFragment; onClose: () => void}) {
+function QuickView({ product, onClose }: { product: CollectionItemFragment; onClose: () => void }) {
   const firstVariant = product.variants?.nodes?.[0];
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -438,14 +490,25 @@ function QuickView({product, onClose}: {product: CollectionItemFragment; onClose
     const stored = localStorage.getItem(`cart_${user.email}`);
     const cartItems = stored ? (JSON.parse(stored) as any[]) : [];
 
-    const newItem = {
-      id: `c_${Date.now()}`,
-      product_id: product.id.split('/').pop() || '1',
-      quantity: 1,
-      user_email: user.email,
-    };
+    const productId = product.id.split('/').pop() || '1';
+    const existingIndex = cartItems.findIndex((item: any) => item.product_id === productId);
 
-    cartItems.push(newItem);
+    if (existingIndex > -1) {
+      cartItems[existingIndex].quantity += 1;
+    } else {
+      const newItem = {
+        id: `c_${Date.now()}`,
+        product_id: productId,
+        quantity: 1,
+        user_email: user.email,
+        product_name: product.title,
+        product_price: parseFloat(firstVariant?.price?.amount || product.priceRange?.minVariantPrice?.amount || '0'),
+        product_image: product.featuredImage?.url,
+        product_category: 'Gem Mine Exclusive',
+      };
+      cartItems.push(newItem);
+    }
+
     localStorage.setItem(`cart_${user.email}`, JSON.stringify(cartItems));
     window.dispatchEvent(new Event('cartUpdated'));
     toast.success('Added to cart');
@@ -472,6 +535,10 @@ function QuickView({product, onClose}: {product: CollectionItemFragment; onClose
       id: `w_${Date.now()}`,
       product_id: productId,
       user_email: user.email,
+      product_name: product.title,
+      product_price: parseFloat(product.priceRange?.minVariantPrice?.amount || '0'),
+      product_image: product.featuredImage?.url,
+      product_category: 'Gem Mine Exclusive',
     };
 
     wishlistItems.push(newItem);
@@ -483,16 +550,16 @@ function QuickView({product, onClose}: {product: CollectionItemFragment; onClose
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
       <motion.div
-        initial={{opacity: 0}}
-        animate={{opacity: 1}}
-        exit={{opacity: 0}}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         onClick={onClose}
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
       />
       <motion.div
-        initial={{opacity: 0, scale: 0.9, y: 20}}
-        animate={{opacity: 1, scale: 1, y: 0}}
-        exit={{opacity: 0, scale: 0.9, y: 20}}
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 20 }}
         className="relative bg-white w-full max-w-5xl rounded-[2.5rem] overflow-hidden shadow-2xl z-10 flex flex-col md:flex-row max-h-[90vh]"
       >
         <button
@@ -596,17 +663,17 @@ function FilterSidebar({
   return (
     <div className="fixed inset-0 z-[100]">
       <motion.div
-        initial={{opacity: 0}}
-        animate={{opacity: 1}}
-        exit={{opacity: 0}}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         onClick={onClose}
         className="absolute inset-0 bg-black/40 backdrop-blur-sm"
       />
       <motion.div
-        initial={{x: '-100%'}}
-        animate={{x: 0}}
-        exit={{x: '-100%'}}
-        transition={{type: 'spring', damping: 25, stiffness: 200}}
+        initial={{ x: '-100%' }}
+        animate={{ x: 0 }}
+        exit={{ x: '-100%' }}
+        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
         className="absolute top-0 left-0 bottom-0 w-full max-w-sm bg-white shadow-2xl p-8"
       >
         <div className="flex justify-between items-center mb-10">
@@ -646,11 +713,11 @@ function FilterSidebar({
                 />
                 <div
                   className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-[#d4a89a] rounded-full shadow-sm cursor-pointer"
-                  style={{left: `${(tempPriceRange[0] / 35000) * 100}%`}}
+                  style={{ left: `${(tempPriceRange[0] / 35000) * 100}%` }}
                 />
                 <div
                   className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-[#d4a89a] rounded-full shadow-sm cursor-pointer"
-                  style={{left: `${(tempPriceRange[1] / 35000) * 100}%`}}
+                  style={{ left: `${(tempPriceRange[1] / 35000) * 100}%` }}
                 />
               </div>
               <div className="flex justify-between text-sm text-gray-500 font-light">
@@ -677,11 +744,10 @@ function FilterSidebar({
                       };
                     });
                   }}
-                  className={`px-4 py-2 border rounded-xl text-sm transition-all ${
-                    localFilters.materials.includes(mat)
-                      ? 'bg-[#1e2a47] border-[#1e2a47] text-white'
-                      : 'border-gray-100 hover:border-[#d4a89a] hover:text-[#d4a89a]'
-                  }`}
+                  className={`px-4 py-2 border rounded-xl text-sm transition-all ${localFilters.materials.includes(mat)
+                    ? 'bg-[#1e2a47] border-[#1e2a47] text-white'
+                    : 'border-gray-100 hover:border-[#d4a89a] hover:text-[#d4a89a]'
+                    }`}
                 >
                   {mat}
                 </button>
@@ -692,7 +758,7 @@ function FilterSidebar({
 
         <div className="absolute bottom-8 left-8 right-8 space-y-3">
           <button
-            onClick={() => onApply({...localFilters, priceRange: tempPriceRange})}
+            onClick={() => onApply({ ...localFilters, priceRange: tempPriceRange })}
             className="w-full bg-[#1e2a47] text-white py-4 rounded-2xl font-medium shadow-lg shadow-[#1e2a47]/10 hover:bg-[#2d3e6a] transition-all"
           >
             Apply Filters

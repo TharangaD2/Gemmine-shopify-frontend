@@ -1,7 +1,7 @@
-import React, {useRef, useState, useEffect} from 'react';
-import {motion, useScroll, useTransform, AnimatePresence} from 'framer-motion';
-import {ArrowRight, Sparkles} from 'lucide-react';
-import {Link} from 'react-router';
+import React, { useRef, useState, useEffect } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Sparkles } from 'lucide-react';
+import { Link } from 'react-router';
 
 // Asset imports
 import n1_crop from '~/assets/img/n1_crop.jpeg';
@@ -44,9 +44,9 @@ const Button = ({
   );
 };
 
-export default function HeroSection() {
+export default function HeroSection({ page }: { page?: any }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const {scrollYProgress} = useScroll({
+  const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
   });
@@ -100,51 +100,52 @@ export default function HeroSection() {
 
       {/* Content */}
       <motion.div
-        style={{y, opacity}}
+        style={{ y, opacity }}
         className="relative z-10 flex flex-col lg:flex-row items-center justify-between min-h-screen px-6 md:px-12 lg:px-24 pt-32 pb-20"
       >
         {/* Left Content */}
         <div className="lg:w-1/2 text-center lg:text-left mb-12 lg:mb-0">
           <motion.div
-            initial={{opacity: 0, y: 30}}
-            animate={{opacity: 1, y: 0}}
-            transition={{duration: 0.8}}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
             className="inline-flex items-center gap-2 px-4 py-2 bg-[#d4a89a]/20 border border-[#d4a89a]/30 rounded-full mb-8"
           >
             <Sparkles className="w-4 h-4 text-[#d4a89a]" />
             <span className="text-[#d4a89a] text-sm tracking-[0.2em] uppercase">
-              Sparkles Make You Smile
+              {page?.homeHeroTag?.value || "Sparkles Make You Smile"}
             </span>
           </motion.div>
 
           <motion.h1
-            initial={{opacity: 0, y: 50}}
-            animate={{opacity: 1, y: 0}}
-            transition={{duration: 1, delay: 0.2}}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.2 }}
             className="font-serif"
           >
+
             <span className="block text-5xl md:text-7xl lg:text-8xl text-white font-light tracking-tight">
-              Timeless
+              {page?.homeHeroTitle1?.value || "Timeless"}
             </span>
             <span className="inline-block text-5xl md:text-7xl lg:text-8xl text-transparent bg-clip-text bg-gradient-to-r from-[#d4a89a] via-[#e8c4b5] to-[#d4a89a] font-light italic mt-2 pb-4">
-              Elegance
+              {page?.homeHeroTitle2?.value || "Elegance"}
             </span>
+
           </motion.h1>
 
           <motion.p
-            initial={{opacity: 0, y: 30}}
-            animate={{opacity: 1, y: 0}}
-            transition={{duration: 0.8, delay: 0.4}}
-            className="text-gray-400 text-lg md:text-xl max-w-lg mx-auto lg:mx-0 mt-8 leading-relaxed"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="text-gray-400 text-lg md:text-xl max-w-lg mx-auto lg:mx-0 mt-8 leading-relaxed whitespace-pre-line"
           >
-            Discover handcrafted luxury jewellery that tells your unique story.
-            Each piece is a masterwork of artistry and passion.
+            {page?.homeHeroPara?.value || "Discover handcrafted luxury jewellery that tells your unique story.\nEach piece is a masterwork of artistry and passion."}
           </motion.p>
 
           <motion.div
-            initial={{opacity: 0, y: 30}}
-            animate={{opacity: 1, y: 0}}
-            transition={{duration: 0.8, delay: 0.6}}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
             className="flex flex-col sm:flex-row gap-4 mt-10 justify-center lg:justify-start"
           >
             <Link to="/collections/all">
@@ -163,35 +164,35 @@ export default function HeroSection() {
 
         {/* Right Content - 3D Image Effect */}
         <motion.div
-          initial={{opacity: 0, scale: 0.8}}
-          animate={{opacity: 1, scale: 1}}
-          transition={{duration: 1, delay: 0.3}}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, delay: 0.3 }}
           className="lg:w-1/2 relative"
         >
           <div className="relative w-[300px] h-[300px] md:w-[450px] md:h-[450px] lg:w-[550px] lg:h-[550px] mx-auto">
             {/* Glowing rings */}
             <motion.div
-              animate={{rotate: 360}}
-              transition={{duration: 30, repeat: Infinity, ease: 'linear'}}
+              animate={{ rotate: 360 }}
+              transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
               className="absolute inset-0 rounded-full border border-[#d4a89a]/20"
             />
             <motion.div
-              animate={{rotate: -360}}
-              transition={{duration: 25, repeat: Infinity, ease: 'linear'}}
+              animate={{ rotate: -360 }}
+              transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
               className="absolute inset-4 rounded-full border border-[#d4a89a]/30"
             />
             <motion.div
-              animate={{rotate: 360}}
-              transition={{duration: 20, repeat: Infinity, ease: 'linear'}}
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
               className="absolute inset-8 rounded-full border border-[#d4a89a]/20"
             />
 
             {/* Main Image Container */}
             <motion.div
-              whileHover={{scale: 1.05, rotateY: 10}}
-              transition={{duration: 0.5}}
+              whileHover={{ scale: 1.05, rotateY: 10 }}
+              transition={{ duration: 0.5 }}
               className="absolute inset-12 rounded-full overflow-hidden shadow-[0_0_100px_rgba(212,168,154,0.2)] border-2 border-[#d4a89a]/30"
-              style={{perspective: '1000px'}}
+              style={{ perspective: '1000px' }}
             >
               <AnimatePresence mode="popLayout">
                 <motion.div
@@ -202,21 +203,21 @@ export default function HeroSection() {
                     rotate: 5,
                     filter: 'blur(10px)',
                   }}
-                  animate={{opacity: 1, scale: 1, rotate: 0, filter: 'blur(0px)'}}
+                  animate={{ opacity: 1, scale: 1, rotate: 0, filter: 'blur(0px)' }}
                   exit={{
                     opacity: 0,
                     scale: 0.8,
                     rotate: -5,
                     filter: 'blur(10px)',
                   }}
-                  transition={{duration: 1.2, ease: [0.16, 1, 0.3, 1]}}
+                  transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                   className="absolute inset-0 cursor-pointer"
                   onClick={() =>
                     setCurrentImageIndex(
                       (prev) => (prev + 1) % carouselImages.length,
                     )
                   }
-                  whileTap={{scale: 0.95}}
+                  whileTap={{ scale: 0.95 }}
                 >
                   <img
                     src={carouselImages[currentImageIndex]}
@@ -254,19 +255,19 @@ export default function HeroSection() {
 
       {/* Scroll indicator */}
       <motion.div
-        initial={{opacity: 0}}
-        animate={{opacity: 1}}
-        transition={{delay: 1.5}}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5 }}
         className="absolute bottom-10 left-1/2 -translate-x-1/2"
       >
         <motion.div
-          animate={{y: [0, 10, 0]}}
-          transition={{duration: 2, repeat: Infinity}}
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
           className="w-6 h-10 border-2 border-[#d4a89a]/50 rounded-full flex justify-center pt-2"
         >
           <motion.div
-            animate={{y: [0, 12, 0]}}
-            transition={{duration: 2, repeat: Infinity}}
+            animate={{ y: [0, 12, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
             className="w-1.5 h-1.5 bg-[#d4a89a] rounded-full"
           />
         </motion.div>

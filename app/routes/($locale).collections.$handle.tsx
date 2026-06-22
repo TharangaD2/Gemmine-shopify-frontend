@@ -1,4 +1,4 @@
-import {useState, useMemo} from 'react';
+import { useState, useMemo } from 'react';
 import {
   useLoaderData,
   Link,
@@ -12,7 +12,7 @@ import {
   Money,
   Analytics,
 } from '@shopify/hydrogen';
-import {motion, AnimatePresence} from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Heart,
   Eye,
@@ -23,37 +23,37 @@ import {
   X,
 } from 'lucide-react';
 // import type {Route} from './+types/collections.$handle';
-import type {ProductItemFragment} from 'storefrontapi.generated';
-import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
-import {toast} from 'sonner';
-import {MOCK_USER} from '~/api/mockData';
-
-// Asset imports
-import collection_set from '~/assets/vedio/collection_set.mp4';
+import type { ProductItemFragment } from 'storefrontapi.generated';
+import { PaginatedResourceSection } from '~/components/PaginatedResourceSection';
+import { toast } from 'sonner';
+import { MOCK_USER } from '~/api/mockData';
+import collection_set from '~/assets/vedio/collection.mp4';
 
 
 
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Gem Mine | ${data?.collection?.title ?? ''} Collection`}];
+
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [{ title: `Gem Mine | ${data?.collection?.title ?? ''} Collection` }];
 };
 
-export async function loader({context, params, request}: LoaderFunctionArgs) {
-  const {storefront} = context;
-  const {handle} = params;
+export async function loader({ context, params, request }: LoaderFunctionArgs) {
+  const { storefront } = context;
+  const { handle } = params;
 
   console.log('Requested handle:', handle);
 
   const result = await storefront.query(COLLECTION_QUERY, {
     variables: {
       handle: handle || '',
-      ...getPaginationVariables(request, {pageBy: 24}),
+      ...getPaginationVariables(request, { pageBy: 24 }),
     },
   });
 
   console.log(JSON.stringify(result, null, 2));
 
-  const {collection} = result;
+  const { collection, page } = result;
 
   if (!collection) {
     throw new Response(`Collection ${handle} not found`, {
@@ -61,11 +61,11 @@ export async function loader({context, params, request}: LoaderFunctionArgs) {
     });
   }
 
-  return {collection};
+  return { collection, page };
 }
 
 export default function Collection() {
-  const {collection} = useLoaderData<typeof loader>();
+  const { collection, page } = useLoaderData<typeof loader>();
 
   const location = useLocation();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -73,14 +73,21 @@ export default function Collection() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<ProductItemFragment | null>(null);
 
+  const heroVedioUrl =
+    collection?.heroVedio?.reference?.sources?.[0]?.url ||
+    collection?.heroVedio?.reference?.url ||
+    page?.heroVedio?.reference?.sources?.[0]?.url ||
+    page?.heroVedio?.reference?.url ||
+    collection_set;
+
   const categories = [
-    {id: 'all', name: 'All Jewellery', path: '/collections/all'},
-    {id: 'rings', name: 'Rings', path: '/collections/rings'},
-    {id: 'necklaces', name: 'Necklaces', path: '/collections/necklaces'},
-    {id: 'earrings', name: 'Earrings', path: '/collections/earring'},
-    {id: 'bracelets', name: 'Bracelets', path: '/collections/bracelets'},
-    {id: 'bridal', name: 'Bridal', path: '/collections/bridal'},
-    {id: 'gem-stones', name: 'Gem Stones', path: '/collections/gem-stones'},
+    { id: 'all', name: 'All Jewellery', path: '/collections/all' },
+    { id: 'rings', name: 'Rings', path: '/collections/rings' },
+    { id: 'necklaces', name: 'Necklaces', path: '/collections/necklaces' },
+    { id: 'earrings', name: 'Earrings', path: '/collections/earring' },
+    { id: 'bracelets', name: 'Bracelets', path: '/collections/bracelets' },
+    { id: 'bridal', name: 'Bridal', path: '/collections/bridal' },
+    { id: 'gem-stones', name: 'Gem Stones', path: '/collections/gem-stones' },
   ];
 
   const activeCategoryId = useMemo(() => {
@@ -96,19 +103,20 @@ export default function Collection() {
       <div className="relative h-[60vh] md:h-[75vh] bg-[#1a1a1a] overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent z-10" />
         <video
+          key={heroVedioUrl}
           autoPlay
           loop
           muted
           playsInline
           className="absolute inset-0 w-full h-full object-cover opacity-50"
         >
-          <source src={collection_set} type="video/mp4" />
+          <source src={heroVedioUrl} type="video/mp4" />
         </video>
         <div className="absolute inset-0 flex items-center justify-center z-20">
           <motion.div
-            initial={{opacity: 0, y: 30}}
-            animate={{opacity: 1, y: 0}}
-            transition={{duration: 0.8}}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
             className="text-center"
           >
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif text-white mb-4">
@@ -129,15 +137,14 @@ export default function Collection() {
             <Link
               key={cat.id}
               to={cat.path}
-              className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
-                activeCategoryId === cat.id
+              className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${activeCategoryId === cat.id
                   ? 'bg-[#1e2a47] text-white shadow-lg'
                   : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 shadow-sm'
-              }`}
+                }`}
             >
               <motion.span
-                whileHover={{scale: 1.05}}
-                whileTap={{scale: 0.95}}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 className="block"
               >
                 {cat.name}
@@ -182,21 +189,19 @@ export default function Collection() {
             <div className="hidden md:flex items-center gap-1 bg-gray-50 rounded-full p-1 border border-gray-100">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-full transition-all ${
-                  viewMode === 'grid'
+                className={`p-2 rounded-full transition-all ${viewMode === 'grid'
                     ? 'bg-white text-[#1e2a47] shadow-sm'
                     : 'text-gray-400 hover:text-gray-600'
-                }`}
+                  }`}
               >
                 <Grid className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-full transition-all ${
-                  viewMode === 'list'
+                className={`p-2 rounded-full transition-all ${viewMode === 'list'
                     ? 'bg-white text-[#1e2a47] shadow-sm'
                     : 'text-gray-400 hover:text-gray-600'
-                }`}
+                  }`}
               >
                 <List className="w-4 h-4" />
               </button>
@@ -213,7 +218,7 @@ export default function Collection() {
               : 'flex flex-col gap-6'
           }
         >
-          {({node: product, index}) => (
+          {({ node: product, index }) => (
             <ProductCard
               key={product.id}
               product={product}
@@ -276,15 +281,27 @@ function ProductCard({
     const stored = localStorage.getItem(`cart_${user.email}`);
     const cartItems = stored ? (JSON.parse(stored) as any[]) : [];
 
-    const newItem = {
-      id: `c_${Date.now()}`,
-      product_id: product.id.split('/').pop() || '1', // Fallback to 1 for demo
-      quantity: 1,
-      user_email: user.email,
-    };
+    const productId = product.id.split('/').pop() || '1';
+    const existingIndex = cartItems.findIndex((item: any) => item.product_id === productId);
 
-    cartItems.push(newItem);
+    if (existingIndex > -1) {
+      cartItems[existingIndex].quantity += 1;
+    } else {
+      const newItem = {
+        id: `c_${Date.now()}`,
+        product_id: productId,
+        quantity: 1,
+        user_email: user.email,
+        product_name: product.title,
+        product_price: parseFloat(firstVariant?.price?.amount || product.priceRange?.minVariantPrice?.amount || '0'),
+        product_image: product.featuredImage?.url,
+        product_category: 'Gem Mine Exclusive',
+      };
+      cartItems.push(newItem);
+    }
+
     localStorage.setItem(`cart_${user.email}`, JSON.stringify(cartItems));
+    window.dispatchEvent(new Event('cartUpdated'));
     toast.success('Added to cart');
   };
 
@@ -308,26 +325,29 @@ function ProductCard({
       id: `w_${Date.now()}`,
       product_id: productId,
       user_email: user.email,
+      product_name: product.title,
+      product_price: parseFloat(product.priceRange?.minVariantPrice?.amount || '0'),
+      product_image: product.featuredImage?.url,
+      product_category: 'Gem Mine Exclusive',
     };
 
     wishlistItems.push(newItem);
     localStorage.setItem(`wishlist_${user.email}`, JSON.stringify(wishlistItems));
+    window.dispatchEvent(new Event('wishlistUpdated'));
     toast.success('Added to wishlist');
   };
 
   return (
     <motion.div
-      initial={{opacity: 0, y: 20}}
-      animate={{opacity: 1, y: 0}}
-      transition={{duration: 0.5, delay: (index % 8) * 0.05}}
-      className={`group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 ${
-        viewMode === 'list' ? 'flex flex-col sm:flex-row' : 'flex flex-col'
-      }`}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: (index % 8) * 0.05 }}
+      className={`group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 ${viewMode === 'list' ? 'flex flex-col sm:flex-row' : 'flex flex-col'
+        }`}
     >
       <div
-        className={`relative overflow-hidden ${
-          viewMode === 'list' ? 'sm:w-72 flex-shrink-0' : 'aspect-[4/5]'
-        }`}
+        className={`relative overflow-hidden ${viewMode === 'list' ? 'sm:w-72 flex-shrink-0' : 'aspect-[4/5]'
+          }`}
       >
         <Link to={`/products/${product.handle}`} className="block h-full w-full">
           {product.featuredImage && (
@@ -394,7 +414,7 @@ function ProductCard({
   );
 }
 
-function QuickView({product, onClose}: {product: ProductItemFragment; onClose: () => void}) {
+function QuickView({ product, onClose }: { product: ProductItemFragment; onClose: () => void }) {
   const firstVariant = product.variants?.nodes?.[0];
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -405,15 +425,27 @@ function QuickView({product, onClose}: {product: ProductItemFragment; onClose: (
     const stored = localStorage.getItem(`cart_${user.email}`);
     const cartItems = stored ? (JSON.parse(stored) as any[]) : [];
 
-    const newItem = {
-      id: `c_${Date.now()}`,
-      product_id: product.id.split('/').pop() || '1',
-      quantity: 1,
-      user_email: user.email,
-    };
+    const productId = product.id.split('/').pop() || '1';
+    const existingIndex = cartItems.findIndex((item: any) => item.product_id === productId);
 
-    cartItems.push(newItem);
+    if (existingIndex > -1) {
+      cartItems[existingIndex].quantity += 1;
+    } else {
+      const newItem = {
+        id: `c_${Date.now()}`,
+        product_id: productId,
+        quantity: 1,
+        user_email: user.email,
+        product_name: product.title,
+        product_price: parseFloat(firstVariant?.price?.amount || product.priceRange?.minVariantPrice?.amount || '0'),
+        product_image: product.featuredImage?.url,
+        product_category: 'Gem Mine Exclusive',
+      };
+      cartItems.push(newItem);
+    }
+
     localStorage.setItem(`cart_${user.email}`, JSON.stringify(cartItems));
+    window.dispatchEvent(new Event('cartUpdated'));
     toast.success('Added to cart');
     onClose();
   };
@@ -438,26 +470,31 @@ function QuickView({product, onClose}: {product: ProductItemFragment; onClose: (
       id: `w_${Date.now()}`,
       product_id: productId,
       user_email: user.email,
+      product_name: product.title,
+      product_price: parseFloat(product.priceRange?.minVariantPrice?.amount || '0'),
+      product_image: product.featuredImage?.url,
+      product_category: 'Gem Mine Exclusive',
     };
 
     wishlistItems.push(newItem);
     localStorage.setItem(`wishlist_${user.email}`, JSON.stringify(wishlistItems));
+    window.dispatchEvent(new Event('wishlistUpdated'));
     toast.success('Added to wishlist');
   };
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
       <motion.div
-        initial={{opacity: 0}}
-        animate={{opacity: 1}}
-        exit={{opacity: 0}}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         onClick={onClose}
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
       />
       <motion.div
-        initial={{opacity: 0, scale: 0.9, y: 20}}
-        animate={{opacity: 1, scale: 1, y: 0}}
-        exit={{opacity: 0, scale: 0.9, y: 20}}
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 20 }}
         className="relative bg-white w-full max-w-5xl rounded-[2.5rem] overflow-hidden shadow-2xl z-10 flex flex-col md:flex-row max-h-[90vh]"
       >
         <button
@@ -529,21 +566,21 @@ function QuickView({product, onClose}: {product: ProductItemFragment; onClose: (
   );
 }
 
-function FilterSidebar({onClose}: {onClose: () => void}) {
+function FilterSidebar({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[100]">
       <motion.div
-        initial={{opacity: 0}}
-        animate={{opacity: 1}}
-        exit={{opacity: 0}}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         onClick={onClose}
         className="absolute inset-0 bg-black/40 backdrop-blur-sm"
       />
       <motion.div
-        initial={{x: '-100%'}}
-        animate={{x: 0}}
-        exit={{x: '-100%'}}
-        transition={{type: 'spring', damping: 25, stiffness: 200}}
+        initial={{ x: '-100%' }}
+        animate={{ x: 0 }}
+        exit={{ x: '-100%' }}
+        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
         className="absolute top-0 left-0 bottom-0 w-full max-w-sm bg-white shadow-2xl p-8"
       >
         <div className="flex justify-between items-center mb-10">
@@ -637,6 +674,18 @@ const COLLECTION_QUERY = `#graphql
       handle
       title
       description
+      heroVedio: metafield(namespace: "custom", key: "page_hero_vedio") {
+        reference {
+          ... on Video {
+            sources {
+              url
+            }
+          }
+          ... on GenericFile {
+            url
+          }
+        }
+      }
       products(
         first: $first,
         last: $last,
@@ -651,6 +700,21 @@ const COLLECTION_QUERY = `#graphql
           hasNextPage
           startCursor
           endCursor
+        }
+      }
+    }
+    page(handle: $handle) {
+      id
+      heroVedio: metafield(namespace: "custom", key: "page_hero_vedio") {
+        reference {
+          ... on Video {
+            sources {
+              url
+            }
+          }
+          ... on GenericFile {
+            url
+          }
         }
       }
     }

@@ -23,6 +23,11 @@ interface WishlistItem {
   id: string;
   product_id: string;
   user_email: string;
+  product_name?: string;
+  product_price?: number;
+  product_image?: string;
+  product_category?: string;
+  product_material?: string;
 }
 
 interface WishlistItemWithProduct extends WishlistItem {
@@ -90,19 +95,53 @@ export default function Wishlist() {
     toast.success('Removed from wishlist');
   };
 
-  const addToCart = (productId: string) => {
-    // In a real Hydrogen app, this would use the Cart API
-    // For now, we'll just show a toast
+  const addToCart = (product: Product) => {
+    const userEmail = 'customer@example.com';
+    const stored = localStorage.getItem(`cart_${userEmail}`);
+    const cartItems = stored ? (JSON.parse(stored) as any[]) : [];
+
+    const existingIndex = cartItems.findIndex((item: any) => item.product_id === product.id);
+
+    if (existingIndex > -1) {
+      cartItems[existingIndex].quantity += 1;
+    } else {
+      const newItem = {
+        id: `c_${Date.now()}`,
+        product_id: product.id,
+        quantity: 1,
+        user_email: userEmail,
+        product_name: product.name,
+        product_price: product.price,
+        product_image: product.image_url,
+        product_category: product.category,
+        product_material: product.material,
+      };
+      cartItems.push(newItem);
+    }
+
+    localStorage.setItem(`cart_${userEmail}`, JSON.stringify(cartItems));
+    window.dispatchEvent(new Event('cartUpdated'));
     toast.success('Added to cart');
   };
 
-  const getProduct = (productId: string) =>
-    SAMPLE_PRODUCTS.find((p) => p.id === productId);
+  const getProduct = (item: WishlistItem) => {
+    if (item.product_name) {
+      return {
+        id: item.product_id,
+        name: item.product_name,
+        price: item.product_price || 0,
+        image_url: item.product_image || '',
+        category: item.product_category || 'Gem Mine Exclusive',
+        material: item.product_material,
+      };
+    }
+    return SAMPLE_PRODUCTS.find((p) => p.id === item.product_id);
+  };
 
   const wishlistWithProducts: WishlistItemWithProduct[] = wishlistItems
     .map((item) => ({
       ...item,
-      product: getProduct(item.product_id) as Product,
+      product: getProduct(item) as Product,
     }))
     .filter((item) => item.product);
 
@@ -211,7 +250,7 @@ export default function Wishlist() {
 
                       <button
                         className="w-full mt-auto bg-[#1e2a47] hover:bg-[#2d3e6a] text-white rounded-full transition-all shadow-md hover:shadow-lg h-11 flex items-center justify-center gap-2"
-                        onClick={() => addToCart(item.product.id)}
+                        onClick={() => addToCart(item.product)}
                       >
                         {ShoppingBag ? <ShoppingBag className="w-4 h-4" /> : <div className="w-4 h-4 bg-white rounded-full" />}
                         Add to Cart

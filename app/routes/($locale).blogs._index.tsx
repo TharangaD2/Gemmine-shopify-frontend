@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {motion, AnimatePresence} from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Calendar,
   User,
@@ -7,10 +7,10 @@ import {
   ChevronRight,
   X,
 } from 'lucide-react';
-import {Link, type MetaFunction} from 'react-router';
+import { Link, type MetaFunction } from 'react-router';
 
 // Asset imports
-import gemstone from '~/assets/img/gemstone.jpg';
+
 import clean from '~/assets/img/clean.jpeg';
 import ringSize from '~/assets/img/ringSize.jpg';
 
@@ -33,7 +33,7 @@ const blogPosts: BlogPost[] = [
     date: '19-10-2013',
     author: 'bennu',
     comments: 0,
-    image: gemstone,
+    image: clean,
     excerpt:
       'Essential guide to navigating the digital gemstone market with confidence and security.',
     category: 'Guide',
@@ -87,7 +87,7 @@ const blogPosts: BlogPost[] = [
 ];
 
 export const meta: MetaFunction = () => {
-  return [{title: 'Gem Mine | Insights & Stories'}];
+  return [{ title: 'Gem Mine | Insights & Stories' }];
 };
 
 export default function BlogPage() {
@@ -98,9 +98,9 @@ export default function BlogPage() {
       {/* Header Section */}
       <div className="w-full px-6 md:px-12 lg:px-24 mb-16">
         <motion.div
-          initial={{opacity: 0, y: 20}}
-          animate={{opacity: 1, y: 0}}
-          transition={{duration: 0.6}}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
           className="text-center md:text-left"
         >
           <span className="text-amber-600 tracking-[0.3em] uppercase text-sm font-medium">
@@ -122,10 +122,10 @@ export default function BlogPage() {
           {blogPosts.map((post, index) => (
             <motion.div
               key={post.id}
-              initial={{opacity: 0, y: 30}}
-              whileInView={{opacity: 1, y: 0}}
-              viewport={{once: true}}
-              transition={{delay: index * 0.1}}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
               onClick={() => setSelectedPost(post)}
               className="group cursor-pointer bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-transparent hover:border-amber-100 h-full flex flex-col"
             >
@@ -175,16 +175,16 @@ export default function BlogPage() {
         {selectedPost && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
             <motion.div
-              initial={{opacity: 0}}
-              animate={{opacity: 1}}
-              exit={{opacity: 0}}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               onClick={() => setSelectedPost(null)}
               className="absolute inset-0 bg-black/60 backdrop-blur-md"
             />
             <motion.div
-              initial={{opacity: 0, scale: 0.9, y: 20}}
-              animate={{opacity: 1, scale: 1, y: 0}}
-              exit={{opacity: 0, scale: 0.9, y: 20}}
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
               className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-[2rem] overflow-hidden shadow-2xl flex flex-col"
             >
               <button
@@ -248,9 +248,9 @@ export default function BlogPage() {
                       {selectedPost.content.map((paragraph, idx) => (
                         <motion.p
                           key={idx}
-                          initial={{opacity: 0, y: 10}}
-                          animate={{opacity: 1, y: 0}}
-                          transition={{delay: 0.3 + idx * 0.1}}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.3 + idx * 0.1 }}
                           className="text-gray-600 leading-relaxed text-lg"
                         >
                           {paragraph}

@@ -1,7 +1,8 @@
-import React, {useRef, useEffect} from 'react';
-import {motion} from 'framer-motion';
-import {Diamond, Award, Users, Globe, ArrowRight} from 'lucide-react';
-import {Link, type MetaFunction} from 'react-router';
+import React, { useRef, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Diamond, Award, Users, Globe, ArrowRight } from 'lucide-react';
+import { Link, useLoaderData, type MetaFunction } from 'react-router';
+import type { Route } from './+types/($locale).pages.about';
 
 // Asset imports - Images
 import building from '~/assets/img/building.jpeg';
@@ -12,15 +13,13 @@ import img3 from '~/assets/img/img3.png';
 import img4 from '~/assets/img/img4.png';
 import img5new from '~/assets/img/img5new.jpeg';
 import diamond from '~/assets/img/diamond.jpg';
-import diamondring from '~/assets/img/diamondring.jpeg';
-import gemstone from '~/assets/img/gemstone.jpg';
+
 import img6 from '~/assets/img/img6.jpeg';
 import img7 from '~/assets/img/img7.png';
 import r2 from '~/assets/img/r2.jpeg';
 
-// Asset imports - Videos
-import diamond_earrings from '~/assets/vedio/diamond_earrings.mp4';
-import blue_ring from '~/assets/vedio/blue_ring.mp4';
+
+
 import clip1 from '~/assets/vedio/clip1.mp4';
 import clip2 from '~/assets/vedio/clip2.mp4';
 
@@ -123,13 +122,112 @@ const products = [
   },
 ];
 
-export const meta: MetaFunction = () => {
-  return [{title: 'Gem Mine | Our Story & Heritage'}];
+export const meta: Route.MetaFunction = () => {
+  return [{ title: 'Gem Mine | Our Story & Heritage' }];
 };
+
+export async function loader({ context }: Route.LoaderArgs) {
+  const { page } = await context.storefront.query(PAGE_QUERY, {
+    variables: {
+      handle: 'about-page',
+    },
+  });
+
+  return { page };
+}
+
+const PAGE_QUERY = `#graphql
+  query Page(
+    $language: LanguageCode,
+    $country: CountryCode,
+    $handle: String!
+  )
+  @inContext(language: $language, country: $country) {
+    page(handle: $handle) {
+      id
+      title
+      body
+      heroTitle: metafield(namespace: "custom", key: "page_hero_title") {
+        value
+      }
+      heroTag: metafield(namespace: "custom", key: "page_hero_tag") {
+        value
+      }
+      heroVideo: metafield(namespace: "custom", key: "page_hero_video") {
+        reference {
+          ... on Video {
+            sources {
+              url
+            }
+          }
+          ... on GenericFile {
+            url
+          }
+        }
+      }
+      firstContentTitle: metafield(namespace: "custom", key: "first_content_title") {
+        value
+      }
+      firstContentPara: metafield(namespace: "custom", key: "first_content_para") {
+        value
+      }
+      firstContentTag: metafield(namespace: "custom", key: "first_content_tag") {
+        value
+      }
+      firstContentVedio: metafield(namespace: "custom", key: "first_content_vedio") {
+        reference {
+          ... on Video {
+            sources {
+              url
+            }
+          }
+          ... on GenericFile {
+            url
+          }
+        }
+      }
+      firstContentImage: metafield(namespace: "custom", key: "first_content_image") {
+        reference {
+          ... on MediaImage {
+            image {
+              url
+            }
+          }
+        }
+      } 
+      secondContentTitle: metafield(namespace: "custom", key: "second_content_title") {
+        value
+      }
+      secondContentPara: metafield(namespace: "custom", key: "second_content_para") {
+        value
+      }
+      secondContentTag: metafield(namespace: "custom", key: "second_content_tag") {
+        value
+      }
+      secondContentPara2: metafield(namespace: "custom", key: "second_content_para2") {
+        value
+      }
+      secondcontentTypes: metafield(namespace: "custom", key: "second_content_types") {
+        value
+      }
+      secondContentImage: metafield(namespace: "custom", key: "second_content_image") {
+        reference {
+          ... on MediaImage {
+            image {
+              url
+            }
+          }
+        }
+      }  
+        
+    }
+  }
+` as const;
 
 export default function About() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const storyVideoRef = useRef<HTMLVideoElement>(null);
+  const { page } = useLoaderData<typeof loader>();
 
   useEffect(() => {
     if (videoRef.current) {
@@ -140,33 +238,53 @@ export default function About() {
     }
   }, []);
 
+  const heroVideoUrl =
+    page.heroVideo?.reference?.sources?.[0]?.url ||
+    page.heroVideo?.reference?.url;
+
+  const firstVideoUrl =
+    page.firstContentVedio?.reference?.sources?.[0]?.url ||
+    page.firstContentVedio?.reference?.url;
+
+  const firstImageUrl =
+    page?.firstContentImage?.reference?.image?.url;
+
+  const secondImageUrl =
+    page?.secondContentImage?.reference?.image?.url;
+
+  const secondContentTypesStr = page?.secondcontentTypes?.value || 'Rubies, Pearls, Emeralds, Sapphires, Diamonds';
+  const secondContentTypesList = secondContentTypesStr.startsWith('[')
+    ? JSON.parse(secondContentTypesStr)
+    : secondContentTypesStr.split(',').map((s: string) => s.trim());
+
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
       {/* Hero Section */}
       <div className="relative h-[75vh] bg-[#1a1a1a] overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent z-10" />
         <video
+          key={heroVideoUrl}
           autoPlay
           loop
           muted
           playsInline
           className="absolute inset-0 w-full h-full object-cover opacity-50"
         >
-          <source src={diamond_earrings} type="video/mp4" />
+          <source src={heroVideoUrl} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
         <div className="absolute inset-0 flex items-center z-20">
           <div className="w-full px-6 md:px-12 w-full">
             <motion.div
-              initial={{opacity: 0, y: 30}}
-              animate={{opacity: 1, y: 0}}
-              transition={{duration: 0.8}}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
             >
               <span className="text-[#d4a89a] tracking-[0.3em] uppercase text-sm font-medium">
-                Our Story
+                {page.heroTag?.value}
               </span>
               <h1 className="text-5xl md:text-7xl font-serif text-white mt-4 max-w-3xl leading-tight">
-                A Legacy of Excellence
+                {page.heroTitle?.value}
               </h1>
             </motion.div>
           </div>
@@ -178,63 +296,45 @@ export default function About() {
         <div className="w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <motion.div
-              initial={{opacity: 0, x: -50}}
-              whileInView={{opacity: 1, x: 0}}
-              viewport={{once: true}}
-              transition={{duration: 0.8}}
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
             >
               <span className="text-[#d4a89a] tracking-[0.3em] uppercase text-sm font-medium">
-                Est. 1988
+                {page.firstContentTag?.value}
               </span>
               <h2 className="text-4xl md:text-5xl font-serif text-[#1e2a47] mt-4">
-                Our Heritage & Vision
+                {page.firstContentTitle?.value}
               </h2>
               <div className="mt-8 space-y-6 text-gray-600 leading-relaxed">
-                <p>
-                  Founded in 1988, Gem Mine has earned a distinguished
-                  reputation in Sri Lanka’s gem and jewellery industry. Guided
-                  by a vision to elevate the nation’s global presence in the gem
-                  trade, we uphold the highest standards of quality, integrity,
-                  and customer care.
-                </p>
-                <p>
-                  Our centrally located showroom in Colombo showcases a curated
-                  selection of fine jewellery, crafted to meet international
-                  benchmarks. We pride ourselves on delivering superior quality,
-                  personalized service, and enduring value to clients around the
-                  world.
-                </p>
-                <p>
-                  Our strength lies in our experienced and multilingual team,
-                  specializing in gemology, stone identification, and
-                  traditional jewellery design. We stay attuned to global trends
-                  while preserving the rich heritage of Sri Lankan
-                  craftsmanship.
-                </p>
+                {page.firstContentPara?.value && <p className="whitespace-pre-line">{page.firstContentPara.value}</p>}
               </div>
             </motion.div>
 
             <motion.div
-              initial={{opacity: 0, x: 50}}
-              whileInView={{opacity: 1, x: 0}}
-              viewport={{once: true}}
-              transition={{duration: 0.8}}
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
               className="relative"
             >
               <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl bg-gray-100">
                 <video
-                  ref={storyVideoRef}
-                  src={blue_ring}
+                  key={firstVideoUrl}
                   autoPlay
-                  muted
                   loop
+                  muted
                   playsInline
                   className="w-full h-full object-cover"
-                />
+                >
+                  <source src={firstVideoUrl} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
               </div>
               <div className="absolute -bottom-8 -left-8 w-48 h-48 md:w-64 md:h-64 rounded-3xl overflow-hidden shadow-xl border-4 border-white">
                 <img
-                  src={diamondring}
+                  src={firstImageUrl}
                   alt="Jewellery Detail"
                   className="w-full h-full object-cover"
                 />
@@ -249,15 +349,15 @@ export default function About() {
         <div className="w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <motion.div
-              initial={{opacity: 0, scale: 0.9}}
-              whileInView={{opacity: 1, scale: 1}}
-              viewport={{once: true}}
-              transition={{duration: 0.8}}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
               className="order-2 lg:order-1"
             >
               <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl aspect-[4/3]">
                 <img
-                  src={gemstone}
+                  src={secondImageUrl}
                   alt="Our Offerings"
                   className="w-full h-full object-cover"
                 />
@@ -266,36 +366,25 @@ export default function About() {
             </motion.div>
 
             <motion.div
-              initial={{opacity: 0, x: 50}}
-              whileInView={{opacity: 1, x: 0}}
-              viewport={{once: true}}
-              transition={{duration: 0.8}}
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
               className="order-1 lg:order-2"
             >
               <span className="text-[#d4a89a] tracking-[0.3em] uppercase text-sm font-medium">
-                Excellence & Variety
+                {page?.secondContentTag?.value}
               </span>
               <h2 className="text-4xl md:text-5xl font-serif text-[#1e2a47] mt-4 mb-8">
-                What We Offer
+                {page?.secondContentTitle?.value}
               </h2>
               <div className="space-y-6 text-gray-600 leading-relaxed text-lg font-light">
-                <p>
-                  Well known for our excellent quality, value and unmatched
-                  service, we offer a wide range of jewelry types, stones and
-                  styles at prices to match your every need.
-                </p>
-                <p className="bg-[#f8f5f0] p-8 rounded-3xl border-l-4 border-[#d4a89a] italic text-[#1e2a47]">
-                  "We are especially known for our fine quality rubies, pearls,
-                  emeralds and other colored stones in various settings."
-                </p>
+                {page?.secondContentPara?.value && <p className="whitespace-pre-line">{page.secondContentPara.value}</p>}
+                {page?.secondContentPara2?.value && <p className="bg-[#f8f5f0] p-8 rounded-3xl border-l-4 border-[#d4a89a] italic text-[#1e2a47]">
+                  "{page.secondContentPara2.value}"
+                </p>}
                 <div className="flex flex-wrap gap-3 pt-4">
-                  {[
-                    'Rubies',
-                    'Pearls',
-                    'Emeralds',
-                    'Sapphires',
-                    'Diamonds',
-                  ].map((stone) => (
+                  {secondContentTypesList.map((stone: string) => (
                     <span
                       key={stone}
                       className="px-6 py-2 bg-[#f8f5f0] rounded-full text-sm font-medium text-[#1e2a47] border border-[#d4a89a]/20"
@@ -314,9 +403,9 @@ export default function About() {
       <section className="py-24 px-6 md:px-12 lg:px-24 bg-gradient-to-br from-[#1e2a47] via-[#2d3e6a] to-[#1e2a47]">
         <div className="w-full">
           <motion.div
-            initial={{opacity: 0, y: 30}}
-            whileInView={{opacity: 1, y: 0}}
-            viewport={{once: true}}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             className="text-center mb-16"
           >
             <span className="text-[#d4a89a] tracking-[0.3em] uppercase text-sm font-medium">
@@ -331,14 +420,14 @@ export default function About() {
             {products.map((product, index) => (
               <motion.div
                 key={product.title}
-                initial={{opacity: 0, y: 30}}
-                whileInView={{opacity: 1, y: 0}}
-                whileHover={{y: -10, scale: 1.02}}
-                viewport={{once: true}}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                whileHover={{ y: -10, scale: 1.02 }}
+                viewport={{ once: true }}
                 transition={{
-                  opacity: {duration: 0.5, delay: index * 0.1},
-                  y: {duration: 0.5, delay: index * 0.1},
-                  scale: {duration: 0.3},
+                  opacity: { duration: 0.5, delay: index * 0.1 },
+                  y: { duration: 0.5, delay: index * 0.1 },
+                  scale: { duration: 0.3 },
                 }}
                 className="bg-white/5 border border-white/10 p-8 rounded-3xl hover:bg-white/10 hover:border-[#d4a89a]/30 hover:shadow-2xl hover:shadow-[#d4a89a]/10 transition-all duration-300 group cursor-default"
               >
@@ -365,9 +454,9 @@ export default function About() {
       <section className="py-24 bg-white overflow-hidden">
         <div className="w-full px-6 md:px-12">
           <motion.div
-            initial={{opacity: 0, y: 30}}
-            whileInView={{opacity: 1, y: 0}}
-            viewport={{once: true}}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             className="text-center mb-20"
           >
             <span className="inline-block px-6 py-2 rounded-full bg-[#d4a89a]/10 text-[#d4a89a] text-sm font-medium mb-4 tracking-[0.2em] uppercase">
@@ -386,32 +475,28 @@ export default function About() {
               {milestones.map((milestone, index) => (
                 <motion.div
                   key={index}
-                  initial={{opacity: 0, y: 30}}
-                  whileInView={{opacity: 1, y: 0}}
-                  viewport={{once: true}}
-                  transition={{delay: index * 0.1}}
-                  className={`relative flex flex-col lg:flex-row items-center gap-8 ${
-                    index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'
-                  }`}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className={`relative flex flex-col lg:flex-row items-center gap-8 ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'
+                    }`}
                 >
                   <div
-                    className={`flex-1 w-full ${
-                      index % 2 === 0 ? 'lg:text-right' : 'lg:text-left'
-                    }`}
+                    className={`flex-1 w-full ${index % 2 === 0 ? 'lg:text-right' : 'lg:text-left'
+                      }`}
                   >
                     <div
-                      className={`relative p-8 md:p-10 rounded-[2rem] bg-[#f8f5f0] border border-[#d4a89a]/10 hover:border-[#d4a89a]/30 transition-all ${
-                        index % 2 === 0 ? 'lg:ml-auto' : ''
-                      } max-w-lg shadow-sm hover:shadow-xl group z-10`}
+                      className={`relative p-8 md:p-10 rounded-[2rem] bg-[#f8f5f0] border border-[#d4a89a]/10 hover:border-[#d4a89a]/30 transition-all ${index % 2 === 0 ? 'lg:ml-auto' : ''
+                        } max-w-lg shadow-sm hover:shadow-xl group z-10`}
                     >
                       {/* Decorative Corner Image */}
                       <div
                         className={`absolute w-32 h-32  md:w-40 md:h-40 opacity-100 group-hover:scale-110 transition-all duration-500 pointer-events-none z-20 
-                                                 ${
-                                                   index % 2 === 0
-                                                     ? '-top-12 -left-12 lg:-left-20'
-                                                     : '-top-12 -right-12 lg:-right-20'
-                                                 }`}
+                                                 ${index % 2 === 0
+                            ? '-top-12 -left-12 lg:-left-20'
+                            : '-top-12 -right-12 lg:-right-20'
+                          }`}
                       >
                         <img
                           src={milestone.image}
@@ -447,9 +532,9 @@ export default function About() {
       <section className="py-24 px-6 md:px-12 lg:px-24 bg-[#f8f5f0]">
         <div className="w-full">
           <motion.div
-            initial={{opacity: 0, y: 30}}
-            whileInView={{opacity: 1, y: 0}}
-            viewport={{once: true}}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             className="bg-[#1e2a47] text-white p-12 md:p-20 rounded-[3rem] overflow-hidden relative shadow-2xl"
           >
             <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
@@ -506,9 +591,9 @@ export default function About() {
 
             <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <motion.div
-                initial={{opacity: 0, y: 30}}
-                whileInView={{opacity: 1, y: 0}}
-                viewport={{once: true}}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
               >
                 <span className="text-amber-400 tracking-[0.3em] uppercase text-sm">
                   Why Choose Us
@@ -551,10 +636,10 @@ export default function About() {
               </motion.div>
 
               <motion.div
-                initial={{opacity: 0, scale: 0.8, rotate: -5}}
-                whileInView={{opacity: 1, scale: 1, rotate: 0}}
-                viewport={{once: true}}
-                transition={{type: 'spring', stiffness: 100}}
+                initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
+                whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+                viewport={{ once: true }}
+                transition={{ type: 'spring', stiffness: 100 }}
                 className="relative"
               >
                 <div className="rounded-3xl overflow-hidden glass-morphism border border-white/10 p-4 shadow-2xl bg-white/5 backdrop-blur-sm">
@@ -566,7 +651,7 @@ export default function About() {
                 </div>
                 <div
                   className="absolute -bottom-6 -right-6 text-white p-8 rounded-2xl shadow-xl hidden md:block bg-cover bg-center"
-                  style={{backgroundImage: `url(${r2})`}}
+                  style={{ backgroundImage: `url(${r2})` }}
                 >
                   <Diamond className="w-8 h-8 mb-2" />
                   <div className="text-xl font-medium pt-8">Unique Pieces</div>
@@ -582,10 +667,10 @@ export default function About() {
         <div className="w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-stretch">
             <motion.div
-              initial={{opacity: 0, x: -50}}
-              whileInView={{opacity: 1, x: 0}}
-              viewport={{once: true}}
-              transition={{duration: 0.8}}
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
             >
               <div className="flex flex-col justify-center h-full">
                 <span className="text-amber-600 tracking-[0.3em] uppercase text-sm font-medium">
@@ -601,17 +686,17 @@ export default function About() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {[
-                    {title: 'Gemology & Mining', icon: Diamond},
-                    {title: 'Stone Identification & Valuation', icon: Award},
-                    {title: 'Laboratory Testing & Certification', icon: Globe},
-                    {title: 'Traditional & Contemporary Design', icon: Users},
+                    { title: 'Gemology & Mining', icon: Diamond },
+                    { title: 'Stone Identification & Valuation', icon: Award },
+                    { title: 'Laboratory Testing & Certification', icon: Globe },
+                    { title: 'Traditional & Contemporary Design', icon: Users },
                   ].map((item, index) => (
                     <motion.div
                       key={item.title}
-                      initial={{opacity: 0, y: 20}}
-                      whileInView={{opacity: 1, y: 0}}
-                      viewport={{once: true}}
-                      transition={{delay: index * 0.1}}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.1 }}
                       className="flex items-center gap-4 bg-white p-4 rounded-2xl shadow-sm border border-amber-100/50"
                     >
                       <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center flex-shrink-0">
@@ -627,10 +712,10 @@ export default function About() {
             </motion.div>
 
             <motion.div
-              initial={{opacity: 0, x: 50}}
-              whileInView={{opacity: 1, x: 0}}
-              viewport={{once: true}}
-              transition={{duration: 0.8}}
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
               className="bg-[#1e2a47] p-8 md:p-12 rounded-[2.5rem] text-white relative overflow-hidden flex flex-col justify-center h-full"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
@@ -665,9 +750,9 @@ export default function About() {
       <section className="py-24 px-6 md:px-12 lg:px-24 bg-white">
         <div className="w-full">
           <motion.div
-            initial={{opacity: 0, y: 30}}
-            whileInView={{opacity: 1, y: 0}}
-            viewport={{once: true}}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             className="text-center mb-16"
           >
             <span className="text-amber-600 tracking-[0.3em] uppercase text-sm">
@@ -682,10 +767,10 @@ export default function About() {
             {team.map((member, index) => (
               <motion.div
                 key={member.name}
-                initial={{opacity: 0, y: 30}}
-                whileInView={{opacity: 1, y: 0}}
-                viewport={{once: true}}
-                transition={{delay: index * 0.1}}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
                 className="group p-4 md:p-8 rounded-3xl bg-[#f8f5f0] border border-transparent hover:border-amber-200 transition-all duration-500"
               >
                 <h3 className="text-base md:text-xl font-medium text-[#1a1a1a] mb-1 group-hover:text-amber-700 transition-colors">
@@ -707,9 +792,9 @@ export default function About() {
       <section className="py-24 px-6 md:px-12 lg:px-24 bg-[#f8f5f0]">
         <div className="w-full">
           <motion.div
-            initial={{opacity: 0, y: 30}}
-            whileInView={{opacity: 1, y: 0}}
-            viewport={{once: true}}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             className="text-center mb-16"
           >
             <span className="text-amber-600 tracking-[0.3em] uppercase text-sm">
@@ -771,9 +856,9 @@ export default function About() {
             ].map((item, index) => (
               <motion.div
                 key={index}
-                initial={{opacity: 0, scale: 0.9, y: 30}}
-                whileInView={{opacity: 1, scale: 1, y: 0}}
-                viewport={{once: true, margin: '-50px'}}
+                initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
                 transition={{
                   duration: 0.7,
                   delay: index * 0.05,
@@ -793,8 +878,8 @@ export default function About() {
                   {/* Caption Content */}
                   <div className="absolute inset-0 flex flex-col justify-end p-8 translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none">
                     <motion.div
-                      initial={{x: -20}}
-                      whileHover={{x: 0}}
+                      initial={{ x: -20 }}
+                      whileHover={{ x: 0 }}
                       className="space-y-2"
                     >
                       <h3 className="text-white font-serif text-2xl leading-tight">
@@ -821,9 +906,9 @@ export default function About() {
         <div className="w-full relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div
-              initial={{opacity: 0, x: -50}}
-              whileInView={{opacity: 1, x: 0}}
-              viewport={{once: true}}
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
             >
               <span className="text-amber-400 tracking-[0.3em] uppercase text-sm font-medium">
                 Coming Soon
@@ -849,9 +934,9 @@ export default function About() {
               </div>
             </motion.div>
             <motion.div
-              initial={{opacity: 0, scale: 0.8}}
-              whileInView={{opacity: 1, scale: 1}}
-              viewport={{once: true}}
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
               className="relative group cursor-pointer"
             >
               <div className="aspect-square rounded-full bg-gradient-to-tr from-amber-500/20 to-transparent absolute -inset-10 blur-3xl group-hover:scale-110 transition-transform duration-700" />
@@ -871,9 +956,9 @@ export default function About() {
       <section className="py-24 px-6 md:px-12 lg:px-24 bg-white overflow-hidden">
         <div className="w-full">
           <motion.div
-            initial={{opacity: 0, y: 30}}
-            whileInView={{opacity: 1, y: 0}}
-            viewport={{once: true}}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             className="text-center mb-16"
           >
             <span className="text-amber-600 tracking-[0.3em] uppercase text-sm">
@@ -891,9 +976,9 @@ export default function About() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <motion.div
-              initial={{opacity: 0, x: -30}}
-              whileInView={{opacity: 1, x: 0}}
-              viewport={{once: true}}
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
               className="relative group rounded-3xl overflow-hidden shadow-2xl bg-black aspect-video"
             >
               <video
@@ -914,9 +999,9 @@ export default function About() {
             </motion.div>
 
             <motion.div
-              initial={{opacity: 0, x: 30}}
-              whileInView={{opacity: 1, x: 0}}
-              viewport={{once: true}}
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
               className="relative group rounded-3xl overflow-hidden shadow-2xl bg-black aspect-video"
             >
               <video
@@ -943,9 +1028,9 @@ export default function About() {
       <section className="py-24 px-6 md:px-12 lg:px-24 bg-[#f8f5f0]">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
-            initial={{opacity: 0, y: 30}}
-            whileInView={{opacity: 1, y: 0}}
-            viewport={{once: true}}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
           >
             <h2 className="text-4xl md:text-5xl font-serif text-[#1e2a47]">
               Experience Authenticity & Artistry

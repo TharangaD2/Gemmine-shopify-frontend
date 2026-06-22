@@ -24,6 +24,11 @@ interface CartItem {
   product_id: string;
   quantity: number;
   user_email: string;
+  product_name?: string;
+  product_price?: number;
+  product_image?: string;
+  product_category?: string;
+  product_material?: string;
 }
 
 interface CartItemWithProduct extends CartItem {
@@ -125,13 +130,24 @@ export default function CartPage() {
     toast.success('Item removed from cart');
   };
 
-  const getProduct = (productId: string) =>
-    SAMPLE_PRODUCTS.find((p) => p.id === productId);
+  const getProduct = (item: CartItem) => {
+    if (item.product_name) {
+      return {
+        id: item.product_id,
+        name: item.product_name,
+        price: item.product_price || 0,
+        image_url: item.product_image || '',
+        category: item.product_category || 'Gem Mine Exclusive',
+        material: item.product_material,
+      };
+    }
+    return SAMPLE_PRODUCTS.find((p) => p.id === item.product_id);
+  };
 
   const cartWithProducts: CartItemWithProduct[] = cartItems
     .map((item) => ({
       ...item,
-      product: getProduct(item.product_id) as Product,
+      product: getProduct(item) as Product,
     }))
     .filter((item) => item.product);
 
