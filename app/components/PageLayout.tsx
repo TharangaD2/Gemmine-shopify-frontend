@@ -17,10 +17,7 @@ import { SearchResultsPredictive } from '~/components/SearchResultsPredictive';
 import { Minus, Plus, X, ShoppingBag, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 
-import img1 from '~/assets/img/img1.png';
-import img2 from '~/assets/img/img2.png';
-import img3 from '~/assets/img/img3.png';
-import img4 from '~/assets/img/img4.png';
+
 
 const SAMPLE_PRODUCTS = [
   {
@@ -28,28 +25,28 @@ const SAMPLE_PRODUCTS = [
     name: 'Royal Blue Sapphire Ring',
     category: 'Rings',
     price: 2500,
-    image_url: img1,
+
   },
   {
     id: '2',
     name: 'Timeless Diamond Necklace',
     category: 'Necklaces',
     price: 4800,
-    image_url: img2,
+
   },
   {
     id: '3',
     name: 'Emerald Cut Earrings',
     category: 'Earrings',
     price: 1850,
-    image_url: img3,
+
   },
   {
     id: '4',
     name: 'Classic Gold Bracelet',
     category: 'Bracelets',
     price: 1200,
-    image_url: img4,
+
   },
 ];
 
@@ -207,7 +204,7 @@ function LocalStorageCartDrawer() {
           return (
             <div key={item.id} className="flex gap-4 p-4 bg-gray-50 rounded-2xl border border-gray-100/50">
               <Link to={`/products/${product.id}`} onClick={close} className="w-20 h-20 rounded-xl overflow-hidden bg-white flex-shrink-0 border border-gray-100">
-                <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+
               </Link>
               <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
                 <div>

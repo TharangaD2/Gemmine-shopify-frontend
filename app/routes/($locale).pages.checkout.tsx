@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {motion, AnimatePresence} from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   CreditCard,
   Truck,
@@ -9,21 +9,17 @@ import {
   ShoppingBag,
   Sparkles,
 } from 'lucide-react';
-import {Link, useNavigate, type MetaFunction} from 'react-router';
-import {toast} from 'sonner';
+import { Link, useNavigate, type MetaFunction } from 'react-router';
+import { toast } from 'sonner';
 
-// Asset imports
-import img1 from '~/assets/img/img1.png';
-import img2 from '~/assets/img/img2.png';
-import img3 from '~/assets/img/img3.png';
-import img4 from '~/assets/img/img4.png';
+
 
 interface Product {
   id: string;
   name: string;
   category: string;
   price: number;
-  image_url: string;
+
   material?: string;
 }
 
@@ -55,33 +51,29 @@ const SAMPLE_PRODUCTS: Product[] = [
     name: 'Royal Blue Sapphire Ring',
     category: 'Rings',
     price: 2500,
-    image_url: img1,
   },
   {
     id: '2',
     name: 'Timeless Diamond Necklace',
     category: 'Necklaces',
     price: 4800,
-    image_url: img2,
   },
   {
     id: '3',
     name: 'Emerald Cut Earrings',
     category: 'Earrings',
     price: 1850,
-    image_url: img3,
   },
   {
     id: '4',
     name: 'Classic Gold Bracelet',
     category: 'Bracelets',
     price: 1200,
-    image_url: img4,
   },
 ];
 
 export const meta: MetaFunction = () => {
-  return [{title: 'Gem Mine | Checkout'}];
+  return [{ title: 'Gem Mine | Checkout' }];
 };
 
 // Local UI Components
@@ -178,7 +170,7 @@ export default function Checkout() {
   const total = subtotal + shipping;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({...formData, [e.target.name]: e.target.value});
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -270,22 +262,20 @@ export default function Checkout() {
                 <React.Fragment key={label}>
                   <div className="flex items-center gap-3">
                     <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors shadow-sm ${
-                        step > idx + 1
+                      className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors shadow-sm ${step > idx + 1
                           ? 'bg-green-500 text-white'
                           : step === idx + 1
-                          ? 'bg-[#1a1a1a] text-white'
-                          : 'bg-white text-gray-400 border border-gray-200'
-                      }`}
+                            ? 'bg-[#1a1a1a] text-white'
+                            : 'bg-white text-gray-400 border border-gray-200'
+                        }`}
                     >
                       {step > idx + 1 ? <Check className="w-5 h-5" /> : idx + 1}
                     </div>
                     <span
-                      className={`text-sm tracking-wide uppercase ${
-                        step === idx + 1
+                      className={`text-sm tracking-wide uppercase ${step === idx + 1
                           ? 'font-semibold text-[#1a1a1a]'
                           : 'text-gray-400 font-medium'
-                      }`}
+                        }`}
                     >
                       {label}
                     </span>
@@ -297,8 +287,8 @@ export default function Checkout() {
 
             <motion.div
               key={step}
-              initial={{opacity: 0, x: 20}}
-              animate={{opacity: 1, x: 0}}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
               className="bg-white rounded-3xl p-10 shadow-sm border border-gray-100"
             >
               {step === 1 ? (
@@ -508,11 +498,7 @@ export default function Checkout() {
                 {cartWithProducts.map((item) => (
                   <div key={item.id} className="flex gap-4 group">
                     <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gray-50 flex-shrink-0">
-                      <img
-                        src={item.product.image_url}
-                        alt={item.product.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
+
                     </div>
                     <div className="flex-1 min-w-0 py-1">
                       <h4 className="font-semibold text-sm text-[#1a1a1a] truncate mb-1">
@@ -587,7 +573,8 @@ export default function Checkout() {
         </div>
       </div>
 
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         .custom-scrollbar::-webkit-scrollbar {
           width: 4px;
         }

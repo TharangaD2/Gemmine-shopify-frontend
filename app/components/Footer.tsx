@@ -1,8 +1,8 @@
-import React, {Suspense} from 'react';
-import {motion} from 'framer-motion';
-import {NavLink, Await} from 'react-router';
-import {Mail, Phone, MapPin} from 'lucide-react';
-import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
+import React, { Suspense } from 'react';
+import { motion } from 'framer-motion';
+import { NavLink, Await } from 'react-router';
+import { Mail, Phone, MapPin } from 'lucide-react';
+import type { FooterQuery, HeaderQuery } from 'storefrontapi.generated';
 import logo from '~/assets/img/logo.png';
 
 interface FooterProps {
@@ -101,7 +101,7 @@ export function Footer({
                       <motion.a
                         key={index}
                         href="#"
-                        whileHover={{y: -3}}
+                        whileHover={{ y: -3 }}
                         className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#d4a89a] hover:border-[#d4a89a] transition-all"
                       >
                         <Icon className="w-4 h-4" />
@@ -123,8 +123,8 @@ export function Footer({
                             link === 'Collections'
                               ? '/collections/all'
                               : link === 'Blog'
-                              ? '/blogs'
-                              : `/pages/${link.toLowerCase()}`
+                                ? '/blogs'
+                                : `/pages/${link.toLowerCase()}`
                           }
                           className="text-white hover:text-[#d4a89a] transition-colors text-sm capitalize font-medium"
                         >

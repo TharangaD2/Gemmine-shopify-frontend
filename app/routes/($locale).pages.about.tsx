@@ -4,123 +4,6 @@ import { Diamond, Award, Users, Globe, ArrowRight } from 'lucide-react';
 import { Link, useLoaderData, type MetaFunction } from 'react-router';
 import type { Route } from './+types/($locale).pages.about';
 
-// Asset imports - Images
-import building from '~/assets/img/building.jpeg';
-import img1 from '~/assets/img/img1.png';
-import img2 from '~/assets/img/img2.png';
-import e1 from '~/assets/img/e1.jpeg';
-import img3 from '~/assets/img/img3.png';
-import img4 from '~/assets/img/img4.png';
-import img5new from '~/assets/img/img5new.jpeg';
-import diamond from '~/assets/img/diamond.jpg';
-
-import img6 from '~/assets/img/img6.jpeg';
-import img7 from '~/assets/img/img7.png';
-import r2 from '~/assets/img/r2.jpeg';
-
-
-
-import clip1 from '~/assets/vedio/clip1.mp4';
-import clip2 from '~/assets/vedio/clip2.mp4';
-
-const milestones = [
-  {
-    year: '1988',
-    title: 'First Showroom in Galle',
-    description:
-      'We opened our first showroom in Galle and established ourselves as providers of high quality gemstones and exquisitely designed jewelry.',
-    image: building,
-  },
-  {
-    year: '2000',
-    title: 'Expansion to Colombo',
-    description:
-      'Gem Mine opened its first showroom in Colombo, quickly becoming a household name for fashionable jewelry with highly experienced in-house designers.',
-    image: img2,
-  },
-  {
-    year: '2002',
-    title: 'Jewelry Design Award',
-    description:
-      'Our commitment to quality, creativity and service won us the prestigious Sri Lanka Jewelry Design Award for our innovative and timeless masterpieces.',
-    image: e1,
-  },
-  {
-    year: '2013',
-    title: 'Celebrating 25 Years',
-    description:
-      'Grown from a small family firm to an award-winning leader in Sri Lanka and internationally, serving satisfied customers from around the world.',
-    image: img3,
-  },
-  {
-    year: '2023',
-    title: '35 Years of Excellence',
-    description:
-      'Celebrating three and a half decades of delivering superior quality, enduring value, and unmatched craftsmanship.',
-    image: img4,
-  },
-  {
-    year: '2025',
-    title: 'Future of Luxury',
-    description:
-      'Preparing to introduce ethically produced lab-grown diamonds to our collection, bridging tradition with modern innovation.',
-    image: diamond,
-  },
-];
-
-const team = [
-  {
-    name: 'M.N.P.Ariz',
-    role: 'Chairman',
-    description:
-      'With over three decades in the gem industry, Mr. Ariz is a respected figure across Sri Lanka’s key gem-trading regions, including Colombo, Beruwala, Galle, Kandy, and Ratnapura. His leadership continues to inspire the company’s strategic direction and core values.',
-  },
-  {
-    name: 'M.S.K.Rahman',
-    role: 'Managing Director',
-    description:
-      'A GIA-certified gemologist, Mr. Kaleel brings more than 30  years of experience and deep technical expertise. His personalized client service and gem consultancy are hallmarks of the company’s reputation.',
-  },
-  {
-    name: 'M.Yousuf Faraz',
-    role: 'Director, Strategy & Finance',
-    description:
-      'Leveraging international experience gained in the UK, Mr. Faraz oversees procurement, logistics, and overall operations. He has played a pivotal role in the company’s growth over the past 20 years.',
-  },
-  {
-    name: 'M.A.Nilamdeen',
-    role: 'Director, Consultant',
-    description:
-      'A CIMA (UK)-qualified accountant with over 35  years of regional and international experience, Mr. Nilamdeen leads financial planning, investment, and strategic development. He holds memberships with FCMA, ACPA (Botswana), and CGMA (USA).',
-  },
-];
-
-const products = [
-  {
-    title: 'Precious Gemstones',
-    description:
-      'Ceylon sapphires (royal blue, padparadscha), rare rubies, brilliant diamonds, and stunning emeralds.',
-    icon: Diamond,
-  },
-  {
-    title: 'Semi-Precious Gemstones',
-    description:
-      'Handpicked garnets, amethysts, aquamarines, topaz, tourmalines, and moonstones.',
-    icon: Award,
-  },
-  {
-    title: 'Exquisite Jewellery',
-    description:
-      'Intricately designed rings, earrings, pendants, and necklaces, from heirlooms to contemporary pieces.',
-    icon: Users,
-  },
-  {
-    title: 'Bespoke Services',
-    description:
-      'Custom designs and expert repairs, turning your vision into a wearable masterpiece.',
-    icon: Globe,
-  },
-];
 
 export const meta: Route.MetaFunction = () => {
   return [{ title: 'Gem Mine | Our Story & Heritage' }];
@@ -211,15 +94,99 @@ const PAGE_QUERY = `#graphql
         value
       }
       secondContentImage: metafield(namespace: "custom", key: "second_content_image") {
-        reference {
-          ... on MediaImage {
-            image {
-              url
+        reference { ... on MediaImage { image { url } } }
+      }
+      thirdContentTag: metafield(namespace: "custom", key: "third_content_tag") { value }
+      thirdContentTitle: metafield(namespace: "custom", key: "third_content_title") { value }
+      thirdContentFirstCardTitle: metafield(namespace: "custom", key: "third_content_first_card_title") { value }
+      thirdContentSecondCardTitle: metafield(namespace: "custom", key: "third_content_second_card_title") { value }
+      thirdContentThirdCardTitle: metafield(namespace: "custom", key: "third_content_third_card_title") { value }
+      thirdContentFourthCardTitle: metafield(namespace: "custom", key: "third_content_fourth_card_title") { value }
+      thirdContentFirstCardPara: metafield(namespace: "custom", key: "third_content_first_card_para") { value }
+      thirdContentSecondCardPara: metafield(namespace: "custom", key: "third_content_second_card_para") { value }
+      thirdContentThirdCardPara: metafield(namespace: "custom", key: "third_content_third_card_para") { value }
+      thirdContentFourthCardPara: metafield(namespace: "custom", key: "third_content_fourth_card_para") { value }
+      fourthSectionTag: metafield(namespace: "custom", key: "fourth_section_tag") { value }
+      fourthSectionTitle: metafield(namespace: "custom", key: "fourth_section_title") { value }
+      historyCardTag1: metafield(namespace: "custom", key: "history_card_tag1") { value }
+      historyCardTag2: metafield(namespace: "custom", key: "history_card_tag2") { value }
+      historyCardTag3: metafield(namespace: "custom", key: "history_card_tag3") { value }
+      historyCardTag4: metafield(namespace: "custom", key: "history_card_tag4") { value }
+      historyCardTag5: metafield(namespace: "custom", key: "history_card_tag5") { value }
+      historyCardTag6: metafield(namespace: "custom", key: "history_card_tag6") { value }
+      historyCardTitle1: metafield(namespace: "custom", key: "history_card_title1") { value }
+      historyCardTitle2: metafield(namespace: "custom", key: "history_card_title2") { value }
+      historyCardTitle3: metafield(namespace: "custom", key: "history_card_title3") { value }
+      historyCardTitle4: metafield(namespace: "custom", key: "history_card_title4") { value }
+      historyCardTitle5: metafield(namespace: "custom", key: "history_card_title5") { value }
+      historyCardTitle6: metafield(namespace: "custom", key: "history_card_title6") { value }
+      historyCardPara1: metafield(namespace: "custom", key: "history_card_para1") { value }
+      historyCardPara2: metafield(namespace: "custom", key: "history_card_para2") { value }
+      historyCardPara3: metafield(namespace: "custom", key: "history_card_para3") { value }
+      historyCardPara4: metafield(namespace: "custom", key: "history_card_para4") { value }
+      historyCardPara5: metafield(namespace: "custom", key: "history_card_para5") { value }
+      historyCardPara6: metafield(namespace: "custom", key: "history_card_para6") { value }
+      historyCardImg1: metafield(namespace: "custom", key: "history_card_img1") {
+        reference { ... on MediaImage { image { url } } ... on GenericFile { url } }
+      }
+      historyCardImg2: metafield(namespace: "custom", key: "history_card_img2") {
+        reference { ... on MediaImage { image { url } } ... on GenericFile { url } }
+      }
+      historyCardImg3: metafield(namespace: "custom", key: "history_card_img3") {
+        reference { ... on MediaImage { image { url } } ... on GenericFile { url } }
+      }
+      historyCardImg4: metafield(namespace: "custom", key: "history_card_img4") {
+        reference { ... on MediaImage { image { url } } ... on GenericFile { url } }
+      }
+      historyCardImg5: metafield(namespace: "custom", key: "history_card_img5") {
+        reference { ... on MediaImage { image { url } } ... on GenericFile { url } }
+      }
+      historyCardImg6: metafield(namespace: "custom", key: "history_card_img6") {
+        reference { ... on MediaImage { image { url } } ... on GenericFile { url } }
+      }
+      fifthSecTag: metafield(namespace: "custom", key: "fifth_sec_tag") { value }
+      fifthSecTitle: metafield(namespace: "custom", key: "fifth_sec_title") { value }
+      fifthSecPara: metafield(namespace: "custom", key: "fifth_sec_para") { value }
+      fifthSecCounty: metafield(namespace: "custom", key: "fifth_sec_county") { value }
+      fifthSecPara2: metafield(namespace: "custom", key: "fifth_sec_para2") { value }
+      aboutChooseUsTag: metafield(namespace: "custom", key: "about_choose_us_tag") { value }
+      aboutChooseUsTitle: metafield(namespace: "custom", key: "about_choose_us_title") { value }
+      aboutChooseUsPara: metafield(namespace: "custom", key: "about_choose_us_para") { value }
+      aboutChooseUsImg: metafield(namespace: "custom", key: "about_choose_us_img") {
+        reference { ... on MediaImage { image { url } } ... on GenericFile { url } }
+      }
+      witnessTag: metafield(namespace: "custom", key: "witness_tag") { value }
+      witnessTitle: metafield(namespace: "custom", key: "witness_title") { value }
+      witnessPara: metafield(namespace: "custom", key: "witness_para") { value }
+      witnessV1: metafield(namespace: "custom", key: "witness_v1") {
+        reference { ... on Video { sources { url } } ... on GenericFile { url } }
+      }
+      witnessV1Title: metafield(namespace: "custom", key: "witness_v1_title") { value }
+      witnessV1Para: metafield(namespace: "custom", key: "witness_v1_para") { value }
+      witnessV2: metafield(namespace: "custom", key: "witness_v2") {
+        reference { ... on Video { sources { url } } ... on GenericFile { url } }
+      }
+      witnessV2Title: metafield(namespace: "custom", key: "witness_v2_title") { value }
+      witnessV2Para: metafield(namespace: "custom", key: "witness_v2_para") { value }
+      soonSecTag: metafield(namespace: "custom", key: "soon_sec_tag") { value }
+      soonSecTitle: metafield(namespace: "custom", key: "soon_sec_title") { value }
+      soonSecPara: metafield(namespace: "custom", key: "soon_sec_para") { value }
+      soonSecPara2: metafield(namespace: "custom", key: "soon_sec_para2") { value }
+      soonSecImg: metafield(namespace: "custom", key: "soon_sec_img") {
+        reference { ... on MediaImage { image { url } } ... on GenericFile { url } }
+      }
+      ourComTag: metafield(namespace: "custom", key: "our_com_tag") { value }
+      ourComTitle: metafield(namespace: "custom", key: "our_com_title") { value }
+      ourComPara: metafield(namespace: "custom", key: "our_com_para") { value }
+      ourComImages: metafield(namespace: "custom", key: "our_com_images") {
+        references(first: 20) {
+          nodes {
+            ... on MediaImage {
+              image { url altText }
             }
           }
         }
-      }  
-        
+      }
     }
   }
 ` as const;
@@ -228,6 +195,105 @@ export default function About() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const storyVideoRef = useRef<HTMLVideoElement>(null);
   const { page } = useLoaderData<typeof loader>();
+
+  const milestones = [
+    {
+      year: page?.historyCardTag1?.value,
+      title: page?.historyCardTitle1?.value,
+      description:
+        page?.historyCardPara1?.value,
+      image: page?.historyCardImg1?.reference?.image?.url,
+    },
+    {
+      year: page?.historyCardTag2?.value,
+      title: page?.historyCardTitle2?.value,
+      description:
+        page?.historyCardPara2?.value,
+      image: page?.historyCardImg2?.reference?.image?.url,
+    },
+    {
+      year: page?.historyCardTag3?.value,
+      title: page?.historyCardTitle3?.value,
+      description:
+        page?.historyCardPara3?.value,
+      image: page?.historyCardImg3?.reference?.image?.url,
+    },
+    {
+      year: page?.historyCardTag4?.value,
+      title: page?.historyCardTitle4?.value,
+      description:
+        page?.historyCardPara4?.value,
+      image: page?.historyCardImg4?.reference?.image?.url,
+    },
+    {
+      year: page?.historyCardTag5?.value,
+      title: page?.historyCardTitle5?.value,
+      description:
+        page?.historyCardPara5?.value,
+      image: page?.historyCardImg5?.reference?.image?.url,
+    },
+    {
+      year: page?.historyCardTag6?.value,
+      title: page?.historyCardTitle6?.value,
+      description:
+        page?.historyCardPara6?.value,
+      image: page?.historyCardImg6?.reference?.image?.url,
+    },
+  ];
+
+  const team = [
+    {
+      name: 'M.N.P.Ariz',
+      role: 'Chairman',
+      description:
+        'With over three decades in the gem industry, Mr. Ariz is a respected figure across Sri Lanka’s key gem-trading regions, including Colombo, Beruwala, Galle, Kandy, and Ratnapura. His leadership continues to inspire the company’s strategic direction and core values.',
+    },
+    {
+      name: 'M.S.K.Rahman',
+      role: 'Managing Director',
+      description:
+        'A GIA-certified gemologist, Mr. Kaleel brings more than 30  years of experience and deep technical expertise. His personalized client service and gem consultancy are hallmarks of the company’s reputation.',
+    },
+    {
+      name: 'M.Yousuf Faraz',
+      role: 'Director, Strategy & Finance',
+      description:
+        'Leveraging international experience gained in the UK, Mr. Faraz oversees procurement, logistics, and overall operations. He has played a pivotal role in the company’s growth over the past 20 years.',
+    },
+    {
+      name: 'M.A.Nilamdeen',
+      role: 'Director, Consultant',
+      description:
+        'A CIMA (UK)-qualified accountant with over 35  years of regional and international experience, Mr. Nilamdeen leads financial planning, investment, and strategic development. He holds memberships with FCMA, ACPA (Botswana), and CGMA (USA).',
+    },
+  ];
+
+  const products = [
+    {
+      title: page?.thirdContentFirstCardTitle?.value,
+      description:
+        page?.thirdContentFirstCardPara?.value,
+      icon: Diamond,
+    },
+    {
+      title: page?.thirdContentSecondCardTitle?.value,
+      description:
+        page?.thirdContentSecondCardPara?.value,
+      icon: Award,
+    },
+    {
+      title: page?.thirdContentThirdCardTitle?.value,
+      description:
+        page?.thirdContentThirdCardPara?.value,
+      icon: Users,
+    },
+    {
+      title: page?.thirdContentFourthCardTitle?.value,
+      description:
+        page?.thirdContentFourthCardPara?.value,
+      icon: Globe,
+    },
+  ];
 
   useEffect(() => {
     if (videoRef.current) {
@@ -252,10 +318,21 @@ export default function About() {
   const secondImageUrl =
     page?.secondContentImage?.reference?.image?.url;
 
-  const secondContentTypesStr = page?.secondcontentTypes?.value || 'Rubies, Pearls, Emeralds, Sapphires, Diamonds';
+  const secondContentTypesStr = page?.secondcontentTypes?.value;
   const secondContentTypesList = secondContentTypesStr.startsWith('[')
     ? JSON.parse(secondContentTypesStr)
     : secondContentTypesStr.split(',').map((s: string) => s.trim());
+
+  const ourComImageNodes = page?.ourComImages?.references?.nodes || [];
+  const chooseUsImgUrl = page?.aboutChooseUsImg?.reference?.image?.url || page?.aboutChooseUsImg?.reference?.url;
+  const soonSecImgUrl = page?.soonSecImg?.reference?.image?.url || page?.soonSecImg?.reference?.url;
+  const witnessV1Url = page?.witnessV1?.reference?.sources?.[0]?.url || page?.witnessV1?.reference?.url;
+  const witnessV2Url = page?.witnessV2?.reference?.sources?.[0]?.url || page?.witnessV2?.reference?.url;
+  const fifthSecCountries = (() => {
+    const raw = page?.fifthSecCounty?.value;
+    if (!raw) return [];
+    try { return JSON.parse(raw); } catch { return raw.split(',').map((s: string) => s.trim()); }
+  })();
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
@@ -409,10 +486,10 @@ export default function About() {
             className="text-center mb-16"
           >
             <span className="text-[#d4a89a] tracking-[0.3em] uppercase text-sm font-medium">
-              Our Offerings
+              {page?.thirdContentTag?.value}
             </span>
             <h2 className="text-4xl md:text-5xl font-serif text-white mt-4">
-              Products & Expertise
+              {page?.thirdContentTitle?.value}
             </h2>
           </motion.div>
 
@@ -460,10 +537,10 @@ export default function About() {
             className="text-center mb-20"
           >
             <span className="inline-block px-6 py-2 rounded-full bg-[#d4a89a]/10 text-[#d4a89a] text-sm font-medium mb-4 tracking-[0.2em] uppercase">
-              Our Journey
+              {page?.fourthSectionTag?.value}
             </span>
             <h2 className="text-4xl md:text-5xl font-serif text-[#1e2a47]">
-              Milestones & Achievements
+              {page?.fourthSectionTitle?.value}
             </h2>
           </motion.div>
 
@@ -542,41 +619,33 @@ export default function About() {
 
             <div className="relative z-10">
               <span className="text-amber-400 tracking-[0.3em] uppercase text-sm">
-                Global Presence
+                {page?.fifthSecTag?.value}
               </span>
               <h2 className="text-4xl md:text-5xl font-serif mt-4 mb-8 text-white">
-                Serving the World
+                {page?.fifthSecTitle?.value}
               </h2>
-              <p className="text-amber-100/80 leading-relaxed mb-8 text-lg ">
-                Gemmine (Pvt) Ltd proudly serves a broad international market,
-                with a dedicated clientele from across the globe.
+              <p className="text-amber-100/80 leading-relaxed mb-8 text-lg">
+                {page?.fifthSecPara?.value}
               </p>
-              <div className="flex flex-wrap gap-3">
-                {[
-                  'China',
-                  'Korea',
-                  'Singapore',
-                  'India',
-                  'Saudi Arabia',
-                  'UAE',
-                  'Russia',
-                  'France',
-                  'Switzerland',
-                ].map((country) => (
-                  <span
-                    key={country}
-                    className="px-4 py-2 bg-white/10 rounded-full text-sm border border-white/10 hover:bg-white/20 transition-colors"
-                  >
-                    {country}
-                  </span>
-                ))}
-              </div>
-              <div className="mt-12 p-6 bg-white/5 rounded-2xl border border-white/10">
-                <p className="text-sm italic text-amber-200/70">
-                  "Our doors are open 365 days a year, making us a dependable
-                  destination for tourists and global travellers alike."
-                </p>
-              </div>
+              {fifthSecCountries.length > 0 && (
+                <div className="flex flex-wrap gap-3">
+                  {fifthSecCountries.map((country: string) => (
+                    <span
+                      key={country}
+                      className="px-4 py-2 bg-white/10 rounded-full text-sm border border-white/10 hover:bg-white/20 transition-colors"
+                    >
+                      {country}
+                    </span>
+                  ))}
+                </div>
+              )}
+              {page?.fifthSecPara2?.value && (
+                <div className="mt-12 p-6 bg-white/5 rounded-2xl border border-white/10">
+                  <p className="text-sm italic text-amber-200/70">
+                    {page.fifthSecPara2.value}
+                  </p>
+                </div>
+              )}
             </div>
           </motion.div>
         </div>
@@ -596,42 +665,13 @@ export default function About() {
                 viewport={{ once: true }}
               >
                 <span className="text-amber-400 tracking-[0.3em] uppercase text-sm">
-                  Why Choose Us
+                  {page?.aboutChooseUsTag?.value}
                 </span>
                 <h2 className="text-4xl md:text-6xl font-serif text-white mt-4 mb-8">
-                  Commitment to Perfection
+                  {page?.aboutChooseUsTitle?.value}
                 </h2>
                 <div className="space-y-6 text-blue-100/80 text-lg leading-relaxed">
-                  <p>
-                    We are one of the most reputable jewelry stores in Sri
-                    Lanka. We offer a myriad of products and services in our
-                    spacious showroom, where we also create our unique and
-                    stylish pieces.
-                  </p>
-                  <p>
-                    We take great pride in providing only the highest quality,
-                    value and services to our clients, ensuring every piece
-                    tells a story of elegance and craftsmanship.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-8 mt-12">
-                  <div>
-                    <div className="text-3xl font-serif text-amber-400 mb-2">
-                      20+
-                    </div>
-                    <div className="text-sm text-blue-200 uppercase tracking-wider">
-                      Years Experience
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-3xl font-serif text-amber-400 mb-2">
-                      100%
-                    </div>
-                    <div className="text-sm text-blue-200 uppercase tracking-wider">
-                      Quality Assured
-                    </div>
-                  </div>
+                  <p>{page?.aboutChooseUsPara?.value}</p>
                 </div>
               </motion.div>
 
@@ -642,20 +682,15 @@ export default function About() {
                 transition={{ type: 'spring', stiffness: 100 }}
                 className="relative"
               >
-                <div className="rounded-3xl overflow-hidden glass-morphism border border-white/10 p-4 shadow-2xl bg-white/5 backdrop-blur-sm">
-                  <img
-                    src={img6}
-                    alt="Our Craftsmanship"
-                    className="rounded-2xl w-full h-full object-cover"
-                  />
-                </div>
-                <div
-                  className="absolute -bottom-6 -right-6 text-white p-8 rounded-2xl shadow-xl hidden md:block bg-cover bg-center"
-                  style={{ backgroundImage: `url(${r2})` }}
-                >
-                  <Diamond className="w-8 h-8 mb-2" />
-                  <div className="text-xl font-medium pt-8">Unique Pieces</div>
-                </div>
+                {chooseUsImgUrl && (
+                  <div className="rounded-3xl overflow-hidden glass-morphism border border-white/10 p-4 shadow-2xl bg-white/5 backdrop-blur-sm">
+                    <img
+                      src={chooseUsImgUrl}
+                      alt="Why Choose Us"
+                      className="rounded-2xl w-full h-full object-cover"
+                    />
+                  </div>
+                )},
               </motion.div>
             </div>
           </div>
@@ -798,62 +833,18 @@ export default function About() {
             className="text-center mb-16"
           >
             <span className="text-amber-600 tracking-[0.3em] uppercase text-sm">
-              Our Community
+              {page?.ourComTag?.value}
             </span>
             <h2 className="text-4xl md:text-5xl font-serif text-[#1a1a1a] mt-4">
-              Cherished Moments
+              {page?.ourComTitle?.value}
             </h2>
             <p className="text-gray-500 mt-4 max-w-2xl mx-auto text-lg leading-relaxed">
-              Every smile, every celebration — we are honoured to be a part of
-              our customers' most treasured moments.
+              {page?.ourComPara?.value}
             </p>
           </motion.div>
 
           <div className="columns-2 sm:columns-2 lg:columns-3 gap-4 md:gap-6 space-y-4 md:space-y-6">
-            {[
-              {
-                src: img1,
-                alt: 'Bridal jewellery fitting',
-                caption: 'Bridal Consultation',
-                sub: 'A bride discovering her perfect piece',
-              },
-              {
-                src: img2,
-                alt: 'Customer wearing necklace',
-                caption: 'Timeless Elegance',
-                sub: 'Wearing a custom gold necklace',
-              },
-              {
-                src: img3,
-                alt: 'Couple choosing engagement ring',
-                caption: 'A New Chapter',
-                sub: 'Finding the perfect engagement ring',
-              },
-              {
-                src: img4,
-                alt: 'Gift wrapping jewellery',
-                caption: 'The Gift of Love',
-                sub: 'Beautifully wrapped for a special someone',
-              },
-              {
-                src: img5new,
-                alt: 'Lady wearing diamond earrings',
-                caption: 'Radiant Confidence',
-                sub: 'Sparkling diamond earrings for every occasion',
-              },
-              {
-                src: img6,
-                alt: 'Jewellery store experience',
-                caption: 'In-Store Experience',
-                sub: 'Personalised service in our boutique',
-              },
-              {
-                src: img7,
-                alt: 'Elegant evening piece',
-                caption: 'Evening Glamour',
-                sub: 'Exquisite pieces for your special night',
-              },
-            ].map((item, index) => (
+            {ourComImageNodes.map((node: { image?: { url: string; altText?: string } }, index: number) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, scale: 0.9, y: 30 }}
@@ -868,31 +859,11 @@ export default function About() {
               >
                 <div className="relative overflow-hidden aspect-auto">
                   <img
-                    src={item.src}
-                    alt={item.alt}
+                    src={node.image?.url}
+                    alt={node.image?.altText || ''}
                     className="w-full h-auto object-cover transition-transform duration-1000 group-hover:scale-110"
                   />
-                  {/* Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                  {/* Caption Content */}
-                  <div className="absolute inset-0 flex flex-col justify-end p-8 translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none">
-                    <motion.div
-                      initial={{ x: -20 }}
-                      whileHover={{ x: 0 }}
-                      className="space-y-2"
-                    >
-                      <h3 className="text-white font-serif text-2xl leading-tight">
-                        {item.caption}
-                      </h3>
-                      <div className="w-12 h-0.5 bg-amber-400" />
-                      <p className="text-amber-100/90 text-sm font-light tracking-wide">
-                        {item.sub}
-                      </p>
-                    </motion.div>
-                  </div>
-
-                  {/* Subtle border on hover */}
                   <div className="absolute inset-0 border-0 group-hover:border-[12px] border-white/10 transition-all duration-500 pointer-events-none" />
                 </div>
               </motion.div>
@@ -911,27 +882,21 @@ export default function About() {
               viewport={{ once: true }}
             >
               <span className="text-amber-400 tracking-[0.3em] uppercase text-sm font-medium">
-                Coming Soon
+                {page?.soonSecTag?.value}
               </span>
               <h2 className="text-4xl md:text-5xl font-serif text-white mt-4 mb-6">
-                Lab-Grown Diamonds
+                {page?.soonSecTitle?.value}
               </h2>
               <p className="text-gray-400 text-lg leading-relaxed mb-8">
-                In line with our commitment to innovation and sustainability,
-                Gemmine (Pvt) Ltd will soon introduce lab-grown diamonds into
-                our offerings. Ethically produced and virtually
-                indistinguishable from natural diamonds, these stones represent
-                the future of responsible luxury, offering beauty, value, and
-                eco-conscious sourcing for a new generation of buyers.
+                {page?.soonSecPara?.value}
               </p>
-              <div className="space-y-4">
-                <p className="text-gray-400 text-lg leading-relaxed mb-8">
-                  Our ever-evolving product range ensures there's something for
-                  every taste, tradition, and trend. From timeless classics to
-                  cutting-edge creations, we bring you gems that speak to your
-                  soul and jewellery that lasts a lifetime.
-                </p>
-              </div>
+              {page?.soonSecPara2?.value && (
+                <div className="space-y-4">
+                  <p className="text-gray-400 text-lg leading-relaxed mb-8">
+                    {page.soonSecPara2.value}
+                  </p>
+                </div>
+              )}
             </motion.div>
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
@@ -942,7 +907,7 @@ export default function About() {
               <div className="aspect-square rounded-full bg-gradient-to-tr from-amber-500/20 to-transparent absolute -inset-10 blur-3xl group-hover:scale-110 transition-transform duration-700" />
               <div className="aspect-[16/10] rounded-3xl overflow-hidden shadow-2xl relative">
                 <img
-                  src={diamond}
+                  src={soonSecImgUrl}
                   alt="Modern Diamond Jewellery"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:rotate-1 group-hover:scale-105"
                 />
@@ -962,15 +927,13 @@ export default function About() {
             className="text-center mb-16"
           >
             <span className="text-amber-600 tracking-[0.3em] uppercase text-sm">
-              Artistry in Motion
+              {page?.witnessTag?.value}
             </span>
             <h2 className="text-4xl md:text-5xl font-serif text-[#1a1a1a] mt-4">
-              Witness the Craft
+              {page?.witnessTitle?.value}
             </h2>
             <p className="text-gray-500 mt-4 max-w-2xl mx-auto text-lg leading-relaxed">
-              Experience the soul of our craftsmanship. From the initial spark
-              of inspiration to the final radiant polish, watch as we bring
-              timeless beauty to life.
+              {page?.witnessPara?.value}
             </p>
           </motion.div>
 
@@ -982,7 +945,7 @@ export default function About() {
               className="relative group rounded-3xl overflow-hidden shadow-2xl bg-black aspect-video"
             >
               <video
-                src={clip1}
+                src={witnessV1Url}
                 autoPlay
                 muted
                 loop
@@ -991,9 +954,9 @@ export default function About() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
               <div className="absolute bottom-8 left-8 right-8 text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                <h3 className="text-2xl font-serif mb-2">The Meticulous Cut</h3>
+                <h3 className="text-2xl font-serif mb-2">{page?.witnessV1Title?.value}</h3>
                 <p className="text-amber-100/80 text-sm">
-                  Precision and patience in every facet.
+                  {page?.witnessV1Para?.value}
                 </p>
               </div>
             </motion.div>
@@ -1005,7 +968,7 @@ export default function About() {
               className="relative group rounded-3xl overflow-hidden shadow-2xl bg-black aspect-video"
             >
               <video
-                src={clip2}
+                src={witnessV2Url}
                 autoPlay
                 muted
                 loop
@@ -1014,9 +977,9 @@ export default function About() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
               <div className="absolute bottom-8 left-8 right-8 text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                <h3 className="text-2xl font-serif mb-2">The Radiant Finish</h3>
+                <h3 className="text-2xl font-serif mb-2">{page?.witnessV2Title?.value}</h3>
                 <p className="text-amber-100/80 text-sm">
-                  Where raw nature meets human artistry.
+                  {page?.witnessV2Para?.value}
                 </p>
               </div>
             </motion.div>

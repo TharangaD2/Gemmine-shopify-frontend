@@ -1,21 +1,16 @@
-import React, {useState, useEffect} from 'react';
-import {motion, AnimatePresence} from 'framer-motion';
-import {Minus, Plus, X, ShoppingBag, ArrowRight, Sparkles} from 'lucide-react';
-import {Link, type MetaFunction} from 'react-router';
-import {toast} from 'sonner';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Minus, Plus, X, ShoppingBag, ArrowRight, Sparkles } from 'lucide-react';
+import { Link, type MetaFunction } from 'react-router';
+import { toast } from 'sonner';
 
-// Asset imports
-import img1 from '~/assets/img/img1.png';
-import img2 from '~/assets/img/img2.png';
-import img3 from '~/assets/img/img3.png';
-import img4 from '~/assets/img/img4.png';
 
 interface Product {
   id: string;
   name: string;
   category: string;
   price: number;
-  image_url: string;
+
   material?: string;
 }
 
@@ -47,33 +42,33 @@ const SAMPLE_PRODUCTS: Product[] = [
     name: 'Royal Blue Sapphire Ring',
     category: 'Rings',
     price: 2500,
-    image_url: img1,
+
   },
   {
     id: '2',
     name: 'Timeless Diamond Necklace',
     category: 'Necklaces',
     price: 4800,
-    image_url: img2,
+
   },
   {
     id: '3',
     name: 'Emerald Cut Earrings',
     category: 'Earrings',
     price: 1850,
-    image_url: img3,
+
   },
   {
     id: '4',
     name: 'Classic Gold Bracelet',
     category: 'Bracelets',
     price: 1200,
-    image_url: img4,
+
   },
 ];
 
 export const meta: MetaFunction = () => {
-  return [{title: 'Gem Mine | Shopping Cart'}];
+  return [{ title: 'Gem Mine | Shopping Cart' }];
 };
 
 export default function CartPage() {
@@ -116,7 +111,7 @@ export default function CartPage() {
         updatedCart = updatedCart.filter((item) => item.id !== id);
         toast.success('Item removed from cart');
       } else {
-        updatedCart[index] = {...updatedCart[index], quantity: newQuantity};
+        updatedCart[index] = { ...updatedCart[index], quantity: newQuantity };
       }
       localStorage.setItem(`cart_${user.email}`, JSON.stringify(updatedCart));
       setCartItems(updatedCart);
@@ -185,8 +180,8 @@ export default function CartPage() {
     <div className="min-h-screen bg-[#f8f5f0] pt-32 pb-20">
       <div className="w-full px-6">
         <motion.h1
-          initial={{opacity: 0, y: 20}}
-          animate={{opacity: 1, y: 0}}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           className="text-4xl md:text-5xl font-serif text-[#1a1a1a] mb-12"
         >
           Shopping Cart
@@ -194,8 +189,8 @@ export default function CartPage() {
 
         {cartWithProducts.length === 0 ? (
           <motion.div
-            initial={{opacity: 0, y: 30}}
-            animate={{opacity: 1, y: 0}}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
             className="text-center py-20 bg-white rounded-3xl shadow-sm border border-gray-100"
           >
             <ShoppingBag className="w-20 h-20 mx-auto text-gray-200 mb-6" />
@@ -220,23 +215,19 @@ export default function CartPage() {
                 {cartWithProducts.map((item, index) => (
                   <motion.div
                     key={item.id}
-                    initial={{opacity: 0, x: -20}}
-                    animate={{opacity: 1, x: 0}}
-                    exit={{opacity: 0, x: -20}}
-                    transition={{delay: index * 0.1}}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ delay: index * 0.1 }}
                     className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-shadow"
                   >
                     <div className="flex gap-6">
                       <Link to={`/products/${item.product.id}`}>
                         <motion.div
-                          whileHover={{scale: 1.05}}
+                          whileHover={{ scale: 1.05 }}
                           className="w-28 h-28 md:w-36 md:h-36 rounded-xl overflow-hidden flex-shrink-0"
                         >
-                          <img
-                            src={item.product.image_url}
-                            alt={item.product.name}
-                            className="w-full h-full object-cover"
-                          />
+
                         </motion.div>
                       </Link>
 
@@ -307,9 +298,9 @@ export default function CartPage() {
             {/* Order Summary */}
             <div className="lg:col-span-1">
               <motion.div
-                initial={{opacity: 0, y: 20}}
-                animate={{opacity: 1, y: 0}}
-                transition={{delay: 0.3}}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
                 className="bg-white rounded-2xl p-8 shadow-sm sticky top-32 border border-gray-50"
               >
                 <h2 className="text-xl font-serif text-[#1a1a1a] mb-6">
