@@ -12,6 +12,7 @@ interface Product {
   category: string;
   price: number;
   material?: string;
+  image_url?: string;
 }
 
 interface WishlistItem {
@@ -35,35 +36,6 @@ const MOCK_USER = {
   name: 'Gem Mine Customer',
 };
 
-const SAMPLE_PRODUCTS: Product[] = [
-  {
-    id: '1',
-    name: 'Royal Blue Sapphire Ring',
-    category: 'Rings',
-    price: 2500,
-  },
-  {
-    id: '2',
-    name: 'Timeless Diamond Necklace',
-    category: 'Necklaces',
-    price: 4800,
-  },
-  {
-    id: '3',
-    name: 'Emerald Cut Earrings',
-    category: 'Earrings',
-    price: 1850,
-
-  },
-  {
-    id: '4',
-    name: 'Classic Gold Bracelet',
-    category: 'Bracelets',
-    price: 1200,
-
-  },
-];
-
 export const meta: MetaFunction = () => {
   return [{ title: 'Gem Mine | My Wishlist' }];
 };
@@ -85,6 +57,7 @@ export default function Wishlist() {
     const updatedWishlist = wishlistItems.filter((item) => item.id !== id);
     localStorage.setItem(`wishlist_${user?.email}`, JSON.stringify(updatedWishlist));
     setWishlistItems(updatedWishlist);
+    window.dispatchEvent(new Event('wishlistUpdated'));
     toast.success('Removed from wishlist');
   };
 
@@ -127,7 +100,7 @@ export default function Wishlist() {
         material: item.product_material,
       };
     }
-    return SAMPLE_PRODUCTS.find((p) => p.id === item.product_id);
+    return undefined;
   };
 
   const wishlistWithProducts: WishlistItemWithProduct[] = wishlistItems
@@ -206,8 +179,16 @@ export default function Wishlist() {
                 >
                   <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 h-full flex flex-col">
                     <Link to={`/products/${item.product.id}`}>
-                      <div className="aspect-square overflow-hidden relative bg-gray-50">
-
+                      <div className="aspect-square overflow-hidden relative bg-gray-50 flex items-center justify-center">
+                        {item.product.image_url ? (
+                          <img
+                            src={item.product.image_url}
+                            alt={item.product.name}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        ) : (
+                          <Heart className="w-12 h-12 text-gray-300" />
+                        )}
 
                         <button
                           className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm hover:bg-red-50 hover:text-red-500 rounded-full shadow-md z-10 transition-colors p-2"

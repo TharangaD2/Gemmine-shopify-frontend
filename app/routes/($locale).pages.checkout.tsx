@@ -215,6 +215,7 @@ export default function Checkout() {
 
       // Clear cart
       localStorage.setItem(`cart_${user?.email}`, JSON.stringify([]));
+      window.dispatchEvent(new Event('cartUpdated'));
 
       toast.success('Order placed successfully!');
       setIsSubmitting(false);

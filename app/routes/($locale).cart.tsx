@@ -10,8 +10,8 @@ interface Product {
   name: string;
   category: string;
   price: number;
-
   material?: string;
+  image_url?: string;
 }
 
 interface CartItem {
@@ -36,37 +36,6 @@ const MOCK_USER = {
   name: 'Gem Mine Customer',
 };
 
-const SAMPLE_PRODUCTS: Product[] = [
-  {
-    id: '1',
-    name: 'Royal Blue Sapphire Ring',
-    category: 'Rings',
-    price: 2500,
-
-  },
-  {
-    id: '2',
-    name: 'Timeless Diamond Necklace',
-    category: 'Necklaces',
-    price: 4800,
-
-  },
-  {
-    id: '3',
-    name: 'Emerald Cut Earrings',
-    category: 'Earrings',
-    price: 1850,
-
-  },
-  {
-    id: '4',
-    name: 'Classic Gold Bracelet',
-    category: 'Bracelets',
-    price: 1200,
-
-  },
-];
-
 export const meta: MetaFunction = () => {
   return [{ title: 'Gem Mine | Shopping Cart' }];
 };
@@ -81,23 +50,8 @@ export default function CartPage() {
     if (stored) {
       setCartItems(JSON.parse(stored) as CartItem[]);
     } else {
-      // Add sample products to cart for demo purposes
-      const initialCart = [
-        {
-          id: 'c1',
-          product_id: '1',
-          quantity: 1,
-          user_email: user.email,
-        },
-        {
-          id: 'c2',
-          product_id: '2',
-          quantity: 1,
-          user_email: user.email,
-        },
-      ];
-      localStorage.setItem(`cart_${user.email}`, JSON.stringify(initialCart));
-      setCartItems(initialCart);
+      localStorage.setItem(`cart_${user.email}`, JSON.stringify([]));
+      setCartItems([]);
     }
     setIsLoading(false);
   }, [user?.email]);
@@ -115,6 +69,7 @@ export default function CartPage() {
       }
       localStorage.setItem(`cart_${user.email}`, JSON.stringify(updatedCart));
       setCartItems(updatedCart);
+      window.dispatchEvent(new Event('cartUpdated'));
     }
   };
 
@@ -122,6 +77,7 @@ export default function CartPage() {
     const updatedCart = cartItems.filter((item) => item.id !== id);
     localStorage.setItem(`cart_${user.email}`, JSON.stringify(updatedCart));
     setCartItems(updatedCart);
+    window.dispatchEvent(new Event('cartUpdated'));
     toast.success('Item removed from cart');
   };
 
@@ -136,7 +92,7 @@ export default function CartPage() {
         material: item.product_material,
       };
     }
-    return SAMPLE_PRODUCTS.find((p) => p.id === item.product_id);
+    return undefined;
   };
 
   const cartWithProducts: CartItemWithProduct[] = cartItems
@@ -225,9 +181,17 @@ export default function CartPage() {
                       <Link to={`/products/${item.product.id}`}>
                         <motion.div
                           whileHover={{ scale: 1.05 }}
-                          className="w-28 h-28 md:w-36 md:h-36 rounded-xl overflow-hidden flex-shrink-0"
+                          className="w-28 h-28 md:w-36 md:h-36 rounded-xl overflow-hidden flex-shrink-0 bg-gray-50 flex items-center justify-center"
                         >
-
+                          {item.product.image_url ? (
+                            <img
+                              src={item.product.image_url}
+                              alt={item.product.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <ShoppingBag className="w-8 h-8 text-gray-300" />
+                          )}
                         </motion.div>
                       </Link>
 

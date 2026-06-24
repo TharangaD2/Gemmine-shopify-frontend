@@ -1,13 +1,13 @@
-import React, {useState, useEffect} from 'react';
-import {motion, AnimatePresence} from 'framer-motion';
-import {Link, NavLink} from 'react-router';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Link, NavLink } from 'react-router';
 import {
   Heart,
   ShoppingBag,
   Menu,
   X,
 } from 'lucide-react';
-import type {HeaderQuery} from 'storefrontapi.generated';
+import type { HeaderQuery } from 'storefrontapi.generated';
 import logo from '~/assets/img/logo.png';
 
 const createPageUrl = (path: string) => {
@@ -53,7 +53,7 @@ const Button = ({
   );
 };
 
-const Badge = ({className = '', children}: {className?: string; children: React.ReactNode}) => (
+const Badge = ({ className = '', children }: { className?: string; children: React.ReactNode }) => (
   <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${className}`}>
     {children}
   </span>
@@ -87,6 +87,8 @@ export function Header() {
     } else {
       setWishlistCount(0);
     }
+
+
   };
 
   useEffect(() => {
@@ -111,21 +113,20 @@ export function Header() {
   }, []);
 
   const navLinks = [
-    {name: 'Collections', path: 'Collections'},
-    {name: 'Blog', path: 'Blog'},
-    {name: 'About', path: 'About'},
-    {name: 'Contact', path: 'Contact'},
+    { name: 'Collections', path: 'Collections' },
+    { name: 'Blog', path: 'Blog' },
+    { name: 'About', path: 'About' },
+    { name: 'Contact', path: 'Contact' },
   ];
 
   return (
     <>
       <motion.nav
-        initial={{y: -100}}
-        animate={{y: 0}}
-        transition={{duration: 0.6}}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          isScrolled ? 'bg-[#1e2a47]/95 backdrop-blur-lg shadow-lg' : 'bg-transparent'
-        }`}
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6 }}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? 'bg-[#1e2a47]/95 backdrop-blur-lg shadow-lg' : 'bg-transparent'
+          }`}
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="flex items-center justify-between h-24">
@@ -141,10 +142,9 @@ export function Header() {
                   key={link.name}
                   to={createPageUrl(link.path)}
                   className={({ isActive }) =>
-                    `text-sm tracking-wider uppercase transition-colors duration-300 ${
-                      isActive
-                        ? 'underline underline-offset-8 decoration-[#d4a89a] text-white'
-                        : 'text-white hover:text-[#d4a89a]'
+                    `text-sm tracking-wider uppercase transition-colors duration-300 ${isActive
+                      ? 'underline underline-offset-8 decoration-[#d4a89a] text-white'
+                      : 'text-white hover:text-[#d4a89a]'
                     }`
                   }
                 >
@@ -202,9 +202,9 @@ export function Header() {
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            initial={{opacity: 0}}
-            animate={{opacity: 1}}
-            exit={{opacity: 0}}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             className="fixed inset-0 z-[60] bg-[#1a1a1a]"
           >
             <div className="flex flex-col h-full p-6">
@@ -224,15 +224,14 @@ export function Header() {
                 {navLinks.map((link, index) => (
                   <motion.div
                     key={link.name}
-                    initial={{opacity: 0, y: 20}}
-                    animate={{opacity: 1, y: 0}}
-                    transition={{delay: index * 0.1}}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
                   >
                     <NavLink
                       to={createPageUrl(link.path)}
-                      className={({isActive}) =>
-                        `text-2xl transition-colors ${
-                          isActive ? 'text-white font-bold' : 'text-white hover:text-[#d4a89a]'
+                      className={({ isActive }) =>
+                        `text-2xl transition-colors ${isActive ? 'text-white font-bold' : 'text-white hover:text-[#d4a89a]'
                         }`
                       }
                       onClick={() => setIsMenuOpen(false)}
