@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Minus, Plus, X, ShoppingBag, ArrowRight, Sparkles } from 'lucide-react';
 import { Link, type MetaFunction } from 'react-router';
 import { toast } from 'sonner';
-
+import {getStoredSession} from '~/components/CartAuthFlow';
 
 interface Product {
   id: string;
@@ -43,40 +43,61 @@ export const meta: MetaFunction = () => {
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const user = MOCK_USER;
+
+  // Determine email key from session
+  const session = typeof window !== 'undefined' ? getStoredSession() : null;
+  const userEmail = session?.email || 'guest';
+
+  const loadCart = () => {
+    // Merge guest + logged-in user carts for display
+    const allItems: CartItem[] = [];
+    const keys = Array.from(new Set(['guest', userEmail]));
+    keys.forEach((key) => {
+      try {
+        const raw = localStorage.getItem(`cart_${key}`);
+        if (raw) {
+          const items = JSON.parse(raw) as CartItem[];
+          allItems.push(...items);
+        }
+      } catch {}
+    });
+    setCartItems(allItems);
+    setIsLoading(false);
+  };
 
   useEffect(() => {
-    const stored = localStorage.getItem(`cart_${user?.email}`);
-    if (stored) {
-      setCartItems(JSON.parse(stored) as CartItem[]);
-    } else {
-      localStorage.setItem(`cart_${user.email}`, JSON.stringify([]));
-      setCartItems([]);
-    }
-    setIsLoading(false);
-  }, [user?.email]);
+    loadCart();
+    window.addEventListener('cartUpdated', loadCart);
+    return () => window.removeEventListener('cartUpdated', loadCart);
+  }, [userEmail]);
 
   const updateQuantity = (id: string, newQuantity: number) => {
-    let updatedCart = [...cartItems];
-    const index = updatedCart.findIndex((item) => item.id === id);
+    const updatedAll = [...cartItems];
+    const index = updatedAll.findIndex((item) => item.id === id);
 
     if (index > -1) {
+      const itemEmail = updatedAll[index].user_email || 'guest';
       if (newQuantity <= 0) {
-        updatedCart = updatedCart.filter((item) => item.id !== id);
+        updatedAll.splice(index, 1);
         toast.success('Item removed from cart');
       } else {
-        updatedCart[index] = { ...updatedCart[index], quantity: newQuantity };
+        updatedAll[index] = { ...updatedAll[index], quantity: newQuantity };
       }
-      localStorage.setItem(`cart_${user.email}`, JSON.stringify(updatedCart));
-      setCartItems(updatedCart);
+      // Write back only the items for that user's key
+      const keyItems = updatedAll.filter((i) => (i.user_email || 'guest') === itemEmail);
+      localStorage.setItem(`cart_${itemEmail}`, JSON.stringify(keyItems));
+      setCartItems(updatedAll);
       window.dispatchEvent(new Event('cartUpdated'));
     }
   };
 
   const removeItem = (id: string) => {
-    const updatedCart = cartItems.filter((item) => item.id !== id);
-    localStorage.setItem(`cart_${user.email}`, JSON.stringify(updatedCart));
-    setCartItems(updatedCart);
+    const item = cartItems.find((i) => i.id === id);
+    const itemEmail = item?.user_email || 'guest';
+    const updatedAll = cartItems.filter((i) => i.id !== id);
+    const keyItems = updatedAll.filter((i) => (i.user_email || 'guest') === itemEmail);
+    localStorage.setItem(`cart_${itemEmail}`, JSON.stringify(keyItems));
+    setCartItems(updatedAll);
     window.dispatchEvent(new Event('cartUpdated'));
     toast.success('Item removed from cart');
   };

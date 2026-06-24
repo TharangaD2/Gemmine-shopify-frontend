@@ -30,11 +30,12 @@ interface WishlistItemWithProduct extends WishlistItem {
   product: Product;
 }
 
-// Mock Data
-const MOCK_USER = {
-  email: 'customer@example.com',
-  name: 'Gem Mine Customer',
-};
+const SESSION_STORE = 'gemmine_session';
+type StoredSession = { type: 'guest' | 'customer'; name: string; email: string };
+function readSession(): StoredSession | null {
+  if (typeof window === 'undefined') return null;
+  try { const r = sessionStorage.getItem(SESSION_STORE); return r ? JSON.parse(r) as StoredSession : null; } catch { return null; }
+}
 
 export const meta: MetaFunction = () => {
   return [{ title: 'Gem Mine | My Wishlist' }];
@@ -43,26 +44,30 @@ export const meta: MetaFunction = () => {
 export default function Wishlist() {
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const user = MOCK_USER;
 
   useEffect(() => {
-    const stored = localStorage.getItem(`wishlist_${user?.email}`);
+    const session = readSession();
+    const userEmail = session?.email || 'guest';
+    const stored = localStorage.getItem(`wishlist_${userEmail}`);
     if (stored) {
       setWishlistItems(JSON.parse(stored) as WishlistItem[]);
     }
     setIsLoading(false);
-  }, [user?.email]);
+  }, []);
 
   const removeFromWishlist = (id: string) => {
+    const session = readSession();
+    const userEmail = session?.email || 'guest';
     const updatedWishlist = wishlistItems.filter((item) => item.id !== id);
-    localStorage.setItem(`wishlist_${user?.email}`, JSON.stringify(updatedWishlist));
+    localStorage.setItem(`wishlist_${userEmail}`, JSON.stringify(updatedWishlist));
     setWishlistItems(updatedWishlist);
     window.dispatchEvent(new Event('wishlistUpdated'));
     toast.success('Removed from wishlist');
   };
 
   const addToCart = (product: Product) => {
-    const userEmail = 'customer@example.com';
+    const session = readSession();
+    const userEmail = session?.email || 'guest';
     const stored = localStorage.getItem(`cart_${userEmail}`);
     const cartItems = stored ? (JSON.parse(stored) as any[]) : [];
 
@@ -76,8 +81,11 @@ export default function Wishlist() {
         product_id: product.id,
         quantity: 1,
         user_email: userEmail,
+        user_name: session?.name || 'Guest',
+        user_type: session?.type || 'guest',
         product_name: product.name,
         product_price: product.price,
+        product_image: product.image_url,
         product_category: product.category,
         product_material: product.material,
       };

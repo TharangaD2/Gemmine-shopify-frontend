@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   useLoaderData,
   Link,
@@ -26,6 +26,7 @@ import type {
   CollectionItemFragment,
 } from 'storefrontapi.generated';
 import { PaginatedResourceSection } from '~/components/PaginatedResourceSection';
+import { CartAuthFlow, type UserSession, type InquiryData } from '~/components/CartAuthFlow';
 
 
 
@@ -325,6 +326,44 @@ export default function Collection() {
   );
 }
 
+// ─── Shared auth helpers (mirrors Header.tsx logic) ───────────────────────────
+const SESSION_STORE = 'gemmine_session';
+type StoredSession = { type: 'guest' | 'customer'; name: string; email: string };
+function readSession(): StoredSession | null {
+  if (typeof window === 'undefined') return null;
+  try { const r = sessionStorage.getItem(SESSION_STORE); return r ? JSON.parse(r) as StoredSession : null; } catch { return null; }
+}
+
+function addProductToCart(
+  product: CollectionItemFragment,
+  session: StoredSession,
+  firstVariant: { price?: { amount?: string } } | undefined,
+) {
+  const userEmail = session.email || 'guest';
+  const stored = localStorage.getItem(`cart_${userEmail}`);
+  const cartItems = stored ? (JSON.parse(stored) as any[]) : [];
+  const productId = product.id.split('/').pop() || '1';
+  const existingIndex = cartItems.findIndex((item: any) => item.product_id === productId);
+  if (existingIndex > -1) {
+    cartItems[existingIndex].quantity += 1;
+  } else {
+    cartItems.push({
+      id: `c_${Date.now()}`,
+      product_id: productId,
+      quantity: 1,
+      user_email: userEmail,
+      user_name: session.name,
+      user_type: session.type,
+      product_name: product.title,
+      product_price: parseFloat(firstVariant?.price?.amount || product.priceRange?.minVariantPrice?.amount || '0'),
+      product_image: product.featuredImage?.url,
+      product_category: 'Gem Mine Exclusive',
+    });
+  }
+  localStorage.setItem(`cart_${userEmail}`, JSON.stringify(cartItems));
+  window.dispatchEvent(new Event('cartUpdated'));
+}
+
 function ProductCard({
   product,
   viewMode,
@@ -337,307 +376,285 @@ function ProductCard({
   onQuickView: () => void;
 }) {
   const firstVariant = product.variants?.nodes?.[0];
+  const triggerRef = React.useRef<HTMLDivElement>(null);
+  const [authOpen, setAuthOpen] = useState(false);
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCartClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    setAuthOpen(true);
+  };
 
-    const user = MOCK_USER;
-    const stored = localStorage.getItem(`cart_${user.email}`);
-    const cartItems = stored ? (JSON.parse(stored) as any[]) : [];
-
-    const productId = product.id.split('/').pop() || '1';
-    const existingIndex = cartItems.findIndex((item: any) => item.product_id === productId);
-
-    if (existingIndex > -1) {
-      cartItems[existingIndex].quantity += 1;
-    } else {
-      const newItem = {
-        id: `c_${Date.now()}`,
-        product_id: productId,
-        quantity: 1,
-        user_email: user.email,
-        product_name: product.title,
-        product_price: parseFloat(firstVariant?.price?.amount || product.priceRange?.minVariantPrice?.amount || '0'),
-        product_image: product.featuredImage?.url,
-        product_category: 'Gem Mine Exclusive',
-      };
-      cartItems.push(newItem);
-    }
-
-    localStorage.setItem(`cart_${user.email}`, JSON.stringify(cartItems));
-    window.dispatchEvent(new Event('cartUpdated'));
-    toast.success('Added to cart');
+  const handleAuthConfirm = (session: UserSession, inquiry: InquiryData) => {
+    try {
+      const key = `inquiries_${session.email || 'guest'}`;
+      const arr = (() => { try { const r = localStorage.getItem(key); return r ? JSON.parse(r) as any[] : []; } catch { return []; } })();
+      arr.push({ ...inquiry, productId: product.id, productName: product.title, timestamp: new Date().toISOString() });
+      localStorage.setItem(key, JSON.stringify(arr));
+    } catch {}
+    addProductToCart(product, session as StoredSession, firstVariant);
+    toast.success('Added to cart! 🛒', { description: `Inquiry submitted by ${session.name}` });
+    setAuthOpen(false);
   };
 
   const handleAddToWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-
-    const user = MOCK_USER;
-    const stored = localStorage.getItem(`wishlist_${user.email}`);
+    const session = readSession();
+    const userEmail = session?.email || 'guest';
+    const stored = localStorage.getItem(`wishlist_${userEmail}`);
     const wishlistItems = stored ? (JSON.parse(stored) as any[]) : [];
-
     const productId = product.id.split('/').pop() || '1';
-    const exists = wishlistItems.some((item: any) => item.product_id === productId);
-
-    if (exists) {
-      toast.error('Item already in wishlist');
-      return;
+    if (wishlistItems.some((item: any) => item.product_id === productId)) {
+      toast.error('Item already in wishlist'); return;
     }
-
-    const newItem = {
-      id: `w_${Date.now()}`,
-      product_id: productId,
-      user_email: user.email,
+    wishlistItems.push({
+      id: `w_${Date.now()}`, product_id: productId, user_email: userEmail,
       product_name: product.title,
       product_price: parseFloat(product.priceRange?.minVariantPrice?.amount || '0'),
-      product_image: product.featuredImage?.url,
-      product_category: 'Gem Mine Exclusive',
-    };
-
-    wishlistItems.push(newItem);
-    localStorage.setItem(`wishlist_${user.email}`, JSON.stringify(wishlistItems));
+      product_image: product.featuredImage?.url, product_category: 'Gem Mine Exclusive',
+    });
+    localStorage.setItem(`wishlist_${userEmail}`, JSON.stringify(wishlistItems));
     window.dispatchEvent(new Event('wishlistUpdated'));
     toast.success('Added to wishlist');
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: (index % 8) * 0.05 }}
-      className={`group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 ${viewMode === 'list' ? 'flex flex-col sm:flex-row' : 'flex flex-col'
-        }`}
-    >
-      <div
-        className={`relative overflow-hidden ${viewMode === 'list' ? 'sm:w-72 flex-shrink-0' : 'aspect-[4/5]'
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: (index % 8) * 0.05 }}
+        className={`group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 ${viewMode === 'list' ? 'flex flex-col sm:flex-row' : 'flex flex-col'
           }`}
       >
-        <Link to={`/products/${product.handle}`} className="block h-full w-full">
-          {product.featuredImage && (
-            <Image
-              data={product.featuredImage}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              sizes="(min-width: 45em) 400px, 100vw"
-            />
-          )}
-        </Link>
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-500 flex items-center justify-center pointer-events-none">
+        <div
+          className={`relative overflow-hidden ${viewMode === 'list' ? 'sm:w-72 flex-shrink-0' : 'aspect-[4/5]'
+            }`}
+        >
+          <Link to={`/products/${product.handle}`} className="block h-full w-full">
+            {product.featuredImage && (
+              <Image
+                data={product.featuredImage}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                sizes="(min-width: 45em) 400px, 100vw"
+              />
+            )}
+          </Link>
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-500 flex items-center justify-center pointer-events-none">
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                onQuickView();
+              }}
+              className="bg-white/90 backdrop-blur-md text-[#1e2a47] px-6 py-2.5 rounded-full text-sm font-medium opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-lg flex items-center gap-2 pointer-events-auto"
+            >
+              <Eye className="w-4 h-4" />
+              Quick View
+            </button>
+          </div>
           <button
-            onClick={(e) => {
-              e.preventDefault();
-              onQuickView();
-            }}
-            className="bg-white/90 backdrop-blur-md text-[#1e2a47] px-6 py-2.5 rounded-full text-sm font-medium opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-lg flex items-center gap-2 pointer-events-auto"
+            onClick={handleAddToWishlist}
+            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-white transition-all duration-300 shadow-sm z-10"
           >
-            <Eye className="w-4 h-4" />
-            Quick View
+            <Heart className="w-5 h-5" />
           </button>
         </div>
-        <button
-          onClick={handleAddToWishlist}
-          className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-white transition-all duration-300 shadow-sm z-10"
-        >
-          <Heart className="w-5 h-5" />
-        </button>
-      </div>
 
-      <div className="p-6 flex flex-col flex-1">
-        <div className="mb-auto">
-          <p className="text-[#d4a89a] text-xs uppercase tracking-widest mb-2 font-medium">
-            Gem Mine Exclusive
-          </p>
-          <Link to={`/products/${product.handle}`}>
-            <h3 className="text-lg font-serif text-[#1e2a47] mb-2 group-hover:text-[#d4a89a] transition-colors line-clamp-2">
-              {product.title}
-            </h3>
-          </Link>
-          <div className="text-xl font-light text-[#1e2a47]/80 mb-4">
-            <Money data={product.priceRange.minVariantPrice} />
+        <div className="p-6 flex flex-col flex-1">
+          <div className="mb-auto">
+            <p className="text-[#d4a89a] text-xs uppercase tracking-widest mb-2 font-medium">
+              Gem Mine Exclusive
+            </p>
+            <Link to={`/products/${product.handle}`}>
+              <h3 className="text-lg font-serif text-[#1e2a47] mb-2 group-hover:text-[#d4a89a] transition-colors line-clamp-2">
+                {product.title}
+              </h3>
+            </Link>
+            <div className="text-xl font-light text-[#1e2a47]/80 mb-4">
+              <Money data={product.priceRange.minVariantPrice} />
+            </div>
+          </div>
+
+          <div ref={triggerRef} style={{ position: 'relative' }}>
+            {firstVariant ? (
+              <button
+                onClick={handleAddToCartClick}
+                className="w-full bg-[#1e2a47] text-white py-3.5 rounded-xl flex items-center justify-center gap-2 hover:bg-[#2d3e6a] transition-all duration-300 font-medium"
+              >
+                <ShoppingBag className="w-4 h-4" />
+                Add to Cart
+              </button>
+            ) : (
+              <button
+                disabled
+                className="w-full bg-gray-100 text-gray-400 py-3.5 rounded-xl flex items-center justify-center gap-2 cursor-not-allowed font-medium"
+              >
+                Out of Stock
+              </button>
+            )}
           </div>
         </div>
+      </motion.div>
 
-        {firstVariant ? (
-          <button
-            onClick={handleAddToCart}
-            className="w-full bg-[#1e2a47] text-white py-3.5 rounded-xl flex items-center justify-center gap-2 hover:bg-[#2d3e6a] transition-all duration-300 font-medium"
-          >
-            <ShoppingBag className="w-4 h-4" />
-            Add to Cart
-          </button>
-        ) : (
-          <button
-            disabled
-            className="w-full bg-gray-100 text-gray-400 py-3.5 rounded-xl flex items-center justify-center gap-2 cursor-not-allowed font-medium"
-          >
-            Out of Stock
-          </button>
-        )}
-      </div>
-    </motion.div>
+      {/* Auth + Inquiry Flow */}
+      <CartAuthFlow
+        isOpen={authOpen}
+        onClose={() => setAuthOpen(false)}
+        onConfirm={handleAuthConfirm}
+        triggerRef={triggerRef}
+      />
+    </>
   );
 }
 
 function QuickView({ product, onClose }: { product: CollectionItemFragment; onClose: () => void }) {
   const firstVariant = product.variants?.nodes?.[0];
+  const quickViewTriggerRef = React.useRef<HTMLDivElement>(null);
+  const [authOpen, setAuthOpen] = useState(false);
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCartClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    setAuthOpen(true);
+  };
 
-    const user = MOCK_USER;
-    const stored = localStorage.getItem(`cart_${user.email}`);
-    const cartItems = stored ? (JSON.parse(stored) as any[]) : [];
-
-    const productId = product.id.split('/').pop() || '1';
-    const existingIndex = cartItems.findIndex((item: any) => item.product_id === productId);
-
-    if (existingIndex > -1) {
-      cartItems[existingIndex].quantity += 1;
-    } else {
-      const newItem = {
-        id: `c_${Date.now()}`,
-        product_id: productId,
-        quantity: 1,
-        user_email: user.email,
-        product_name: product.title,
-        product_price: parseFloat(firstVariant?.price?.amount || product.priceRange?.minVariantPrice?.amount || '0'),
-        product_image: product.featuredImage?.url,
-        product_category: 'Gem Mine Exclusive',
-      };
-      cartItems.push(newItem);
-    }
-
-    localStorage.setItem(`cart_${user.email}`, JSON.stringify(cartItems));
-    window.dispatchEvent(new Event('cartUpdated'));
-    toast.success('Added to cart');
+  const handleAuthConfirm = (session: UserSession, inquiry: InquiryData) => {
+    try {
+      const key = `inquiries_${session.email || 'guest'}`;
+      const arr = (() => { try { const r = localStorage.getItem(key); return r ? JSON.parse(r) as any[] : []; } catch { return []; } })();
+      arr.push({ ...inquiry, productId: product.id, productName: product.title, timestamp: new Date().toISOString() });
+      localStorage.setItem(key, JSON.stringify(arr));
+    } catch {}
+    addProductToCart(product, session as StoredSession, firstVariant);
+    toast.success('Added to cart! 🛒', { description: `Inquiry submitted by ${session.name}` });
+    setAuthOpen(false);
     onClose();
   };
 
   const handleAddToWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-
-    const user = MOCK_USER;
-    const stored = localStorage.getItem(`wishlist_${user.email}`);
+    const session = readSession();
+    const userEmail = session?.email || 'guest';
+    const stored = localStorage.getItem(`wishlist_${userEmail}`);
     const wishlistItems = stored ? (JSON.parse(stored) as any[]) : [];
-
     const productId = product.id.split('/').pop() || '1';
-    const exists = wishlistItems.some((item: any) => item.product_id === productId);
-
-    if (exists) {
-      toast.error('Item already in wishlist');
-      return;
+    if (wishlistItems.some((item: any) => item.product_id === productId)) {
+      toast.error('Item already in wishlist'); return;
     }
-
-    const newItem = {
-      id: `w_${Date.now()}`,
-      product_id: productId,
-      user_email: user.email,
+    wishlistItems.push({
+      id: `w_${Date.now()}`, product_id: productId, user_email: userEmail,
       product_name: product.title,
       product_price: parseFloat(product.priceRange?.minVariantPrice?.amount || '0'),
-      product_image: product.featuredImage?.url,
-      product_category: 'Gem Mine Exclusive',
-    };
-
-    wishlistItems.push(newItem);
-    localStorage.setItem(`wishlist_${user.email}`, JSON.stringify(wishlistItems));
+      product_image: product.featuredImage?.url, product_category: 'Gem Mine Exclusive',
+    });
+    localStorage.setItem(`wishlist_${userEmail}`, JSON.stringify(wishlistItems));
     window.dispatchEvent(new Event('wishlistUpdated'));
     toast.success('Added to wishlist');
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={onClose}
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-      />
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-        className="relative bg-white w-full max-w-5xl rounded-[2.5rem] overflow-hidden shadow-2xl z-10 flex flex-col md:flex-row max-h-[90vh]"
-      >
-        <button
+    <>
+      {authOpen && (
+        <CartAuthFlow
+          isOpen={authOpen}
+          onClose={() => setAuthOpen(false)}
+          onConfirm={handleAuthConfirm}
+          triggerRef={quickViewTriggerRef}
+        />
+      )}
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           onClick={onClose}
-          className="absolute top-6 right-6 z-20 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-[#1e2a47] hover:bg-white transition-all shadow-md"
+          className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.9, y: 20 }}
+          className="relative bg-white w-full max-w-5xl rounded-[2.5rem] overflow-hidden shadow-2xl z-10 flex flex-col md:flex-row max-h-[90vh]"
         >
-          <X className="w-5 h-5" />
-        </button>
+          <button
+            onClick={onClose}
+            className="absolute top-6 right-6 z-20 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-[#1e2a47] hover:bg-white transition-all shadow-md"
+          >
+            <X className="w-5 h-5" />
+          </button>
 
-        <div className="md:w-1/2 relative bg-gray-50 overflow-hidden">
-          <Link to={`/products/${product.handle}`} className="block h-full w-full">
-            {product.featuredImage && (
-              <Image
-                data={product.featuredImage}
-                className="w-full h-full object-cover"
-              />
-            )}
-          </Link>
-        </div>
-
-        <div className="md:w-1/2 p-8 md:p-12 overflow-y-auto">
-          <p className="text-[#d4a89a] text-sm uppercase tracking-[0.2em] mb-4 font-medium">
-            New Arrival
-          </p>
-          <Link to={`/products/${product.handle}`}>
-            <h2 className="text-3xl md:text-4xl font-serif text-[#1e2a47] mb-6 hover:text-[#d4a89a] transition-colors">
-              {product.title}
-            </h2>
-          </Link>
-          <div className="text-2xl text-[#1e2a47]/90 mb-8 font-light">
-            <Money data={product.priceRange.minVariantPrice} />
+          <div className="md:w-1/2 relative bg-gray-50 overflow-hidden">
+            <Link to={`/products/${product.handle}`} className="block h-full w-full">
+              {product.featuredImage && (
+                <Image
+                  data={product.featuredImage}
+                  className="w-full h-full object-cover"
+                />
+              )}
+            </Link>
           </div>
 
-          <div className="space-y-6 mb-10">
-            <p className="text-gray-500 leading-relaxed font-light">
-              This exquisite piece from Gem Mine embodies the perfect harmony of
-              traditional craftsmanship and contemporary design. Hand-selected for its
-              brilliance and clarity.
+          <div className="md:w-1/2 p-8 md:p-12 overflow-y-auto">
+            <p className="text-[#d4a89a] text-sm uppercase tracking-[0.2em] mb-4 font-medium">
+              New Arrival
             </p>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
-                <p className="text-gray-400 mb-1">Material</p>
-                <p className="text-[#1e2a47] font-medium">18K Rose Gold</p>
-              </div>
-              <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
-                <p className="text-gray-400 mb-1">Stone</p>
-                <p className="text-[#1e2a47] font-medium">Ceylon Sapphire</p>
+            <Link to={`/products/${product.handle}`}>
+              <h2 className="text-3xl md:text-4xl font-serif text-[#1e2a47] mb-6 hover:text-[#d4a89a] transition-colors">
+                {product.title}
+              </h2>
+            </Link>
+            <div className="text-2xl text-[#1e2a47]/90 mb-8 font-light">
+              <Money data={product.priceRange.minVariantPrice} />
+            </div>
+
+            <div className="space-y-6 mb-10">
+              <p className="text-gray-500 leading-relaxed font-light">
+                This exquisite piece from Gem Mine embodies the perfect harmony of
+                traditional craftsmanship and contemporary design. Hand-selected for its
+                brilliance and clarity.
+              </p>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                  <p className="text-gray-400 mb-1">Material</p>
+                  <p className="text-[#1e2a47] font-medium">18K Rose Gold</p>
+                </div>
+                <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                  <p className="text-gray-400 mb-1">Stone</p>
+                  <p className="text-[#1e2a47] font-medium">Ceylon Sapphire</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="flex gap-4">
-            {firstVariant ? (
+            <div className="flex gap-4" ref={quickViewTriggerRef} style={{ position: 'relative' }}>
+              {firstVariant ? (
+                <button
+                  onClick={handleAddToCartClick}
+                  className="flex-1 bg-[#1e2a47] text-white py-4 rounded-2xl font-medium hover:bg-[#2d3e6a] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#1e2a47]/10"
+                >
+                  <ShoppingBag className="w-5 h-5" />
+                  Add to Bag
+                </button>
+              ) : (
+                <button
+                  disabled
+                  className="flex-1 bg-gray-100 text-gray-400 py-4 rounded-2xl font-medium cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  Out of Stock
+                </button>
+              )}
               <button
-                onClick={handleAddToCart}
-                className="flex-1 bg-[#1e2a47] text-white py-4 rounded-2xl font-medium hover:bg-[#2d3e6a] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#1e2a47]/10"
+                onClick={handleAddToWishlist}
+                className="w-14 h-14 rounded-2xl border border-gray-200 flex items-center justify-center text-gray-400 hover:text-red-500 hover:border-red-100 transition-all"
               >
-                <ShoppingBag className="w-5 h-5" />
-                Add to Bag
+                <Heart className="w-6 h-6" />
               </button>
-            ) : (
-              <button
-                disabled
-                className="flex-1 bg-gray-100 text-gray-400 py-4 rounded-2xl font-medium cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                Out of Stock
-              </button>
-            )}
-            <button
-              onClick={handleAddToWishlist}
-              className="w-14 h-14 rounded-2xl border border-gray-200 flex items-center justify-center text-gray-400 hover:text-red-500 hover:border-red-100 transition-all"
-            >
-              <Heart className="w-6 h-6" />
-            </button>
+            </div>
           </div>
-        </div>
-      </motion.div>
-    </div>
+        </motion.div>
+      </div>
+    </>
   );
 }
 

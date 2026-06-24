@@ -1,13 +1,16 @@
+import React, {useState, useRef} from 'react';
 import {Link, useNavigate} from 'react-router';
 import {type MappedProductOptions} from '@shopify/hydrogen';
 import type {
   Maybe,
   ProductOptionValueSwatch,
 } from '@shopify/hydrogen/storefront-api-types';
-import {AddToCartButton} from './AddToCartButton';
+import {CartForm, type OptimisticCartLineInput} from '@shopify/hydrogen';
+import {type FetcherWithComponents} from 'react-router';
 import {useAside} from './Aside';
 import type {ProductFragment} from 'storefrontapi.generated';
 import {toast} from 'sonner';
+import {CartAuthFlow, getStoredSession, type UserSession, type InquiryData} from './CartAuthFlow';
 
 export function ProductForm({
   productOptions,
@@ -18,6 +21,102 @@ export function ProductForm({
 }) {
   const navigate = useNavigate();
   const {open} = useAside();
+  const addToCartBtnRef = useRef<HTMLDivElement>(null);
+
+  const [authFlowOpen, setAuthFlowOpen] = useState(false);
+  // Pending cart lines to add after auth + inquiry
+  const [pendingLines, setPendingLines] = useState<Array<OptimisticCartLineInput>>([]);
+
+  // Called when the user clicks the Add to Cart button
+  const handleCartButtonClick = () => {
+    if (!selectedVariant) return;
+
+    // Check if user is already authenticated (customer session)
+    const existingSession = getStoredSession();
+
+    if (existingSession) {
+      // Already logged in — skip straight to inquiry
+      setAuthFlowOpen(true);
+    } else {
+      // Need to authenticate first
+      setAuthFlowOpen(true);
+    }
+
+    setPendingLines([
+      {
+        merchandiseId: selectedVariant.id,
+        quantity: 1,
+        selectedVariant,
+      },
+    ]);
+  };
+
+  const handleAuthConfirm = (session: UserSession, inquiry: InquiryData) => {
+    if (!selectedVariant) return;
+
+    // Save inquiry to localStorage keyed by session email or "guest"
+    const storageKey = session.email || 'guest';
+    const inquiries = (() => {
+      try {
+        const raw = localStorage.getItem(`inquiries_${storageKey}`);
+        return raw ? (JSON.parse(raw) as any[]) : [];
+      } catch {
+        return [];
+      }
+    })();
+
+    inquiries.push({
+      ...inquiry,
+      productId: selectedVariant.id,
+      productName: (selectedVariant as any).product?.title || 'Selected Product',
+      timestamp: new Date().toISOString(),
+    });
+    localStorage.setItem(`inquiries_${storageKey}`, JSON.stringify(inquiries));
+
+    // Add item to local cart
+    const userEmail = session.email || 'guest';
+    const stored = localStorage.getItem(`cart_${userEmail}`);
+    const cartItems = stored ? (JSON.parse(stored) as any[]) : [];
+
+    const productId = selectedVariant.id.split('/').pop() || '1';
+    const existingIndex = cartItems.findIndex(
+      (item: any) => item.product_id === productId,
+    );
+
+    if (existingIndex > -1) {
+      cartItems[existingIndex].quantity += 1;
+    } else {
+      const newItem = {
+        id: `c_${Date.now()}`,
+        product_id: productId,
+        quantity: 1,
+        user_email: userEmail,
+        user_name: session.name,
+        user_type: session.type,
+        product_name:
+          (selectedVariant as any).product?.title || 'Selected Product',
+        product_price: parseFloat(
+          (selectedVariant as any).price?.amount || '0',
+        ),
+        product_image: (selectedVariant as any).image?.url,
+        product_category: 'Gem Mine Exclusive',
+        inquiry,
+      };
+      cartItems.push(newItem);
+    }
+
+    localStorage.setItem(`cart_${userEmail}`, JSON.stringify(cartItems));
+    window.dispatchEvent(new Event('cartUpdated'));
+
+    toast.success('Item added to cart! 🛒', {
+      description: `Inquiry submitted by ${session.name}`,
+    });
+
+    // Open cart aside
+    open('cart');
+    setAuthFlowOpen(false);
+  };
+
   return (
     <div className="product-form">
       {productOptions.map((option) => {
@@ -41,10 +140,6 @@ export function ProductForm({
                 } = value;
 
                 if (isDifferentProduct) {
-                  // SEO
-                  // When the variant is a combined listing child product
-                  // that leads to a different url, we need to render it
-                  // as an anchor tag
                   return (
                     <Link
                       className="product-options-item"
@@ -64,11 +159,6 @@ export function ProductForm({
                     </Link>
                   );
                 } else {
-                  // SEO
-                  // When the variant is an update to the search param,
-                  // render it as a button with javascript navigating to
-                  // the variant so that SEO bots do not index these as
-                  // duplicated links
                   return (
                     <button
                       type="button"
@@ -102,53 +192,61 @@ export function ProductForm({
           </div>
         );
       })}
-      <AddToCartButton
-        disabled={!selectedVariant || !selectedVariant.availableForSale}
-        onClick={() => {
-          if (selectedVariant) {
-            const userEmail = 'customer@example.com';
-            const stored = localStorage.getItem(`cart_${userEmail}`);
-            const cartItems = stored ? (JSON.parse(stored) as any[]) : [];
 
-            const productId = selectedVariant.id.split('/').pop() || '1';
-            const existingIndex = cartItems.findIndex((item: any) => item.product_id === productId);
+      {/* Add to Cart Button — wraps CartForm but intercepts the click */}
+      <div ref={addToCartBtnRef} style={{position: 'relative', display: 'inline-block', width: '100%'}}>
+        <CartForm
+          route="/cart"
+          inputs={{lines: pendingLines.length ? pendingLines : (selectedVariant ? [{merchandiseId: selectedVariant.id, quantity: 1, selectedVariant}] : [])}}
+          action={CartForm.ACTIONS.LinesAdd}
+        >
+          {(fetcher: FetcherWithComponents<any>) => (
+            <>
+              <input name="analytics" type="hidden" value={JSON.stringify({})} />
+              <button
+                type="button"
+                disabled={!selectedVariant || !selectedVariant.availableForSale}
+                onClick={handleCartButtonClick}
+                style={{
+                  width: '100%',
+                  padding: '1rem',
+                  background: !selectedVariant || !selectedVariant.availableForSale
+                    ? 'rgba(100,100,100,0.4)'
+                    : 'linear-gradient(135deg, #d4a89a, #c17f72)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '10px',
+                  fontSize: '1rem',
+                  fontWeight: 700,
+                  cursor: !selectedVariant || !selectedVariant.availableForSale ? 'not-allowed' : 'pointer',
+                  letterSpacing: '0.04em',
+                  transition: 'opacity 0.2s, transform 0.1s',
+                }}
+                onMouseEnter={(e) => {
+                  if (selectedVariant?.availableForSale) {
+                    (e.currentTarget as HTMLButtonElement).style.opacity = '0.88';
+                    (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-1px)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.opacity = '1';
+                  (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)';
+                }}
+              >
+                {selectedVariant?.availableForSale ? '🛒 Add to Cart' : 'Sold Out'}
+              </button>
+            </>
+          )}
+        </CartForm>
+      </div>
 
-            if (existingIndex > -1) {
-              cartItems[existingIndex].quantity += 1;
-            } else {
-              const newItem = {
-                id: `c_${Date.now()}`,
-                product_id: productId,
-                quantity: 1,
-                user_email: userEmail,
-                product_name: selectedVariant.product?.title || 'Selected Product',
-                product_price: parseFloat(selectedVariant.price?.amount || '0'),
-                product_image: selectedVariant.image?.url,
-                product_category: 'Gem Mine Exclusive',
-              };
-              cartItems.push(newItem);
-            }
-
-            localStorage.setItem(`cart_${userEmail}`, JSON.stringify(cartItems));
-            window.dispatchEvent(new Event('cartUpdated'));
-            toast.success('Added to cart');
-          }
-          open('cart');
-        }}
-        lines={
-          selectedVariant
-            ? [
-                {
-                  merchandiseId: selectedVariant.id,
-                  quantity: 1,
-                  selectedVariant,
-                },
-              ]
-            : []
-        }
-      >
-        {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
-      </AddToCartButton>
+      {/* Auth & Inquiry Flow */}
+      <CartAuthFlow
+        isOpen={authFlowOpen}
+        onClose={() => setAuthFlowOpen(false)}
+        onConfirm={handleAuthConfirm}
+        triggerRef={addToCartBtnRef}
+      />
     </div>
   );
 }
