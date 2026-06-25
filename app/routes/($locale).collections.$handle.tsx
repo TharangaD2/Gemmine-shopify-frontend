@@ -22,6 +22,8 @@ import {
   SlidersHorizontal,
   ShoppingBag,
   X,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 // import type {Route} from './+types/collections.$handle';
 import type { ProductItemFragment } from 'storefrontapi.generated';
@@ -74,10 +76,10 @@ export default function Collection() {
   const [selectedProduct, setSelectedProduct] = useState<ProductItemFragment | null>(null);
 
   const heroVedioUrl =
-    collection?.heroVedio?.reference?.sources?.[0]?.url ||
-    collection?.heroVedio?.reference?.url ||
-    page?.heroVedio?.reference?.sources?.[0]?.url ||
-    page?.heroVedio?.reference?.url;
+    (collection?.heroVedio?.reference as any)?.sources?.[0]?.url ||
+    (collection?.heroVedio?.reference as any)?.url ||
+    (page?.heroVedio?.reference as any)?.sources?.[0]?.url ||
+    (page?.heroVedio?.reference as any)?.url;
 
   const categories = [
     { id: 'all', name: 'All Jewellery', path: '/collections/all' },
@@ -428,10 +430,62 @@ function ProductCard({
   );
 }
 
+const slideVariants = {
+  enter: (dir: number) => ({
+    x: dir > 0 ? '100%' : dir < 0 ? '-100%' : 0,
+    opacity: 0
+  }),
+  center: {
+    zIndex: 1,
+    x: 0,
+    opacity: 1
+  },
+  exit: (dir: number) => ({
+    zIndex: 0,
+    x: dir < 0 ? '100%' : dir > 0 ? '-100%' : 0,
+    opacity: 0
+  })
+};
+
 function QuickView({ product, onClose }: { product: ProductItemFragment; onClose: () => void }) {
   const firstVariant = product.variants?.nodes?.[0];
   const quickViewTriggerRef = React.useRef<HTMLDivElement>(null);
   const [authOpen, setAuthOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState(0);
+  const [direction, setDirection] = useState(0); // -1 for left, 1 for right
+
+  // Unified media items: images + videos in display order
+  const mediaItems = useMemo(() => {
+    const nodes = product.media?.nodes || [];
+    const items: Array<{ type: 'image'; data: any } | { type: 'video'; sources: { url: string; mimeType: string }[]; preview?: { url: string; altText?: string | null } } | { type: 'external'; embeddedUrl: string; preview?: { url: string; altText?: string | null } }> = [];
+    for (const node of nodes as any[]) {
+      if (node.image) {
+        items.push({ type: 'image', data: node.image });
+      } else if (node.sources && node.sources.length > 0) {
+        items.push({ type: 'video', sources: node.sources, preview: node.previewImage });
+      } else if (node.embeddedUrl) {
+        items.push({ type: 'external', embeddedUrl: node.embeddedUrl, preview: node.previewImage });
+      }
+    }
+    if (items.length === 0 && product.featuredImage) {
+      items.push({ type: 'image', data: product.featuredImage });
+    }
+    return items;
+  }, [product.media, product.featuredImage]);
+
+  const hasMultiple = mediaItems.length > 1;
+
+  const handlePrev = () => {
+    if (!hasMultiple) return;
+    setDirection(-1);
+    setCurrentImage((prev) => (prev - 1 + mediaItems.length) % mediaItems.length);
+  };
+
+  const handleNext = () => {
+    if (!hasMultiple) return;
+    setDirection(1);
+    setCurrentImage((prev) => (prev + 1) % mediaItems.length);
+  };
 
   const handleAddToCartClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -505,15 +559,137 @@ function QuickView({ product, onClose }: { product: ProductItemFragment; onClose
             <X className="w-5 h-5" />
           </button>
 
-          <div className="md:w-1/2 relative bg-gray-50 overflow-hidden">
-            <Link to={`/products/${product.handle}`} className="block h-full w-full">
-              {product.featuredImage && (
-                <Image
-                  data={product.featuredImage}
-                  className="w-full h-full object-cover"
-                />
+          <div className="md:w-1/2 relative bg-gray-50 flex flex-col justify-between overflow-hidden">
+            {/* Main Viewport */}
+            <div className="relative flex-grow flex-shrink min-h-0 w-full aspect-[4/5] overflow-hidden">
+              {mediaItems.length > 0 ? (
+                <AnimatePresence initial={false} custom={direction} mode="popLayout">
+                  <motion.div
+                    key={currentImage}
+                    custom={direction}
+                    variants={slideVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{
+                      x: { type: 'spring', stiffness: 300, damping: 30 },
+                      opacity: { duration: 0.2 }
+                    }}
+                    drag={mediaItems[currentImage]?.type !== 'video' && hasMultiple ? 'x' : false}
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={0.5}
+                    onDragEnd={(_e, info) => {
+                      const swipeThreshold = 50;
+                      if (info.offset.x < -swipeThreshold) handleNext();
+                      else if (info.offset.x > swipeThreshold) handlePrev();
+                    }}
+                    className="absolute inset-0 w-full h-full flex items-center justify-center bg-black"
+                  >
+                    {(() => {
+                      const item = mediaItems[currentImage];
+                      if (!item) return null;
+                      if (item.type === 'image') {
+                        return (
+                          <Link to={`/products/${product.handle}`} className="block w-full h-full select-none cursor-grab active:cursor-grabbing">
+                            <Image
+                              data={item.data}
+                              className="w-full h-full object-cover select-none pointer-events-none"
+                            />
+                          </Link>
+                        );
+                      }
+                      if (item.type === 'video') {
+                        const mp4 = item.sources.find((s) => s.mimeType === 'video/mp4') || item.sources[0];
+                        return (
+                          <video
+                            key={mp4?.url}
+                            src={mp4?.url}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            controls
+                            className="w-full h-full object-contain"
+                            poster={item.preview?.url}
+                          />
+                        );
+                      }
+                      if (item.type === 'external') {
+                        return (
+                          <iframe
+                            src={item.embeddedUrl}
+                            allow="autoplay; encrypted-media"
+                            allowFullScreen
+                            className="w-full h-full border-0"
+                            title="Product video"
+                          />
+                        );
+                      }
+                      return null;
+                    })()}
+                  </motion.div>
+                </AnimatePresence>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-gray-400">
+                  No Media Available
+                </div>
               )}
-            </Link>
+
+              {/* Navigation Controls */}
+              {hasMultiple && (
+                <>
+                  <button
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); handlePrev(); }}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-[#1e2a47] hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-md cursor-pointer"
+                    aria-label="Previous"
+                  >
+                    <ChevronLeft className="w-6 h-6" />
+                  </button>
+                  <button
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleNext(); }}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-[#1e2a47] hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-md cursor-pointer"
+                    aria-label="Next"
+                  >
+                    <ChevronRight className="w-6 h-6" />
+                  </button>
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 bg-black/60 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full font-medium tracking-wider select-none">
+                    {currentImage + 1} / {mediaItems.length}
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Thumbnail Strip */}
+            {hasMultiple && (
+              <div className="p-3 bg-white border-t border-gray-100 flex gap-2 overflow-x-auto justify-center">
+                {mediaItems.map((item, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => { setDirection(idx > currentImage ? 1 : -1); setCurrentImage(idx); }}
+                    className={`relative w-14 h-14 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 cursor-pointer ${
+                      idx === currentImage ? 'border-[#1e2a47] scale-105 shadow-sm' : 'border-transparent opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    {item.type === 'image' ? (
+                      <Image data={item.data} className="w-full h-full object-cover pointer-events-none" />
+                    ) : (
+                      <>
+                        {(item.type === 'video' || item.type === 'external') && item.preview?.url ? (
+                          <img src={item.preview.url} alt={item.preview.altText || 'Video'} className="w-full h-full object-cover pointer-events-none" />
+                        ) : (
+                          <div className="w-full h-full bg-gray-800" />
+                        )}
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                          <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </div>
+                      </>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="md:w-1/2 p-8 md:p-12 overflow-y-auto">
@@ -658,6 +834,40 @@ const COLLECTION_QUERY = `#graphql
         price {
           amount
           currencyCode
+        }
+      }
+    }
+    media(first: 20) {
+      nodes {
+        mediaContentType
+        ... on MediaImage {
+          id
+          image {
+            id
+            url
+            altText
+            width
+            height
+          }
+        }
+        ... on Video {
+          id
+          previewImage {
+            url
+            altText
+          }
+          sources {
+            url
+            mimeType
+          }
+        }
+        ... on ExternalVideo {
+          id
+          embeddedUrl
+          previewImage {
+            url
+            altText
+          }
         }
       }
     }

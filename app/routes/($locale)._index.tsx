@@ -36,7 +36,7 @@ export async function loader({ context }: Route.LoaderArgs) {
 }
 
 const PAGE_QUERY = `#graphql
-  query Page(
+  query HomePage(
     $language: LanguageCode,
     $country: CountryCode,
     $handle: String!

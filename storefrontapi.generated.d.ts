@@ -377,6 +377,193 @@ export type FooterQuery = {
   >;
 };
 
+export type HomePageQueryVariables = StorefrontAPI.Exact<{
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  handle: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type HomePageQuery = {
+  page?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
+      homeHeroTitle1?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      homeHeroTitle2?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      homeHeroTag?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      homeHeroPara?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      homeHeroImages?: StorefrontAPI.Maybe<{
+        references?: StorefrontAPI.Maybe<{
+          nodes: Array<{
+            image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
+          }>;
+        }>;
+      }>;
+      homeHeroVedio?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {sources: Array<Pick<StorefrontAPI.VideoSource, 'url'>>}
+        >;
+      }>;
+      homeSec2Title?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      homeSec2Tag?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      homeSec2CardTitle1?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      homeSec2CardTitle2?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      homeSec2CardTitle3?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      homeSec2CardTitle4?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      homeSec2CardTitle5?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      homeSec2CardImage1?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>}
+        >;
+      }>;
+      homeSec2CardImage2?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>}
+        >;
+      }>;
+      homeSec2CardImage3?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>}
+        >;
+      }>;
+      homeSec2CardImage4?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>}
+        >;
+      }>;
+      homeSec2CardImage5?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>}
+        >;
+      }>;
+      homeSec2CardPara1?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      homeSec2CardPara2?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      homeSec2CardPara3?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      homeSec2CardPara4?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      homeSec2CardPara5?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      featureSecTitle?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      featureSecTitle1?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      featureSecTitle2?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      featureSecTitle3?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      featureSecTitle4?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      featureSecTitle5?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      featureSecTitle6?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      featureCardPara1?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      featureCardPara2?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      featureCardPara3?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      featureCardPara4?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      featureCardPara5?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      featureCardPara6?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      featureCardImg1?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<{
+          image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
+        }>;
+      }>;
+      featureCardImg2?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<{
+          image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
+        }>;
+      }>;
+      featureCardImg3?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<{
+          image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
+        }>;
+      }>;
+      featureCardImg4?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<{
+          image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
+        }>;
+      }>;
+      featureCardImg5?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<{
+          image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
+        }>;
+      }>;
+      featureCardImg6?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<{
+          image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
+        }>;
+      }>;
+      heritageTag?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      heritageTitle?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      heritagePara?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      heritageImg?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<{
+          image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
+        }>;
+      }>;
+      heritageVideo?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {sources: Array<Pick<StorefrontAPI.VideoSource, 'url'>>}
+        >;
+      }>;
+    }
+  >;
+};
+
 export type ArticleQueryVariables = StorefrontAPI.Exact<{
   articleHandle: StorefrontAPI.Scalars['String']['input'];
   blogHandle: StorefrontAPI.Scalars['String']['input'];
@@ -490,6 +677,33 @@ export type ProductItemFragment = Pick<
       }
     >;
   };
+  media: {
+    nodes: Array<
+      | (Pick<
+          StorefrontAPI.ExternalVideo,
+          'id' | 'embeddedUrl' | 'mediaContentType'
+        > & {
+          previewImage?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Image, 'url' | 'altText'>
+          >;
+        })
+      | (Pick<StorefrontAPI.MediaImage, 'id' | 'mediaContentType'> & {
+          image?: StorefrontAPI.Maybe<
+            Pick<
+              StorefrontAPI.Image,
+              'id' | 'url' | 'altText' | 'width' | 'height'
+            >
+          >;
+        })
+      | Pick<StorefrontAPI.Model3d, 'mediaContentType'>
+      | (Pick<StorefrontAPI.Video, 'id' | 'mediaContentType'> & {
+          previewImage?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Image, 'url' | 'altText'>
+          >;
+          sources: Array<Pick<StorefrontAPI.VideoSource, 'url' | 'mimeType'>>;
+        })
+    >;
+  };
 };
 
 export type CollectionQueryVariables = StorefrontAPI.Exact<{
@@ -512,6 +726,12 @@ export type CollectionQuery = {
       StorefrontAPI.Collection,
       'id' | 'handle' | 'title' | 'description'
     > & {
+      heroVedio?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {sources: Array<Pick<StorefrontAPI.VideoSource, 'url'>>}
+        >;
+      }>;
       products: {
         nodes: Array<
           Pick<StorefrontAPI.Product, 'id' | 'handle' | 'title'> & {
@@ -541,6 +761,35 @@ export type CollectionQuery = {
                 }
               >;
             };
+            media: {
+              nodes: Array<
+                | (Pick<
+                    StorefrontAPI.ExternalVideo,
+                    'id' | 'embeddedUrl' | 'mediaContentType'
+                  > & {
+                    previewImage?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.Image, 'url' | 'altText'>
+                    >;
+                  })
+                | (Pick<StorefrontAPI.MediaImage, 'id' | 'mediaContentType'> & {
+                    image?: StorefrontAPI.Maybe<
+                      Pick<
+                        StorefrontAPI.Image,
+                        'id' | 'url' | 'altText' | 'width' | 'height'
+                      >
+                    >;
+                  })
+                | Pick<StorefrontAPI.Model3d, 'mediaContentType'>
+                | (Pick<StorefrontAPI.Video, 'id' | 'mediaContentType'> & {
+                    previewImage?: StorefrontAPI.Maybe<
+                      Pick<StorefrontAPI.Image, 'url' | 'altText'>
+                    >;
+                    sources: Array<
+                      Pick<StorefrontAPI.VideoSource, 'url' | 'mimeType'>
+                    >;
+                  })
+              >;
+            };
           }
         >;
         pageInfo: Pick<
@@ -548,6 +797,16 @@ export type CollectionQuery = {
           'hasPreviousPage' | 'hasNextPage' | 'startCursor' | 'endCursor'
         >;
       };
+    }
+  >;
+  page?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Page, 'id'> & {
+      heroVedio?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {sources: Array<Pick<StorefrontAPI.VideoSource, 'url'>>}
+        >;
+      }>;
     }
   >;
 };
@@ -593,6 +852,28 @@ export type StoreCollectionsQuery = {
   };
 };
 
+export type CollectionPageQueryVariables = StorefrontAPI.Exact<{
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  handle: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type CollectionPageQuery = {
+  page?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
+      heroTitle?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      heroTag?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      heroPara?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      heroVedio?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {sources: Array<Pick<StorefrontAPI.VideoSource, 'url'>>}
+        >;
+      }>;
+    }
+  >;
+};
+
 export type CollectionsQueryVariables = StorefrontAPI.Exact<{
   [key: string]: never;
 }>;
@@ -624,6 +905,33 @@ export type CollectionItemFragment = Pick<
       Pick<StorefrontAPI.ProductVariant, 'id' | 'availableForSale'> & {
         price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
       }
+    >;
+  };
+  media: {
+    nodes: Array<
+      | (Pick<
+          StorefrontAPI.ExternalVideo,
+          'id' | 'embeddedUrl' | 'mediaContentType'
+        > & {
+          previewImage?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Image, 'url' | 'altText'>
+          >;
+        })
+      | (Pick<StorefrontAPI.MediaImage, 'id' | 'mediaContentType'> & {
+          image?: StorefrontAPI.Maybe<
+            Pick<
+              StorefrontAPI.Image,
+              'id' | 'url' | 'altText' | 'width' | 'height'
+            >
+          >;
+        })
+      | Pick<StorefrontAPI.Model3d, 'mediaContentType'>
+      | (Pick<StorefrontAPI.Video, 'id' | 'mediaContentType'> & {
+          previewImage?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Image, 'url' | 'altText'>
+          >;
+          sources: Array<Pick<StorefrontAPI.VideoSource, 'url' | 'mimeType'>>;
+        })
     >;
   };
 };
@@ -668,6 +976,35 @@ export type CatalogQuery = {
             }
           >;
         };
+        media: {
+          nodes: Array<
+            | (Pick<
+                StorefrontAPI.ExternalVideo,
+                'id' | 'embeddedUrl' | 'mediaContentType'
+              > & {
+                previewImage?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.Image, 'url' | 'altText'>
+                >;
+              })
+            | (Pick<StorefrontAPI.MediaImage, 'id' | 'mediaContentType'> & {
+                image?: StorefrontAPI.Maybe<
+                  Pick<
+                    StorefrontAPI.Image,
+                    'id' | 'url' | 'altText' | 'width' | 'height'
+                  >
+                >;
+              })
+            | Pick<StorefrontAPI.Model3d, 'mediaContentType'>
+            | (Pick<StorefrontAPI.Video, 'id' | 'mediaContentType'> & {
+                previewImage?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.Image, 'url' | 'altText'>
+                >;
+                sources: Array<
+                  Pick<StorefrontAPI.VideoSource, 'url' | 'mimeType'>
+                >;
+              })
+          >;
+        };
       }
     >;
     pageInfo: Pick<
@@ -675,6 +1012,22 @@ export type CatalogQuery = {
       'hasPreviousPage' | 'hasNextPage' | 'startCursor' | 'endCursor'
     >;
   };
+};
+
+export type PageDetailsQueryVariables = StorefrontAPI.Exact<{
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  handle: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type PageDetailsQuery = {
+  page?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Page, 'handle' | 'id' | 'title' | 'body'> & {
+      seo?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Seo, 'description' | 'title'>
+      >;
+    }
+  >;
 };
 
 export type PageQueryVariables = StorefrontAPI.Exact<{
@@ -685,19 +1038,295 @@ export type PageQueryVariables = StorefrontAPI.Exact<{
 
 export type PageQuery = {
   page?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Page, 'handle' | 'id' | 'title' | 'body'> & {
-      pageHeroImage?: StorefrontAPI.Maybe<{
+    Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
+      heroTitle?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      heroTag?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      heroVedio?: StorefrontAPI.Maybe<{
         reference?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.MediaImage, 'alt'> & {
-            previewImage?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Image, 'url'>
-            >;
-          }
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {sources: Array<Pick<StorefrontAPI.VideoSource, 'url'>>}
         >;
       }>;
-      seo?: StorefrontAPI.Maybe<
-        Pick<StorefrontAPI.Seo, 'description' | 'title'>
+      firstContentTitle?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
       >;
+      firstContentPara?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      firstContentTag?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      firstContentVedio?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {sources: Array<Pick<StorefrontAPI.VideoSource, 'url'>>}
+        >;
+      }>;
+      firstContentImage?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<{
+          image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
+        }>;
+      }>;
+      secondContentTitle?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      secondContentPara?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      secondContentTag?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      secondContentPara2?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      secondcontentTypes?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      secondContentImage?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<{
+          image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>;
+        }>;
+      }>;
+      thirdContentTag?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      thirdContentTitle?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      thirdContentFirstCardTitle?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      thirdContentSecondCardTitle?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      thirdContentThirdCardTitle?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      thirdContentFourthCardTitle?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      thirdContentFirstCardPara?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      thirdContentSecondCardPara?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      thirdContentThirdCardPara?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      thirdContentFourthCardPara?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      fourthSectionTag?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      fourthSectionTitle?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      historyCardTag1?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      historyCardTag2?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      historyCardTag3?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      historyCardTag4?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      historyCardTag5?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      historyCardTag6?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      historyCardTitle1?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      historyCardTitle2?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      historyCardTitle3?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      historyCardTitle4?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      historyCardTitle5?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      historyCardTitle6?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      historyCardPara1?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      historyCardPara2?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      historyCardPara3?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      historyCardPara4?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      historyCardPara5?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      historyCardPara6?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      historyCardImg1?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>}
+        >;
+      }>;
+      historyCardImg2?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>}
+        >;
+      }>;
+      historyCardImg3?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>}
+        >;
+      }>;
+      historyCardImg4?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>}
+        >;
+      }>;
+      historyCardImg5?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>}
+        >;
+      }>;
+      historyCardImg6?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>}
+        >;
+      }>;
+      fifthSecTag?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      fifthSecTitle?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      fifthSecPara?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      fifthSecCounty?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      fifthSecPara2?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      aboutChooseUsTag?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      aboutChooseUsTitle?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      aboutChooseUsPara?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      aboutChooseUsImg?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>}
+        >;
+      }>;
+      witnessTag?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      witnessTitle?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      witnessPara?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      witnessV1?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {sources: Array<Pick<StorefrontAPI.VideoSource, 'url'>>}
+        >;
+      }>;
+      witnessV1Title?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      witnessV1Para?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      witnessV2?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {sources: Array<Pick<StorefrontAPI.VideoSource, 'url'>>}
+        >;
+      }>;
+      witnessV2Title?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      witnessV2Para?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      soonSecTag?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      soonSecTitle?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      soonSecPara?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      soonSecPara2?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      soonSecImg?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>}
+        >;
+      }>;
+      ourComTag?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      ourComTitle?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      ourComPara?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      ourComImages?: StorefrontAPI.Maybe<{
+        references?: StorefrontAPI.Maybe<{
+          nodes: Array<{
+            image?: StorefrontAPI.Maybe<
+              Pick<StorefrontAPI.Image, 'url' | 'altText'>
+            >;
+          }>;
+        }>;
+      }>;
+    }
+  >;
+};
+
+export type ContactPageQueryVariables = StorefrontAPI.Exact<{
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  handle: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type ContactPageQuery = {
+  page?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
+      heroTitle?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      heroTag?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      heroPara?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      firstContentTitle?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      firstContentPara?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      firstContentTag?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Metafield, 'value'>
+      >;
+      heroVedio?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {sources: Array<Pick<StorefrontAPI.VideoSource, 'url'>>}
+        >;
+      }>;
     }
   >;
 };
@@ -1230,6 +1859,10 @@ interface GeneratedQueryTypes {
     return: FooterQuery;
     variables: FooterQueryVariables;
   };
+  '#graphql\n  query HomePage(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    page(handle: $handle) {\n      id\n      title\n      body\n      homeHeroTitle1: metafield(namespace: "custom", key: "home_hero_title1") { value }\n      homeHeroTitle2: metafield(namespace: "custom", key: "home_hero_title2") { value }\n      homeHeroTag: metafield(namespace: "custom", key: "home_hero_tag") { value }\n      homeHeroPara: metafield(namespace: "custom", key: "home_hero_para") { value }\n      homeHeroImages: metafield(namespace: "custom", key: "home_hero_images") {\n        references(first: 10) {\n          nodes {\n            ... on MediaImage {\n              image {\n                url\n              }\n            }\n          }\n        }\n      }\n      homeHeroVedio: metafield(namespace: "custom", key: "home_hero_vedio") {\n        reference {\n          ... on Video { sources { url } }\n          ... on GenericFile { url }\n        }\n      }\n      homeSec2Title: metafield(namespace: "custom", key: "home_sec2_title") { value }\n      homeSec2Tag: metafield(namespace: "custom", key: "home_sec2_tag") { value }\n      homeSec2CardTitle1: metafield(namespace: "custom", key: "home_sec2_card_title1") { value }\n      homeSec2CardTitle2: metafield(namespace: "custom", key: "home_sec2_card_title2") { value }\n      homeSec2CardTitle3: metafield(namespace: "custom", key: "home_sec2_card_title3") { value }\n      homeSec2CardTitle4: metafield(namespace: "custom", key: "home_sec2_card_title4") { value }\n      homeSec2CardTitle5: metafield(namespace: "custom", key: "home_sec2_card_title5") { value }\n      homeSec2CardImage1: metafield(namespace: "custom", key: "home_sec2_card_img1") {\n        reference { ... on MediaImage { image { url } } ... on GenericFile { url } }\n      }\n      homeSec2CardImage2: metafield(namespace: "custom", key: "home_sec2_card_img2") {\n        reference { ... on MediaImage { image { url } } ... on GenericFile { url } }\n      }\n      homeSec2CardImage3: metafield(namespace: "custom", key: "home_sec2_card_img3") {\n        reference { ... on MediaImage { image { url } } ... on GenericFile { url } }\n      }\n      homeSec2CardImage4: metafield(namespace: "custom", key: "home_sec2_card_img4") {\n        reference { ... on MediaImage { image { url } } ... on GenericFile { url } }\n      }\n      homeSec2CardImage5: metafield(namespace: "custom", key: "home_sec2_card_img5") {\n        reference { ... on MediaImage { image { url } } ... on GenericFile { url } }\n      }\n      homeSec2CardPara1: metafield(namespace: "custom", key: "home_sec2_card_para1") { value }\n      homeSec2CardPara2: metafield(namespace: "custom", key: "home_sec2_card_para2") { value }\n      homeSec2CardPara3: metafield(namespace: "custom", key: "home_sec2_card_para3") { value }\n      homeSec2CardPara4: metafield(namespace: "custom", key: "home_sec2_card_para4") { value }\n      homeSec2CardPara5: metafield(namespace: "custom", key: "home_sec2_card_para5") { value }\n      featureSecTitle: metafield(namespace: "custom", key: "feature_sec_title") { value }\n      featureSecTitle1: metafield(namespace: "custom", key: "feature_sec_title1") { value }\n      featureSecTitle2: metafield(namespace: "custom", key: "feature_sec_title2") { value }\n      featureSecTitle3: metafield(namespace: "custom", key: "feature_sec_title3") { value }\n      featureSecTitle4: metafield(namespace: "custom", key: "feature_sec_title4") { value }\n      featureSecTitle5: metafield(namespace: "custom", key: "feature_sec_title5") { value }\n      featureSecTitle6: metafield(namespace: "custom", key: "feature_sec_title6") { value }\n      featureCardPara1: metafield(namespace: "custom", key: "feature_card_para1") { value }\n      featureCardPara2: metafield(namespace: "custom", key: "feature_card_para2") { value }\n      featureCardPara3: metafield(namespace: "custom", key: "feature_card_para3") { value }\n      featureCardPara4: metafield(namespace: "custom", key: "feature_card_para4") { value }\n      featureCardPara5: metafield(namespace: "custom", key: "feature_card_para5") { value }\n      featureCardPara6: metafield(namespace: "custom", key: "feature_card_para6") { value }\n      featureCardImg1: metafield(namespace: "custom", key: "feature_card_img1") {\n        reference { ... on MediaImage { image { url } } }\n      }\n      featureCardImg2: metafield(namespace: "custom", key: "feature_card_img2") {\n        reference { ... on MediaImage { image { url } } }\n      }\n      featureCardImg3: metafield(namespace: "custom", key: "feature_card_img3") {\n        reference { ... on MediaImage { image { url } } }\n      }\n      featureCardImg4: metafield(namespace: "custom", key: "feature_card_img4") {\n        reference { ... on MediaImage { image { url } } }\n      }\n      featureCardImg5: metafield(namespace: "custom", key: "feature_card_img5") {\n        reference { ... on MediaImage { image { url } } }\n      }\n      featureCardImg6: metafield(namespace: "custom", key: "feature_card_img6") {\n        reference { ... on MediaImage { image { url } } }\n      }\n      heritageTag: metafield(namespace: "custom", key: "heritage_tag") { value }\n      heritageTitle: metafield(namespace: "custom", key: "heritage_title") { value }\n      heritagePara: metafield(namespace: "custom", key: "heritage_para") { value }\n      heritageImg: metafield(namespace: "custom", key: "heritage_img") {\n        reference { ... on MediaImage { image { url } } }\n      }\n      heritageVideo: metafield(namespace: "custom", key: "heritage_vedio") {\n        reference {\n          ... on Video { sources { url } }\n          ... on GenericFile { url }\n        }\n      }\n    }\n  }\n': {
+    return: HomePageQuery;
+    variables: HomePageQueryVariables;
+  };
   '#graphql\n  query Article(\n    $articleHandle: String!\n    $blogHandle: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    blog(handle: $blogHandle) {\n      handle\n      articleByHandle(handle: $articleHandle) {\n        handle\n        title\n        contentHtml\n        publishedAt\n        author: authorV2 {\n          name\n        }\n        image {\n          id\n          altText\n          url\n          width\n          height\n        }\n        seo {\n          description\n          title\n        }\n      }\n    }\n  }\n': {
     return: ArticleQuery;
     variables: ArticleQueryVariables;
@@ -1238,7 +1871,7 @@ interface GeneratedQueryTypes {
     return: BlogQuery;
     variables: BlogQueryVariables;
   };
-  '#graphql\n  fragment MoneyProductItem on MoneyV2 {\n    amount\n    currencyCode\n  }\n  fragment ProductItem on Product {\n    id\n    handle\n    title\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    priceRange {\n      minVariantPrice {\n        ...MoneyProductItem\n      }\n      maxVariantPrice {\n        ...MoneyProductItem\n      }\n    }\n    variants(first: 1) {\n      nodes {\n        id\n        availableForSale\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n  }\n  query Collection(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      handle\n      title\n      description\n      products(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor\n      ) {\n        nodes {\n          ...ProductItem\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          startCursor\n          endCursor\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  fragment MoneyProductItem on MoneyV2 {\n    amount\n    currencyCode\n  }\n  fragment ProductItem on Product {\n    id\n    handle\n    title\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    priceRange {\n      minVariantPrice {\n        ...MoneyProductItem\n      }\n      maxVariantPrice {\n        ...MoneyProductItem\n      }\n    }\n    variants(first: 1) {\n      nodes {\n        id\n        availableForSale\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    media(first: 20) {\n      nodes {\n        mediaContentType\n        ... on MediaImage {\n          id\n          image {\n            id\n            url\n            altText\n            width\n            height\n          }\n        }\n        ... on Video {\n          id\n          previewImage {\n            url\n            altText\n          }\n          sources {\n            url\n            mimeType\n          }\n        }\n        ... on ExternalVideo {\n          id\n          embeddedUrl\n          previewImage {\n            url\n            altText\n          }\n        }\n      }\n    }\n  }\n  query Collection(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      handle\n      title\n      description\n      heroVedio: metafield(namespace: "custom", key: "page_hero_vedio") {\n        reference {\n          ... on Video {\n            sources {\n              url\n            }\n          }\n          ... on GenericFile {\n            url\n          }\n        }\n      }\n      products(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor\n      ) {\n        nodes {\n          ...ProductItem\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          startCursor\n          endCursor\n        }\n      }\n    }\n    page(handle: $handle) {\n      id\n      heroVedio: metafield(namespace: "custom", key: "page_hero_vedio") {\n        reference {\n          ... on Video {\n            sources {\n              url\n            }\n          }\n          ... on GenericFile {\n            url\n          }\n        }\n      }\n    }\n  }\n': {
     return: CollectionQuery;
     variables: CollectionQueryVariables;
   };
@@ -1246,17 +1879,29 @@ interface GeneratedQueryTypes {
     return: StoreCollectionsQuery;
     variables: StoreCollectionsQueryVariables;
   };
+  '#graphql\n  query CollectionPage(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    page(handle: $handle) {\n      id\n      title\n      body\n      heroTitle: metafield(namespace: "custom", key: "page_hero_title") {\n        value\n      }\n      heroTag: metafield(namespace: "custom", key: "page_hero_tag") {\n        value\n      }\n      heroPara: metafield(namespace: "custom", key: "page_hero_para") {\n        value\n      }\n      heroVedio: metafield(namespace: "custom", key: "page_hero_vedio") {\n        reference {\n          ... on Video {\n            sources {\n              url\n            }\n          }\n          ... on GenericFile {\n            url\n          }\n        }\n      }\n    }\n  }\n': {
+    return: CollectionPageQuery;
+    variables: CollectionPageQueryVariables;
+  };
   '#graphql\n  query Collections {\n    collections(first: 20) {\n      nodes {\n        id\n        title\n        handle\n      }\n    }\n  }\n': {
     return: CollectionsQuery;
     variables: CollectionsQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment MoneyCollectionItem on MoneyV2 {\n    amount\n    currencyCode\n  }\n  fragment CollectionItem on Product {\n    id\n    handle\n    title\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    priceRange {\n      minVariantPrice {\n        ...MoneyCollectionItem\n      }\n      maxVariantPrice {\n        ...MoneyCollectionItem\n      }\n    }\n    variants(first: 1) {\n      nodes {\n        id\n        availableForSale\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n  }\n\n  query Catalog(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, last: $last, before: $startCursor, after: $endCursor) {\n      nodes {\n        ...CollectionItem\n      }\n      pageInfo {\n        hasPreviousPage\n        hasNextPage\n        startCursor\n        endCursor\n      }\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment MoneyCollectionItem on MoneyV2 {\n    amount\n    currencyCode\n  }\n  fragment CollectionItem on Product {\n    id\n    handle\n    title\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    priceRange {\n      minVariantPrice {\n        ...MoneyCollectionItem\n      }\n      maxVariantPrice {\n        ...MoneyCollectionItem\n      }\n    }\n    variants(first: 1) {\n      nodes {\n        id\n        availableForSale\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    media(first: 20) {\n      nodes {\n        mediaContentType\n        ... on MediaImage {\n          id\n          image {\n            id\n            url\n            altText\n            width\n            height\n          }\n        }\n        ... on Video {\n          id\n          previewImage {\n            url\n            altText\n          }\n          sources {\n            url\n            mimeType\n          }\n        }\n        ... on ExternalVideo {\n          id\n          embeddedUrl\n          previewImage {\n            url\n            altText\n          }\n        }\n      }\n    }\n  }\n\n  query Catalog(\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(country: $country, language: $language) {\n    products(first: $first, last: $last, before: $startCursor, after: $endCursor) {\n      nodes {\n        ...CollectionItem\n      }\n      pageInfo {\n        hasPreviousPage\n        hasNextPage\n        startCursor\n        endCursor\n      }\n    }\n  }\n': {
     return: CatalogQuery;
     variables: CatalogQueryVariables;
   };
-  '#graphql\n  query Page(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    page(handle: $handle) {\n      handle\n      id\n      title\n      body\n      pageHeroImage: metafield(namespace: "custom", key: "page_hero_image") {\n        reference {\n          ... on MediaImage {\n            previewImage { url }\n            alt\n          }\n        }\n      }\n      seo {\n        description\n        title\n      }\n    }\n  }\n': {
+  '#graphql\n  query PageDetails(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    page(handle: $handle) {\n      handle\n      id\n      title\n      body\n      seo {\n        description\n        title\n      }\n    }\n  }\n': {
+    return: PageDetailsQuery;
+    variables: PageDetailsQueryVariables;
+  };
+  '#graphql\n  query Page(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    page(handle: $handle) {\n      id\n      title\n      body\n      heroTitle: metafield(namespace: "custom", key: "page_hero_title") {\n        value\n      }\n      heroTag: metafield(namespace: "custom", key: "page_hero_tag") {\n        value\n      }\n      heroVedio: metafield(namespace: "custom", key: "page_hero_vedio") {\n        reference {\n          ... on Video {\n            sources {\n              url\n            }\n          }\n          ... on GenericFile {\n            url\n          }\n        }\n      }\n      firstContentTitle: metafield(namespace: "custom", key: "first_content_title") {\n        value\n      }\n      firstContentPara: metafield(namespace: "custom", key: "first_content_para") {\n        value\n      }\n      firstContentTag: metafield(namespace: "custom", key: "first_content_tag") {\n        value\n      }\n      firstContentVedio: metafield(namespace: "custom", key: "first_content_vedio") {\n        reference {\n          ... on Video {\n            sources {\n              url\n            }\n          }\n          ... on GenericFile {\n            url\n          }\n        }\n      }\n      firstContentImage: metafield(namespace: "custom", key: "first_content_image") {\n        reference {\n          ... on MediaImage {\n            image {\n              url\n            }\n          }\n        }\n      } \n      secondContentTitle: metafield(namespace: "custom", key: "second_content_title") {\n        value\n      }\n      secondContentPara: metafield(namespace: "custom", key: "second_content_para") {\n        value\n      }\n      secondContentTag: metafield(namespace: "custom", key: "second_content_tag") {\n        value\n      }\n      secondContentPara2: metafield(namespace: "custom", key: "second_content_para2") {\n        value\n      }\n      secondcontentTypes: metafield(namespace: "custom", key: "second_content_types") {\n        value\n      }\n      secondContentImage: metafield(namespace: "custom", key: "second_content_image") {\n        reference { ... on MediaImage { image { url } } }\n      }\n      thirdContentTag: metafield(namespace: "custom", key: "third_content_tag") { value }\n      thirdContentTitle: metafield(namespace: "custom", key: "third_content_title") { value }\n      thirdContentFirstCardTitle: metafield(namespace: "custom", key: "third_content_first_card_title") { value }\n      thirdContentSecondCardTitle: metafield(namespace: "custom", key: "third_content_second_card_title") { value }\n      thirdContentThirdCardTitle: metafield(namespace: "custom", key: "third_content_third_card_title") { value }\n      thirdContentFourthCardTitle: metafield(namespace: "custom", key: "third_content_fourth_card_title") { value }\n      thirdContentFirstCardPara: metafield(namespace: "custom", key: "third_content_first_card_para") { value }\n      thirdContentSecondCardPara: metafield(namespace: "custom", key: "third_content_second_card_para") { value }\n      thirdContentThirdCardPara: metafield(namespace: "custom", key: "third_content_third_card_para") { value }\n      thirdContentFourthCardPara: metafield(namespace: "custom", key: "third_content_fourth_card_para") { value }\n      fourthSectionTag: metafield(namespace: "custom", key: "fourth_section_tag") { value }\n      fourthSectionTitle: metafield(namespace: "custom", key: "fourth_section_title") { value }\n      historyCardTag1: metafield(namespace: "custom", key: "history_card_tag1") { value }\n      historyCardTag2: metafield(namespace: "custom", key: "history_card_tag2") { value }\n      historyCardTag3: metafield(namespace: "custom", key: "history_card_tag3") { value }\n      historyCardTag4: metafield(namespace: "custom", key: "history_card_tag4") { value }\n      historyCardTag5: metafield(namespace: "custom", key: "history_card_tag5") { value }\n      historyCardTag6: metafield(namespace: "custom", key: "history_card_tag6") { value }\n      historyCardTitle1: metafield(namespace: "custom", key: "history_card_title1") { value }\n      historyCardTitle2: metafield(namespace: "custom", key: "history_card_title2") { value }\n      historyCardTitle3: metafield(namespace: "custom", key: "history_card_title3") { value }\n      historyCardTitle4: metafield(namespace: "custom", key: "history_card_title4") { value }\n      historyCardTitle5: metafield(namespace: "custom", key: "history_card_title5") { value }\n      historyCardTitle6: metafield(namespace: "custom", key: "history_card_title6") { value }\n      historyCardPara1: metafield(namespace: "custom", key: "history_card_para1") { value }\n      historyCardPara2: metafield(namespace: "custom", key: "history_card_para2") { value }\n      historyCardPara3: metafield(namespace: "custom", key: "history_card_para3") { value }\n      historyCardPara4: metafield(namespace: "custom", key: "history_card_para4") { value }\n      historyCardPara5: metafield(namespace: "custom", key: "history_card_para5") { value }\n      historyCardPara6: metafield(namespace: "custom", key: "history_card_para6") { value }\n      historyCardImg1: metafield(namespace: "custom", key: "history_card_img1") {\n        reference { ... on MediaImage { image { url } } ... on GenericFile { url } }\n      }\n      historyCardImg2: metafield(namespace: "custom", key: "history_card_img2") {\n        reference { ... on MediaImage { image { url } } ... on GenericFile { url } }\n      }\n      historyCardImg3: metafield(namespace: "custom", key: "history_card_img3") {\n        reference { ... on MediaImage { image { url } } ... on GenericFile { url } }\n      }\n      historyCardImg4: metafield(namespace: "custom", key: "history_card_img4") {\n        reference { ... on MediaImage { image { url } } ... on GenericFile { url } }\n      }\n      historyCardImg5: metafield(namespace: "custom", key: "history_card_img5") {\n        reference { ... on MediaImage { image { url } } ... on GenericFile { url } }\n      }\n      historyCardImg6: metafield(namespace: "custom", key: "history_card_img6") {\n        reference { ... on MediaImage { image { url } } ... on GenericFile { url } }\n      }\n      fifthSecTag: metafield(namespace: "custom", key: "fifth_sec_tag") { value }\n      fifthSecTitle: metafield(namespace: "custom", key: "fifth_sec_title") { value }\n      fifthSecPara: metafield(namespace: "custom", key: "fifth_sec_para") { value }\n      fifthSecCounty: metafield(namespace: "custom", key: "fifth_sec_county") { value }\n      fifthSecPara2: metafield(namespace: "custom", key: "fifth_sec_para2") { value }\n      aboutChooseUsTag: metafield(namespace: "custom", key: "about_choose_us_tag") { value }\n      aboutChooseUsTitle: metafield(namespace: "custom", key: "about_choose_us_title") { value }\n      aboutChooseUsPara: metafield(namespace: "custom", key: "about_choose_us_para") { value }\n      aboutChooseUsImg: metafield(namespace: "custom", key: "about_choose_us_img") {\n        reference { ... on MediaImage { image { url } } ... on GenericFile { url } }\n      }\n      witnessTag: metafield(namespace: "custom", key: "witness_tag") { value }\n      witnessTitle: metafield(namespace: "custom", key: "witness_title") { value }\n      witnessPara: metafield(namespace: "custom", key: "witness_para") { value }\n      witnessV1: metafield(namespace: "custom", key: "witness_v1") {\n        reference { ... on Video { sources { url } } ... on GenericFile { url } }\n      }\n      witnessV1Title: metafield(namespace: "custom", key: "witness_v1_title") { value }\n      witnessV1Para: metafield(namespace: "custom", key: "witness_v1_para") { value }\n      witnessV2: metafield(namespace: "custom", key: "witness_v2") {\n        reference { ... on Video { sources { url } } ... on GenericFile { url } }\n      }\n      witnessV2Title: metafield(namespace: "custom", key: "witness_v2_title") { value }\n      witnessV2Para: metafield(namespace: "custom", key: "witness_v2_para") { value }\n      soonSecTag: metafield(namespace: "custom", key: "soon_sec_tag") { value }\n      soonSecTitle: metafield(namespace: "custom", key: "soon_sec_title") { value }\n      soonSecPara: metafield(namespace: "custom", key: "soon_sec_para") { value }\n      soonSecPara2: metafield(namespace: "custom", key: "soon_sec_para2") { value }\n      soonSecImg: metafield(namespace: "custom", key: "soon_sec_img") {\n        reference { ... on MediaImage { image { url } } ... on GenericFile { url } }\n      }\n      ourComTag: metafield(namespace: "custom", key: "our_com_tag") { value }\n      ourComTitle: metafield(namespace: "custom", key: "our_com_title") { value }\n      ourComPara: metafield(namespace: "custom", key: "our_com_para") { value }\n      ourComImages: metafield(namespace: "custom", key: "our_com_images") {\n        references(first: 20) {\n          nodes {\n            ... on MediaImage {\n              image { url altText }\n            }\n          }\n        }\n      }\n    }\n  }\n': {
     return: PageQuery;
     variables: PageQueryVariables;
+  };
+  '#graphql\n  query ContactPage(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    page(handle: $handle) {\n      id\n      title\n      body\n      heroTitle: metafield(namespace: "custom", key: "page_hero_title") {\n        value\n      }\n      heroTag: metafield(namespace: "custom", key: "page_hero_tag") {\n        value\n      }\n      heroPara: metafield(namespace: "custom", key: "page_hero_para") {\n        value\n      }\n       firstContentTitle: metafield(namespace: "custom", key: "first_content_title") {\n        value\n      }\n      firstContentPara: metafield(namespace: "custom", key: "first_content_para") {\n        value\n      }\n      firstContentTag: metafield(namespace: "custom", key: "first_content_tag") {\n        value\n      }\n      heroVedio: metafield(namespace: "custom", key: "page_hero_vedio") {\n        reference {\n          ... on Video {\n            sources {\n              url\n            }\n          }\n          ... on GenericFile {\n            url\n          }\n        }\n      }\n    }\n      \n  }\n': {
+    return: ContactPageQuery;
+    variables: ContactPageQueryVariables;
   };
   '#graphql\n  fragment Policy on ShopPolicy {\n    body\n    handle\n    id\n    title\n    url\n  }\n  query Policy(\n    $country: CountryCode\n    $language: LanguageCode\n    $privacyPolicy: Boolean!\n    $refundPolicy: Boolean!\n    $shippingPolicy: Boolean!\n    $termsOfService: Boolean!\n  ) @inContext(language: $language, country: $country) {\n    shop {\n      privacyPolicy @include(if: $privacyPolicy) {\n        ...Policy\n      }\n      shippingPolicy @include(if: $shippingPolicy) {\n        ...Policy\n      }\n      termsOfService @include(if: $termsOfService) {\n        ...Policy\n      }\n      refundPolicy @include(if: $refundPolicy) {\n        ...Policy\n      }\n    }\n  }\n': {
     return: PolicyQuery;
