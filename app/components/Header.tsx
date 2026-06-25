@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link, NavLink, useNavigate } from 'react-router';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router';
+
 import {
   Heart,
   ShoppingBag,
@@ -275,6 +276,8 @@ export function HeaderMenu() { return null; }
 // ─── Main Header ──────────────────────────────────────────────────────────────
 export function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isBlackIcons = ['/cart', '/wishlist', '/blogs'].some(p => location.pathname.startsWith(p));
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
@@ -291,7 +294,7 @@ export function Header() {
       try {
         const raw = localStorage.getItem(`cart_${key}`);
         if (raw) { const items = JSON.parse(raw) as any[]; totalCart += items.reduce((a: number, i: any) => a + i.quantity, 0); }
-      } catch {}
+      } catch { }
     });
     setCartCount(totalCart);
 
@@ -348,7 +351,7 @@ export function Header() {
       const arr = (() => { try { const r = localStorage.getItem(key); return r ? JSON.parse(r) as any[] : []; } catch { return []; } })();
       arr.push({ ...data, type: currentSession.type, timestamp: new Date().toISOString() });
       localStorage.setItem(key, JSON.stringify(arr));
-    } catch {}
+    } catch { }
     setModalStep(null);
     navigate('/cart');
   };
@@ -386,10 +389,9 @@ export function Header() {
                   key={link.name}
                   to={createPageUrl(link.path)}
                   className={({ isActive }) =>
-                    `text-sm tracking-wider uppercase transition-colors duration-300 ${isActive
-                      ? 'underline underline-offset-8 decoration-[#d4a89a] text-white'
-                      : 'text-white hover:text-[#d4a89a]'}`
-                  }
+                    `text-sm tracking-wider uppercase transition-colors duration-300 ${isScrolled ? 'text-white' : isActive
+                      ? 'underline underline-offset-8 decoration-[#d4a89a] text-black font-bold'
+                      : `${isBlackIcons ? 'text-black' : 'text-white hover:text-[#d4a89a]'}`}`}
                 >
                   {link.name}
                 </NavLink>
@@ -399,7 +401,7 @@ export function Header() {
             <div className="flex items-center space-x-4">
               {/* Wishlist */}
               <Link to={createPageUrl('Wishlist')}>
-                <Button variant="ghost" size="icon" className="text-white hover:text-[#d4a89a] hover:bg-transparent relative">
+                <Button variant="ghost" size="icon" className={`${isScrolled ? 'text-white' : isBlackIcons ? 'text-black' : 'text-white'} hover:text-[#d4a89a] hover:bg-transparent relative`}>
                   <Heart className="w-5 h-5" />
                   {wishlistCount > 0 && (
                     <Badge className="absolute -top-1 -right-1 w-5 h-5 p-0 flex items-center justify-center bg-[#d4a89a] text-white text-xs border-none">
@@ -414,7 +416,7 @@ export function Header() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-white hover:text-[#d4a89a] hover:bg-transparent relative"
+                  className={`${isScrolled ? 'text-white' : isBlackIcons ? 'text-black' : 'text-white'} hover:text-[#d4a89a] hover:bg-transparent relative`}
                   onClick={handleCartIconClick}
                 >
                   <ShoppingBag className="w-5 h-5" />
@@ -481,7 +483,7 @@ export function Header() {
                   <motion.div key={link.name} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }}>
                     <NavLink
                       to={createPageUrl(link.path)}
-                      className={({ isActive }) => `text-2xl transition-colors ${isActive ? 'text-white font-bold' : 'text-white hover:text-[#d4a89a]'}`}
+                      className={({ isActive }) => `text-2xl transition-colors ${isScrolled ? 'text-white' : isActive ? 'text-black font-bold' : `${isBlackIcons ? 'text-black' : 'text-white hover:text-[#d4a89a]'}`}`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {link.name}
