@@ -142,9 +142,16 @@ export default function Contact() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const heroVedioUrl =
-    page?.heroVedio?.reference?.sources?.[0]?.url ||
-    page?.heroVedio?.reference?.url;
+  // Resolve hero video URL safely across possible reference shapes
+  const heroVedioUrl = (() => {
+    const ref = page?.heroVedio?.reference;
+    if (ref && 'sources' in ref) {
+      // Video reference with sources array
+      return (ref as any).sources?.[0]?.url ?? '';
+    }
+    // Generic file reference with direct url
+    return (ref as any)?.url ?? '';
+  })();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -220,13 +227,15 @@ export default function Contact() {
               transition={{ duration: 0.8 }}
             >
               <span className="text-amber-600 tracking-[0.3em] uppercase text-sm font-medium">
-                {page.firstContentTag?.value}
+                {page?.firstContentTag?.value}
               </span>
               <h2 className="text-4xl font-serif text-[#1a1a1a] mt-4 leading-tight">
-                {page.firstContentTitle?.value}
+                {page?.firstContentTitle?.value}
               </h2>
               <p className="text-gray-600 mt-6 leading-relaxed text-lg font-light">
-                {page.firstContentPara?.value && <p className="whitespace-pre-line">{page.firstContentPara.value}</p>}
+                {page?.firstContentPara?.value && (
+                  <p className="whitespace-pre-line">{page.firstContentPara.value}</p>
+                )}
               </p>
 
               <div className="mt-12 space-y-8">
@@ -383,17 +392,20 @@ export default function Contact() {
             transition={{ duration: 0.8 }}
             className="mt-24 w-full"
           >
-            <div className="aspect-[21/9] rounded-[2.5rem] overflow-hidden bg-gray-200 w-full shadow-2xl border border-white/50">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.81938928828!2d79.85167!3d6.9147!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2594191d4e0e1%3A0x6b8765f0e97214e2!2sTraditional%20Gem%20Mine!5e0!3m2!1sen!2slk!4v1709543166847!5m2!1sen!2slk"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen={true}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Traditional Gem Mine Location"
-              />
+            <div className="flex flex-col items-center gap-4">
+              <div className="aspect-[21/9] rounded-[2.5rem] overflow-hidden bg-gray-200 w-full shadow-2xl border border-white/50">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!4v1782727962724!6m8!1m7!1swFXcCYM12F4-klGgybLk5A!2m2!1d6.90706352150615!2d79.85159791552908!3f353.576618705036!4f-0.47769784172660934!5f0.4000000000000002"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Traditional Gem Mine Location"
+                />
+              </div>
+              <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" onClick={() => window.open('https://www.google.com/maps/search/?api=1&query=6.9070635,79.8515979', '_blank')}>Open in Google Maps</button>
             </div>
           </motion.div>
         </div>

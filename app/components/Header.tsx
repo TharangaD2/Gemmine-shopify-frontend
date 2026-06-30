@@ -277,7 +277,7 @@ export function HeaderMenu() { return null; }
 export function Header() {
   const navigate = useNavigate();
   const location = useLocation();
-  const isBlackIcons = ['/cart', '/wishlist', '/blogs'].some(p => location.pathname.startsWith(p));
+  const isBlackIcons = ['/cart', '/wishlist', '/blogs', '/pages/wishlist'].some(p => location.pathname.startsWith(p));
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
