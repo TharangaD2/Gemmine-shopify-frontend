@@ -195,6 +195,7 @@ export default function About() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const storyVideoRef = useRef<HTMLVideoElement>(null);
   const { page } = useLoaderData<typeof loader>();
+  if (!page) return null;
 
   const milestones = [
     {
@@ -202,42 +203,42 @@ export default function About() {
       title: page?.historyCardTitle1?.value,
       description:
         page?.historyCardPara1?.value,
-      image: page?.historyCardImg1?.reference?.image?.url,
+      image: (page?.historyCardImg1?.reference as any)?.image?.url || (page?.historyCardImg1?.reference as any)?.url,
     },
     {
       year: page?.historyCardTag2?.value,
       title: page?.historyCardTitle2?.value,
       description:
         page?.historyCardPara2?.value,
-      image: page?.historyCardImg2?.reference?.image?.url,
+      image: (page?.historyCardImg2?.reference as any)?.image?.url || (page?.historyCardImg2?.reference as any)?.url,
     },
     {
       year: page?.historyCardTag3?.value,
       title: page?.historyCardTitle3?.value,
       description:
         page?.historyCardPara3?.value,
-      image: page?.historyCardImg3?.reference?.image?.url,
+      image: (page?.historyCardImg3?.reference as any)?.image?.url || (page?.historyCardImg3?.reference as any)?.url,
     },
     {
       year: page?.historyCardTag4?.value,
       title: page?.historyCardTitle4?.value,
       description:
         page?.historyCardPara4?.value,
-      image: page?.historyCardImg4?.reference?.image?.url,
+      image: (page?.historyCardImg4?.reference as any)?.image?.url || (page?.historyCardImg4?.reference as any)?.url,
     },
     {
       year: page?.historyCardTag5?.value,
       title: page?.historyCardTitle5?.value,
       description:
         page?.historyCardPara5?.value,
-      image: page?.historyCardImg5?.reference?.image?.url,
+      image: (page?.historyCardImg5?.reference as any)?.image?.url || (page?.historyCardImg5?.reference as any)?.url,
     },
     {
       year: page?.historyCardTag6?.value,
       title: page?.historyCardTitle6?.value,
       description:
         page?.historyCardPara6?.value,
-      image: page?.historyCardImg6?.reference?.image?.url,
+      image: (page?.historyCardImg6?.reference as any)?.image?.url || (page?.historyCardImg6?.reference as any)?.url,
     },
   ];
 
@@ -305,34 +306,34 @@ export default function About() {
   }, []);
 
   const heroVedioUrl =
-    page.heroVedio?.reference?.sources?.[0]?.url ||
-    page.heroVedio?.reference?.url;
+    (page.heroVedio?.reference as any)?.sources?.[0]?.url ||
+    (page.heroVedio?.reference as any)?.url;
 
   const firstVideoUrl =
-    page.firstContentVedio?.reference?.sources?.[0]?.url ||
-    page.firstContentVedio?.reference?.url;
+    (page.firstContentVedio?.reference as any)?.sources?.[0]?.url ||
+    (page.firstContentVedio?.reference as any)?.url;
 
   const firstImageUrl =
-    page?.firstContentImage?.reference?.image?.url;
+    (page?.firstContentImage?.reference as any)?.image?.url;
 
   const secondImageUrl =
-    page?.secondContentImage?.reference?.image?.url;
+    (page?.secondContentImage?.reference as any)?.image?.url;
 
   const secondContentTypesStr = page?.secondcontentTypes?.value;
-  const secondContentTypesList = secondContentTypesStr.startsWith('[')
+  const secondContentTypesList = (secondContentTypesStr?.startsWith('[')
     ? JSON.parse(secondContentTypesStr)
-    : secondContentTypesStr.split(',').map((s: string) => s.trim());
+    : secondContentTypesStr?.split(',').map((s: string) => s.trim()) || []) as string[];
 
   const ourComImageNodes = page?.ourComImages?.references?.nodes || [];
-  const chooseUsImgUrl = page?.aboutChooseUsImg?.reference?.image?.url || page?.aboutChooseUsImg?.reference?.url;
-  const soonSecImgUrl = page?.soonSecImg?.reference?.image?.url || page?.soonSecImg?.reference?.url;
-  const witnessV1Url = page?.witnessV1?.reference?.sources?.[0]?.url || page?.witnessV1?.reference?.url;
-  const witnessV2Url = page?.witnessV2?.reference?.sources?.[0]?.url || page?.witnessV2?.reference?.url;
+  const chooseUsImgUrl = (page?.aboutChooseUsImg?.reference as any)?.image?.url || (page?.aboutChooseUsImg?.reference as any)?.url;
+  const soonSecImgUrl = (page?.soonSecImg?.reference as any)?.image?.url || (page?.soonSecImg?.reference as any)?.url;
+  const witnessV1Url = (page?.witnessV1?.reference as any)?.sources?.[0]?.url || (page?.witnessV1?.reference as any)?.url;
+  const witnessV2Url = (page?.witnessV2?.reference as any)?.sources?.[0]?.url || (page?.witnessV2?.reference as any)?.url;
   const fifthSecCountries = (() => {
     const raw = page?.fifthSecCounty?.value;
     if (!raw) return [];
     try { return JSON.parse(raw); } catch { return raw.split(',').map((s: string) => s.trim()); }
-  })();
+  })() as string[];
 
   return (
     <div className="min-h-screen bg-[#f8f5f0]">
@@ -844,7 +845,7 @@ export default function About() {
           </motion.div>
 
           <div className="columns-2 sm:columns-2 lg:columns-3 gap-4 md:gap-6 space-y-4 md:space-y-6">
-            {ourComImageNodes.map((node: { image?: { url: string; altText?: string } }, index: number) => (
+            {ourComImageNodes.map((node: any, index: number) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, scale: 0.9, y: 30 }}
