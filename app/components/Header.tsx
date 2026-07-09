@@ -277,7 +277,7 @@ export function HeaderMenu() { return null; }
 export function Header() {
   const navigate = useNavigate();
   const location = useLocation();
-  const isBlackIcons = ['/cart', '/wishlist', '/blogs', '/pages/wishlist'].some(p => location.pathname.startsWith(p));
+  const isBlackIcons = ['/cart', '/wishlist', '/pages/wishlist', '/blogs/post/', '/blogs/news/'].some(p => location.pathname.startsWith(p));
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
@@ -390,7 +390,7 @@ export function Header() {
                   to={createPageUrl(link.path)}
                   className={({ isActive }) =>
                     `text-sm tracking-wider uppercase transition-colors duration-300 ${isScrolled ? 'text-white' : isActive
-                      ? 'underline underline-offset-8 decoration-[#d4a89a] text-black font-bold'
+                      ? 'text-white underline underline-offset-8 decoration-[#d4a89a] font-bold'
                       : `${isBlackIcons ? 'text-black' : 'text-white hover:text-[#d4a89a]'}`}`}
                 >
                   {link.name}

@@ -654,6 +654,60 @@ export type ArticleItemFragment = Pick<
   blog: Pick<StorefrontAPI.Blog, 'handle'>;
 };
 
+export type BlogPageQueryVariables = StorefrontAPI.Exact<{
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  handle: StorefrontAPI.Scalars['String']['input'];
+}>;
+
+export type BlogPageQuery = {
+  page?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Page, 'id' | 'title' | 'body'> & {
+      heroTitle?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      heroTag?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      heroPara?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
+      heroVedio?: StorefrontAPI.Maybe<{
+        reference?: StorefrontAPI.Maybe<
+          | Pick<StorefrontAPI.GenericFile, 'url'>
+          | {image?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Image, 'url'>>}
+          | {sources: Array<Pick<StorefrontAPI.VideoSource, 'url'>>}
+        >;
+      }>;
+    }
+  >;
+};
+
+export type BlogArticlesQueryVariables = StorefrontAPI.Exact<{
+  blogHandle: StorefrontAPI.Scalars['String']['input'];
+  first: StorefrontAPI.Scalars['Int']['input'];
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+}>;
+
+export type BlogArticlesQuery = {
+  blog?: StorefrontAPI.Maybe<{
+    articles: {
+      nodes: Array<
+        Pick<
+          StorefrontAPI.Article,
+          'id' | 'handle' | 'title' | 'publishedAt' | 'excerpt' | 'tags'
+        > & {
+          image?: StorefrontAPI.Maybe<
+            Pick<
+              StorefrontAPI.Image,
+              'id' | 'altText' | 'url' | 'width' | 'height'
+            >
+          >;
+          author?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.ArticleAuthor, 'name'>
+          >;
+          blog: Pick<StorefrontAPI.Blog, 'handle'>;
+        }
+      >;
+    };
+  }>;
+};
+
 export type MoneyProductItemFragment = Pick<
   StorefrontAPI.MoneyV2,
   'amount' | 'currencyCode'
@@ -1870,6 +1924,14 @@ interface GeneratedQueryTypes {
   '#graphql\n  query Blog(\n    $language: LanguageCode\n    $blogHandle: String!\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(language: $language) {\n    blog(handle: $blogHandle) {\n      title\n      handle\n      seo {\n        title\n        description\n      }\n      articles(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor\n      ) {\n        nodes {\n          ...ArticleItem\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          hasNextPage\n          endCursor\n          startCursor\n        }\n\n      }\n    }\n  }\n  fragment ArticleItem on Article {\n    author: authorV2 {\n      name\n    }\n    contentHtml\n    handle\n    id\n    image {\n      id\n      altText\n      url\n      width\n      height\n    }\n    publishedAt\n    title\n    blog {\n      handle\n    }\n  }\n': {
     return: BlogQuery;
     variables: BlogQueryVariables;
+  };
+  '#graphql\n  query BlogPage(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    page(handle: $handle) {\n      id\n      title\n      body\n      heroTitle: metafield(namespace: "custom", key: "page_hero_title") {\n        value\n      }\n      heroTag: metafield(namespace: "custom", key: "page_hero_tag") {\n        value\n      }\n      heroPara: metafield(namespace: "custom", key: "page_hero_para") {\n        value\n      }\n      heroVedio: metafield(namespace: "custom", key: "page_hero_vedio") {\n        reference {\n          ... on Video {\n            sources {\n              url\n            }\n          }\n          ... on GenericFile {\n            url\n          }\n          ... on MediaImage {\n            image {\n              url\n            }\n          }\n        }\n      }\n    }\n  }\n': {
+    return: BlogPageQuery;
+    variables: BlogPageQueryVariables;
+  };
+  '#graphql\n  query BlogArticles(\n    $blogHandle: String!\n    $first: Int!\n    $language: LanguageCode\n    $country: CountryCode\n  ) @inContext(language: $language, country: $country) {\n    blog(handle: $blogHandle) {\n      articles(first: $first, sortKey: PUBLISHED_AT, reverse: true) {\n        nodes {\n          id\n          handle\n          title\n          publishedAt\n          excerpt\n          image {\n            id\n            altText\n            url\n            width\n            height\n          }\n          author: authorV2 {\n            name\n          }\n          blog {\n            handle\n          }\n          tags\n        }\n      }\n    }\n  }\n': {
+    return: BlogArticlesQuery;
+    variables: BlogArticlesQueryVariables;
   };
   '#graphql\n  fragment MoneyProductItem on MoneyV2 {\n    amount\n    currencyCode\n  }\n  fragment ProductItem on Product {\n    id\n    handle\n    title\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    priceRange {\n      minVariantPrice {\n        ...MoneyProductItem\n      }\n      maxVariantPrice {\n        ...MoneyProductItem\n      }\n    }\n    variants(first: 1) {\n      nodes {\n        id\n        availableForSale\n        price {\n          amount\n          currencyCode\n        }\n      }\n    }\n    media(first: 20) {\n      nodes {\n        mediaContentType\n        ... on MediaImage {\n          id\n          image {\n            id\n            url\n            altText\n            width\n            height\n          }\n        }\n        ... on Video {\n          id\n          previewImage {\n            url\n            altText\n          }\n          sources {\n            url\n            mimeType\n          }\n        }\n        ... on ExternalVideo {\n          id\n          embeddedUrl\n          previewImage {\n            url\n            altText\n          }\n        }\n      }\n    }\n  }\n  query Collection(\n    $handle: String!\n    $country: CountryCode\n    $language: LanguageCode\n    $first: Int\n    $last: Int\n    $startCursor: String\n    $endCursor: String\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      handle\n      title\n      description\n      heroVedio: metafield(namespace: "custom", key: "page_hero_vedio") {\n        reference {\n          ... on Video {\n            sources {\n              url\n            }\n          }\n          ... on GenericFile {\n            url\n          }\n        }\n      }\n      products(\n        first: $first,\n        last: $last,\n        before: $startCursor,\n        after: $endCursor\n      ) {\n        nodes {\n          ...ProductItem\n        }\n        pageInfo {\n          hasPreviousPage\n          hasNextPage\n          startCursor\n          endCursor\n        }\n      }\n    }\n    page(handle: $handle) {\n      id\n      heroVedio: metafield(namespace: "custom", key: "page_hero_vedio") {\n        reference {\n          ... on Video {\n            sources {\n              url\n            }\n          }\n          ... on GenericFile {\n            url\n          }\n        }\n      }\n    }\n  }\n': {
     return: CollectionQuery;
