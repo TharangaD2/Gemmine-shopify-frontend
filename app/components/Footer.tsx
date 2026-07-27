@@ -134,10 +134,10 @@ export function Footer({
                     ))}
                     <li>
                       <NavLink
-                        to="/collections/all"
+                        to="/pages/wishlist"
                         className="text-white hover:text-amber-400 transition-colors text-sm font-medium"
                       >
-                        High Jewellery
+                        Wishlist
                       </NavLink>
                     </li>
                   </ul>
@@ -150,18 +150,19 @@ export function Footer({
                   </h4>
                   <ul className="space-y-2">
                     {[
-                      'Rings',
-                      'Necklaces',
-                      'Earrings',
-                      'Bracelets',
-                      'Bridal',
+                      { name: 'Rings', path: '/collections/rings' },
+                      { name: 'Necklaces', path: '/collections/necklaces' },
+                      { name: 'Earrings', path: '/collections/earring' },
+                      { name: 'Bracelets', path: '/collections/bracelets' },
+                      { name: 'Bridal', path: '/collections/bridal' },
+                      { name: 'Gem Stones', path: '/collections/gem-stones' },
                     ].map((category) => (
-                      <li key={category}>
+                      <li key={category.name}>
                         <NavLink
-                          to={`/collections/all?category=${category.toLowerCase()}`}
+                          to={category.path}
                           className="text-white hover:text-[#d4a89a] transition-colors text-sm font-medium"
                         >
-                          {category}
+                          {category.name}
                         </NavLink>
                       </li>
                     ))}

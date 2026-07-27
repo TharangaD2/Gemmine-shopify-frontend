@@ -110,7 +110,7 @@ export default function Collection() {
     { id: 'rings', name: 'Rings', path: '/collections/rings' },
     { id: 'necklaces', name: 'Necklaces', path: '/collections/necklaces' },
     { id: 'earrings', name: 'Earrings', path: '/collections/earring' },
-    { id: 'bracelets', name: 'Bracelets', path: '/collections/bracelet' },
+    { id: 'bracelets', name: 'Bracelets', path: '/collections/bracelets' },
     { id: 'bridal', name: 'Bridal', path: '/collections/bridal' },
     { id: 'gem-stones', name: 'Gem Stones', path: '/collections/gem-stones' },
   ];

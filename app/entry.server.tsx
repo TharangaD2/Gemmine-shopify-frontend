@@ -22,8 +22,28 @@ export default async function handleRequest(
 
     mediaSrc: [
       "'self'",
-      'https://cdn.shopify.com',
-      'https://*.myshopify.com',
+      "https://cdn.shopify.com",
+      "https://*.myshopify.com",
+    ],
+
+    frameSrc: [
+      "'self'",
+      "https://www.google.com",
+      "https://maps.google.com",
+      "https://www.google.com/maps",
+    ],
+
+    connectSrc: [
+      "'self'",
+      "https://www.google.com",
+      "https://maps.googleapis.com",
+    ],
+
+    imgSrc: [
+      "'self'",
+      "data:",
+      "blob:",
+      "https:",
     ],
   });
 

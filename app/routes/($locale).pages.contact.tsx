@@ -395,17 +395,17 @@ export default function Contact() {
             <div className="flex flex-col items-center gap-4">
               <div className="aspect-[21/9] rounded-[2.5rem] overflow-hidden bg-gray-200 w-full shadow-2xl border border-white/50">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!4v1782727962724!6m8!1m7!1swFXcCYM12F4-klGgybLk5A!2m2!1d6.90706352150615!2d79.85159791552908!3f353.576618705036!4f-0.47769784172660934!5f0.4000000000000002"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d990.5414872470399!2d79.85165713121626!3d6.907208179788862!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2595d61cbb641%3A0xae6fc09d9e1b5d8c!2sTraditional%20Gem%20Mine!5e0!3m2!1sen!2slk!4v1785147878992!5m2!1sen!2slk"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
                   allowFullScreen
                   loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
+                  referrerPolicy="strict-origin-when-cross-origin"
                   title="Traditional Gem Mine Location"
                 />
               </div>
-              <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" onClick={() => window.open('https://www.google.com/maps/search/?api=1&query=6.9070635,79.8515979', '_blank')}>Open in Google Maps</button>
+              <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" onClick={() => window.open('https://www.google.com/maps/search/?api=1&query=Traditional+Gem+Mine,+Colombo', '_blank')}>Open in Google Maps</button>
             </div>
           </motion.div>
         </div>
