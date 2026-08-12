@@ -1,16 +1,16 @@
-import React, {useState, useRef} from 'react';
-import {Link, useNavigate} from 'react-router';
-import {type MappedProductOptions} from '@shopify/hydrogen';
+import React, { useState, useRef } from 'react';
+import { Link, useNavigate } from 'react-router';
+import { type MappedProductOptions } from '@shopify/hydrogen';
 import type {
   Maybe,
   ProductOptionValueSwatch,
 } from '@shopify/hydrogen/storefront-api-types';
-import {CartForm, type OptimisticCartLineInput} from '@shopify/hydrogen';
-import {type FetcherWithComponents} from 'react-router';
-import {useAside} from './Aside';
-import type {ProductFragment} from 'storefrontapi.generated';
-import {toast} from 'sonner';
-import {CartAuthFlow, getStoredSession, type UserSession, type InquiryData} from './CartAuthFlow';
+import { CartForm, type OptimisticCartLineInput } from '@shopify/hydrogen';
+import { type FetcherWithComponents } from 'react-router';
+import { useAside } from './Aside';
+import type { ProductFragment } from 'storefrontapi.generated';
+import { toast } from 'sonner';
+import { CartAuthFlow, getStoredSession, type UserSession, type InquiryData } from './CartAuthFlow';
 
 export function ProductForm({
   productOptions,
@@ -20,7 +20,7 @@ export function ProductForm({
   selectedVariant: ProductFragment['selectedOrFirstAvailableVariant'];
 }) {
   const navigate = useNavigate();
-  const {open} = useAside();
+  const { open } = useAside();
   const addToCartBtnRef = useRef<HTMLDivElement>(null);
 
   const [authFlowOpen, setAuthFlowOpen] = useState(false);
@@ -162,9 +162,8 @@ export function ProductForm({
                   return (
                     <button
                       type="button"
-                      className={`product-options-item${
-                        exists && !selected ? ' link' : ''
-                      }`}
+                      className={`product-options-item${exists && !selected ? ' link' : ''
+                        }`}
                       key={option.name + name}
                       style={{
                         border: selected
@@ -194,10 +193,10 @@ export function ProductForm({
       })}
 
       {/* Add to Cart Button — wraps CartForm but intercepts the click */}
-      <div ref={addToCartBtnRef} style={{position: 'relative', display: 'inline-block', width: '100%'}}>
+      <div ref={addToCartBtnRef} style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
         <CartForm
           route="/cart"
-          inputs={{lines: pendingLines.length ? pendingLines : (selectedVariant ? [{merchandiseId: selectedVariant.id, quantity: 1, selectedVariant}] : [])}}
+          inputs={{ lines: pendingLines.length ? pendingLines : (selectedVariant ? [{ merchandiseId: selectedVariant.id, quantity: 1, selectedVariant }] : []) }}
           action={CartForm.ACTIONS.LinesAdd}
         >
           {(fetcher: FetcherWithComponents<any>) => (

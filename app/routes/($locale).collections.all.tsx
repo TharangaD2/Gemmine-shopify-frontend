@@ -393,7 +393,7 @@ function ProductCard({
       const arr = (() => { try { const r = localStorage.getItem(key); return r ? JSON.parse(r) as any[] : []; } catch { return []; } })();
       arr.push({ ...inquiry, productId: product.id, productName: product.title, timestamp: new Date().toISOString() });
       localStorage.setItem(key, JSON.stringify(arr));
-    } catch {}
+    } catch { }
     addProductToCart(product, session as StoredSession, firstVariant);
     toast.success('Added to cart! 🛒', { description: `Inquiry submitted by ${session.name}` });
     setAuthOpen(false);
@@ -579,7 +579,7 @@ function QuickView({ product, onClose }: { product: CollectionItemFragment; onCl
       const arr = (() => { try { const r = localStorage.getItem(key); return r ? JSON.parse(r) as any[] : []; } catch { return []; } })();
       arr.push({ ...inquiry, productId: product.id, productName: product.title, timestamp: new Date().toISOString() });
       localStorage.setItem(key, JSON.stringify(arr));
-    } catch {}
+    } catch { }
     addProductToCart(product, session as StoredSession, firstVariant);
     toast.success('Added to cart! 🛒', { description: `Inquiry submitted by ${session.name}` });
     setAuthOpen(false);
@@ -746,9 +746,8 @@ function QuickView({ product, onClose }: { product: CollectionItemFragment; onCl
                   <button
                     key={idx}
                     onClick={() => { setDirection(idx > currentImage ? 1 : -1); setCurrentImage(idx); }}
-                    className={`relative w-14 h-14 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 cursor-pointer ${
-                      idx === currentImage ? 'border-[#1e2a47] scale-105 shadow-sm' : 'border-transparent opacity-60 hover:opacity-100'
-                    }`}
+                    className={`relative w-14 h-14 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 cursor-pointer ${idx === currentImage ? 'border-[#1e2a47] scale-105 shadow-sm' : 'border-transparent opacity-60 hover:opacity-100'
+                      }`}
                   >
                     {item.type === 'image' ? (
                       <Image data={item.data} className="w-full h-full object-cover pointer-events-none" />

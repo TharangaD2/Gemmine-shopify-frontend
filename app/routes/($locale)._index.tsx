@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useLoaderData, type MetaFunction } from 'react-router';
 import { Link } from 'react-router';
 import type { Route } from './+types/($locale)._index';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform, AnimatePresence, animate, useInView } from 'framer-motion';
 import {
   ArrowRight,
   Sparkles,
@@ -592,6 +592,48 @@ function FeaturesSection() {
 }
 
 
+function AnimatedCounter({ value }: { value: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-50px" });
+
+  useEffect(() => {
+    if (!inView) return;
+    const match = value.match(/^([\d.,]+)(.*)$/);
+    if (!match) {
+      if (ref.current) ref.current.textContent = value;
+      return;
+    }
+    const numericStr = match[1].replace(/,/g, '');
+    const suffix = match[2] || '';
+    const numericValue = parseFloat(numericStr);
+
+    if (isNaN(numericValue)) {
+      if (ref.current) ref.current.textContent = value;
+      return;
+    }
+
+    const controls = animate(0, numericValue, {
+      duration: 2,
+      ease: "easeOut",
+      onUpdate: (latest) => {
+        if (!ref.current) return;
+        let formatted = Math.floor(latest).toString();
+        if (match[1].includes(',')) {
+          formatted = Math.floor(latest).toLocaleString();
+        }
+        ref.current.textContent = formatted + suffix;
+      }
+    });
+
+    return () => controls.stop();
+  }, [value, inView]);
+
+  const match = value.match(/^([\d.,]+)(.*)$/);
+  const suffix = match ? match[2] || '' : '';
+  return <span ref={ref}>0{suffix}</span>;
+}
+
+
 function HeritageSection({ page }: { page?: any }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoUrl = page?.heritageVideo?.reference?.sources?.[0]?.url || page?.heritageVideo?.reference?.url;
@@ -616,8 +658,8 @@ function HeritageSection({ page }: { page?: any }) {
           className="relative"
         >
           <div className="relative">
-            <motion.div whileHover={{ scale: 1.02 }} className="rounded-2xl overflow-hidden shadow-2xl bg-gray-200">
-              <video ref={videoRef} src={videoUrl} autoPlay loop muted playsInline className="w-full h-[400px] md:h-[500px] object-cover" />
+            <motion.div whileHover={{ scale: 1.02 }} className="rounded-2xl overflow-hidden shadow-2xl bg-gray-200 max-w-[480px] aspect-square mx-auto lg:mx-0">
+              <video ref={videoRef} src={videoUrl} autoPlay loop muted playsInline className="w-full h-full object-cover" />
             </motion.div>
 
             {/* Floating smaller image */}
@@ -659,7 +701,9 @@ function HeritageSection({ page }: { page?: any }) {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <div className="text-3xl md:text-4xl font-light text-[#d4a89a]">{stat.value}</div>
+                <div className="text-3xl md:text-4xl font-light text-[#d4a89a]">
+                  <AnimatedCounter value={stat.value} />
+                </div>
                 <div className="text-sm text-gray-500 mt-1">{stat.label}</div>
               </motion.div>
             ))}
