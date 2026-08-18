@@ -158,6 +158,7 @@ export default function Collection() {
     <div className="min-h-screen bg-[#f8f5f0]">
       {/* Hero Banner */}
       <div className="relative h-[60vh] md:h-[75vh] bg-[#1a1a1a] overflow-hidden">
+
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent z-10" />
         <video
           key={heroVedioUrl}
@@ -165,7 +166,7 @@ export default function Collection() {
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-50"
+          className="absolute inset-0 w-full h-full object-cover"
         >
           <source src={heroVedioUrl} type="video/mp4" />
         </video>

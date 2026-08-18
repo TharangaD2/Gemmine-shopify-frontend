@@ -93,14 +93,33 @@ export function Footer({
                   </p>
                   <div className="flex space-x-3">
                     {[
-                      InstagramIcon,
-                      FacebookIcon,
-                      TwitterIcon,
-                      YoutubeIcon,
-                    ].map((Icon, index) => (
+                      {
+                        icon: InstagramIcon,
+                        href: 'https://www.instagram.com/traditionalgemmine?igsh=MXdzMHo3enYwYzBvZg%3D%3D&utm_source=qr',
+                        label: 'Instagram',
+                      },
+                      {
+                        icon: FacebookIcon,
+                        href: 'https://www.facebook.com/share/1TGcaUvECn/?mibextid=wwXIfr',
+                        label: 'Facebook',
+                      },
+                      {
+                        icon: TwitterIcon,
+                        href: '#',
+                        label: 'Twitter',
+                      },
+                      {
+                        icon: YoutubeIcon,
+                        href: '#',
+                        label: 'YouTube',
+                      },
+                    ].map(({ icon: Icon, href, label }) => (
                       <motion.a
-                        key={index}
-                        href="#"
+                        key={label}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={label}
                         whileHover={{ y: -3 }}
                         className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#d4a89a] hover:border-[#d4a89a] transition-all"
                       >
