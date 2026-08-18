@@ -217,10 +217,10 @@ function HeroSection({ page }: { page?: any }) {
       {/* Content */}
       <motion.div
         style={{ y, opacity }}
-        className="relative z-10 flex flex-col lg:flex-row items-center lg:items-stretch justify-between min-h-screen px-6 md:px-12 lg:px-24 pt-32 pb-20 gap-12"
+        className="relative z-10 flex flex-col lg:flex-row items-center justify-between min-h-screen px-6 md:px-12 lg:px-24 pt-32 pb-20"
       >
         {/* Left Content */}
-        <div className="lg:w-1/2 text-center lg:text-left flex flex-col justify-center">
+        <div className="lg:w-1/2 text-center lg:text-left mb-12 lg:mb-0">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -281,9 +281,9 @@ function HeroSection({ page }: { page?: any }) {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.3 }}
-          className="lg:w-1/2 relative flex items-center justify-center w-full"
+          className="lg:w-1/2 relative"
         >
-          <div className="relative w-full max-w-[300px] sm:max-w-[400px] md:max-w-[450px] lg:max-w-[600px] aspect-square mx-auto">
+          <div className="relative w-[300px] h-[300px] md:w-[450px] md:h-[450px] lg:w-[550px] lg:h-[550px] mx-auto">
             {/* Glowing rings */}
             <motion.div animate={{ rotate: 360 }} transition={{ duration: 30, repeat: Infinity, ease: 'linear' }} className="absolute inset-0 rounded-full border border-[#d4a89a]/20" />
             <motion.div animate={{ rotate: -360 }} transition={{ duration: 25, repeat: Infinity, ease: 'linear' }} className="absolute inset-4 rounded-full border border-[#d4a89a]/30" />
@@ -670,17 +670,17 @@ function HeritageSection({ page }: { page?: any }) {
 
   return (
     <section className="py-24 px-6 md:px-12 lg:px-24 bg-gradient-to-b from-[#f8f5f0] to-white">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center lg:items-stretch w-full">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
         {/* Media */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="relative lg:h-full lg:min-h-[500px]"
+          className="relative"
         >
-          <div className="relative w-full h-full">
-            <motion.div whileHover={{ scale: 1.02 }} className="rounded-2xl overflow-hidden shadow-2xl bg-gray-200 w-full h-full aspect-[4/3] lg:aspect-auto mx-auto lg:mx-0">
+          <div className="relative">
+            <motion.div whileHover={{ scale: 1.02 }} className="rounded-2xl overflow-hidden shadow-2xl bg-gray-200 max-w-[480px] aspect-square mx-auto lg:mx-0">
               <video ref={videoRef} src={videoUrl} autoPlay loop muted playsInline className="w-full h-full object-cover" />
             </motion.div>
 
@@ -690,7 +690,7 @@ function HeritageSection({ page }: { page?: any }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="absolute -bottom-8 -right-8 md:-right-12 w-40 h-40 md:w-56 md:h-56 rounded-2xl overflow-hidden shadow-xl border-4 border-white z-10"
+              className="absolute -bottom-8 -right-8 md:-right-12 w-40 h-40 md:w-56 md:h-56 rounded-2xl overflow-hidden shadow-xl border-4 border-white"
             >
               <img src={imgUrl} alt="Jewellery Detail" className="w-full h-full object-cover" />
             </motion.div>
@@ -704,7 +704,7 @@ function HeritageSection({ page }: { page?: any }) {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="lg:pl-12 flex flex-col justify-center py-8 lg:py-0"
+          className="lg:pl-12"
         >
           <span className="text-[#d4a89a] tracking-[0.3em] uppercase text-sm font-medium">{tagText}</span>
           <h2 className="text-4xl md:text-5xl font-serif text-[#1a1a1a] mt-4 leading-tight">{titleText}</h2>
