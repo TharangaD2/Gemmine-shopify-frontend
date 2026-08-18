@@ -372,12 +372,13 @@ export default function About() {
       {/* Story Section */}
       <section className="py-24 px-6 md:px-12 lg:px-24">
         <div className="w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:items-stretch items-center">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
+              className="flex flex-col justify-center"
             >
               <span className="text-[#d4a89a] tracking-[0.3em] uppercase text-sm font-medium">
                 {page.firstContentTag?.value}
@@ -395,16 +396,16 @@ export default function About() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="relative"
+              className="relative lg:h-full lg:min-h-[450px]"
             >
-              <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl bg-gray-100">
+              <div className="aspect-[4/5] lg:aspect-auto w-full lg:h-full rounded-3xl overflow-hidden shadow-2xl bg-gray-100 relative">
                 <video
                   key={firstVideoUrl}
                   autoPlay
                   loop
                   muted
                   playsInline
-                  className="w-full h-full object-cover"
+                  className="w-full h-full lg:absolute lg:inset-0 object-cover"
                 >
                   <source src={firstVideoUrl} type="video/mp4" />
                   Your browser does not support the video tag.

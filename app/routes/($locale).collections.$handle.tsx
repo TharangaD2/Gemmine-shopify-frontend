@@ -55,7 +55,7 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
 
   console.log(JSON.stringify(result, null, 2));
 
-  const { collection, page } = result;
+  const { collection, page, allPage } = result;
 
   if (!collection) {
     throw new Response(`Collection ${handle} not found`, {
@@ -63,11 +63,11 @@ export async function loader({ context, params, request }: LoaderFunctionArgs) {
     });
   }
 
-  return { collection, page };
+  return { collection, page, allPage };
 }
 
 export default function Collection() {
-  const { collection, page } = useLoaderData<typeof loader>();
+  const { collection, page, allPage } = useLoaderData<typeof loader>();
 
   const location = useLocation();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -79,7 +79,9 @@ export default function Collection() {
     (collection?.heroVedio?.reference as any)?.sources?.[0]?.url ||
     (collection?.heroVedio?.reference as any)?.url ||
     (page?.heroVedio?.reference as any)?.sources?.[0]?.url ||
-    (page?.heroVedio?.reference as any)?.url;
+    (page?.heroVedio?.reference as any)?.url ||
+    (allPage?.heroVedio?.reference as any)?.sources?.[0]?.url ||
+    (allPage?.heroVedio?.reference as any)?.url;
 
   const categories = [
     { id: 'all', name: 'All Jewellery', path: '/collections/all' },
@@ -116,7 +118,7 @@ export default function Collection() {
         <div className="absolute inset-0 flex items-center justify-center z-20">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 0, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="text-center"
           >
@@ -914,6 +916,21 @@ const COLLECTION_QUERY = `#graphql
       }
     }
     page(handle: $handle) {
+      id
+      heroVedio: metafield(namespace: "custom", key: "page_hero_vedio") {
+        reference {
+          ... on Video {
+            sources {
+              url
+            }
+          }
+          ... on GenericFile {
+            url
+          }
+        }
+      }
+    }
+    allPage: page(handle: "collection-page") {
       id
       heroVedio: metafield(namespace: "custom", key: "page_hero_vedio") {
         reference {

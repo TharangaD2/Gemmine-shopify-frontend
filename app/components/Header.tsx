@@ -378,8 +378,8 @@ export function Header() {
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? 'bg-[#1e2a47]/95 backdrop-blur-lg shadow-lg' : 'bg-transparent'}`}
       >
         <div className="w-full max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-10 lg:px-14 xl:px-20 2xl:px-28">
-          <div className="flex items-center justify-between h-16 sm:h-18 md:h-20 lg:h-24 xl:h-28 2xl:h-28">
-            <Link to="/" className="flex items-center flex-shrink-0">
+          <div className="flex items-center justify-between h-20 sm:h-20 md:h-24 lg:h-28 xl:h-32 2xl:h-32">
+            <Link to="/" className="flex items-center flex-shrink-0 pt-2 ">
               <img src={logo} alt="Gem Mine" className="h-14 sm:h-16 md:h-20 lg:h-24 xl:h-28 2xl:h-28 w-auto" />
             </Link>
 
@@ -390,10 +390,9 @@ export function Header() {
                   key={link.name}
                   to={createPageUrl(link.path)}
                   className={({ isActive }) =>
-                    `text-xs lg:text-xs xl:text-sm 2xl:text-base tracking-widest uppercase transition-colors duration-300 font-medium ${
-                      isScrolled
-                        ? 'text-white'
-                        : isActive
+                    `text-xs lg:text-xs xl:text-sm 2xl:text-base tracking-widest uppercase transition-colors duration-300 font-medium ${isScrolled
+                      ? 'text-white'
+                      : isActive
                         ? 'text-white underline underline-offset-8 decoration-[#d4a89a] font-bold'
                         : `${isBlackIcons ? 'text-black' : 'text-white hover:text-[#d4a89a]'}`
                     }`}

@@ -16,6 +16,7 @@ import {
   Leaf,
   Shield,
   Send,
+  Gem,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -216,10 +217,10 @@ function HeroSection({ page }: { page?: any }) {
       {/* Content */}
       <motion.div
         style={{ y, opacity }}
-        className="relative z-10 flex flex-col lg:flex-row items-center justify-between min-h-screen px-6 md:px-12 lg:px-24 pt-32 pb-20"
+        className="relative z-10 flex flex-col lg:flex-row items-center lg:items-stretch justify-between min-h-screen px-6 md:px-12 lg:px-24 pt-32 pb-20 gap-12"
       >
         {/* Left Content */}
-        <div className="lg:w-1/2 text-center lg:text-left mb-12 lg:mb-0">
+        <div className="lg:w-1/2 text-center lg:text-left flex flex-col justify-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -280,9 +281,9 @@ function HeroSection({ page }: { page?: any }) {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.3 }}
-          className="lg:w-1/2 relative"
+          className="lg:w-1/2 relative flex items-center justify-center w-full"
         >
-          <div className="relative w-[300px] h-[300px] md:w-[450px] md:h-[450px] lg:w-[550px] lg:h-[550px] mx-auto">
+          <div className="relative w-full max-w-[300px] sm:max-w-[400px] md:max-w-[450px] lg:max-w-[600px] aspect-square mx-auto">
             {/* Glowing rings */}
             <motion.div animate={{ rotate: 360 }} transition={{ duration: 30, repeat: Infinity, ease: 'linear' }} className="absolute inset-0 rounded-full border border-[#d4a89a]/20" />
             <motion.div animate={{ rotate: -360 }} transition={{ duration: 25, repeat: Infinity, ease: 'linear' }} className="absolute inset-4 rounded-full border border-[#d4a89a]/30" />
@@ -486,10 +487,11 @@ function MarqueeSection() {
 // ─────────────────────────────────────────────────────────
 // SECTION 4 — Featured / Curated Categories
 // ─────────────────────────────────────────────────────────
-const featuredIcons = [Diamond, Award, Users, Globe, PenTool, Settings];
+const featuredIcons = [Gem, PenTool, Gem, Diamond, Gem, Diamond];
 
 function FeaturedSection({ page }: { page?: any }) {
   const sectionTitle = page?.featureSecTitle?.value;
+  const [isPaused, setIsPaused] = useState(false);
 
   const curatedCategories = [
     { id: 'feature-0', title: page?.featureSecTitle1?.value, description: page?.featureCardPara1?.value, image: page?.featureCardImg1?.reference?.image?.url || '', icon: featuredIcons[0] },
@@ -500,8 +502,20 @@ function FeaturedSection({ page }: { page?: any }) {
     { id: 'feature-5', title: page?.featureSecTitle6?.value, description: page?.featureCardPara6?.value, image: page?.featureCardImg6?.reference?.image?.url || '', icon: featuredIcons[5] },
   ];
 
+  // Each card: w-[320px] + gap-6 (24px) = 344px per card
+  const cardWidth = 344;
+  const totalScrollWidth = curatedCategories.length * cardWidth;
+
   return (
     <section className="py-24 bg-[#f8f5f0] overflow-hidden">
+      {/* CSS keyframe for the marquee — works with animation-play-state */}
+      <style>{`
+        @keyframes featured-marquee {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-${totalScrollWidth}px); }
+        }
+      `}</style>
+
       <div className="px-6 md:px-12 lg:px-24 mb-16">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -516,19 +530,27 @@ function FeaturedSection({ page }: { page?: any }) {
         </motion.div>
       </div>
 
-      {/* Scrolling Marquee */}
-      <div className="relative group">
+      {/* Scrolling Marquee — pauses on card hover */}
+      <div className="relative">
         <div className="flex overflow-hidden">
-          <motion.div
-            className="flex gap-6 px-4 shrink-0"
-            animate={{ x: [0, -curatedCategories.length * 344] }}
-            transition={{ duration: 35, repeat: Infinity, ease: 'linear', repeatType: 'loop' }}
+          <div
+            style={{
+              display: 'flex',
+              gap: '24px',
+              paddingLeft: '16px',
+              paddingRight: '16px',
+              flexShrink: 0,
+              animation: `featured-marquee 35s linear infinite`,
+              animationPlayState: isPaused ? 'paused' : 'running',
+            }}
           >
             {[...curatedCategories, ...curatedCategories].map((cat, index) => (
-              <div key={`${cat.id}-${index}`} className="w-[280px] md:w-[320px] flex-shrink-0">
+              <div key={`${cat.id}-${index}`} style={{ width: '320px', flexShrink: 0 }}>
                 <div
-                  className="relative rounded-[2rem] p-8 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-[#d4a89a]/20 group/card h-full flex flex-col"
+                  className="relative rounded-[2rem] p-8 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-[#d4a89a]/20 group/card h-full flex flex-col cursor-pointer"
                   style={{ backgroundImage: `url(${cat.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                  onMouseEnter={() => setIsPaused(true)}
+                  onMouseLeave={() => setIsPaused(false)}
                 >
                   <div className="absolute inset-0 bg-white/85 group-hover/card:bg-white/75 transition-all duration-500" />
                   <div className="relative z-10 h-full flex flex-col">
@@ -545,7 +567,7 @@ function FeaturedSection({ page }: { page?: any }) {
                 </div>
               </div>
             ))}
-          </motion.div>
+          </div>
         </div>
         <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#f8f5f0] to-transparent z-10 pointer-events-none" />
         <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#f8f5f0] to-transparent z-10 pointer-events-none" />
@@ -648,17 +670,17 @@ function HeritageSection({ page }: { page?: any }) {
 
   return (
     <section className="py-24 px-6 md:px-12 lg:px-24 bg-gradient-to-b from-[#f8f5f0] to-white">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center lg:items-stretch w-full">
         {/* Media */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="relative"
+          className="relative lg:h-full lg:min-h-[500px]"
         >
-          <div className="relative">
-            <motion.div whileHover={{ scale: 1.02 }} className="rounded-2xl overflow-hidden shadow-2xl bg-gray-200 max-w-[480px] aspect-square mx-auto lg:mx-0">
+          <div className="relative w-full h-full">
+            <motion.div whileHover={{ scale: 1.02 }} className="rounded-2xl overflow-hidden shadow-2xl bg-gray-200 w-full h-full aspect-[4/3] lg:aspect-auto mx-auto lg:mx-0">
               <video ref={videoRef} src={videoUrl} autoPlay loop muted playsInline className="w-full h-full object-cover" />
             </motion.div>
 
@@ -668,7 +690,7 @@ function HeritageSection({ page }: { page?: any }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="absolute -bottom-8 -right-8 md:-right-12 w-40 h-40 md:w-56 md:h-56 rounded-2xl overflow-hidden shadow-xl border-4 border-white"
+              className="absolute -bottom-8 -right-8 md:-right-12 w-40 h-40 md:w-56 md:h-56 rounded-2xl overflow-hidden shadow-xl border-4 border-white z-10"
             >
               <img src={imgUrl} alt="Jewellery Detail" className="w-full h-full object-cover" />
             </motion.div>
@@ -682,7 +704,7 @@ function HeritageSection({ page }: { page?: any }) {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="lg:pl-12"
+          className="lg:pl-12 flex flex-col justify-center py-8 lg:py-0"
         >
           <span className="text-[#d4a89a] tracking-[0.3em] uppercase text-sm font-medium">{tagText}</span>
           <h2 className="text-4xl md:text-5xl font-serif text-[#1a1a1a] mt-4 leading-tight">{titleText}</h2>
