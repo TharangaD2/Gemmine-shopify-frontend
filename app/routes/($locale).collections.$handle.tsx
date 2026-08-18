@@ -109,7 +109,7 @@ export default function Collection() {
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-50"
+          className="absolute inset-0 w-full h-full object-cover"
         >
           <source src={heroVedioUrl} type="video/mp4" />
         </video>

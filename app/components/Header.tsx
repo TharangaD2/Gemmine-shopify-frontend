@@ -377,32 +377,38 @@ export function Header() {
         transition={{ duration: 0.6 }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? 'bg-[#1e2a47]/95 backdrop-blur-lg shadow-lg' : 'bg-transparent'}`}
       >
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <div className="flex items-center justify-between h-24">
-            <Link to="/" className="flex items-center">
-              <img src={logo} alt="Gem Mine" className="h-20 w-auto" />
+        <div className="w-full max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-10 lg:px-14 xl:px-20 2xl:px-28">
+          <div className="flex items-center justify-between h-16 sm:h-18 md:h-20 lg:h-24 xl:h-28 2xl:h-28">
+            <Link to="/" className="flex items-center flex-shrink-0">
+              <img src={logo} alt="Gem Mine" className="h-14 sm:h-16 md:h-20 lg:h-24 xl:h-28 2xl:h-28 w-auto" />
             </Link>
 
-            <div className="hidden lg:flex items-center space-x-10">
+            {/* Desktop nav — visible lg+ */}
+            <div className="hidden lg:flex items-center space-x-5 xl:space-x-8 2xl:space-x-12">
               {navLinks.map((link) => (
                 <NavLink
                   key={link.name}
                   to={createPageUrl(link.path)}
                   className={({ isActive }) =>
-                    `text-sm tracking-wider uppercase transition-colors duration-300 ${isScrolled ? 'text-white' : isActive
-                      ? 'text-white underline underline-offset-8 decoration-[#d4a89a] font-bold'
-                      : `${isBlackIcons ? 'text-black' : 'text-white hover:text-[#d4a89a]'}`}`}
+                    `text-xs lg:text-xs xl:text-sm 2xl:text-base tracking-widest uppercase transition-colors duration-300 font-medium ${
+                      isScrolled
+                        ? 'text-white'
+                        : isActive
+                        ? 'text-white underline underline-offset-8 decoration-[#d4a89a] font-bold'
+                        : `${isBlackIcons ? 'text-black' : 'text-white hover:text-[#d4a89a]'}`
+                    }`}
                 >
                   {link.name}
                 </NavLink>
               ))}
             </div>
 
-            <div className="flex items-center space-x-4">
+            {/* Right icons */}
+            <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4 xl:space-x-5">
               {/* Wishlist */}
               <Link to={createPageUrl('Wishlist')}>
                 <Button variant="ghost" size="icon" className={`${isScrolled ? 'text-white' : isBlackIcons ? 'text-black' : 'text-white'} hover:text-[#d4a89a] hover:bg-transparent relative`}>
-                  <Heart className="w-5 h-5" />
+                  <Heart className="w-5 h-5 xl:w-6 xl:h-6" />
                   {wishlistCount > 0 && (
                     <Badge className="absolute -top-1 -right-1 w-5 h-5 p-0 flex items-center justify-center bg-[#d4a89a] text-white text-xs border-none">
                       {wishlistCount}
@@ -419,7 +425,7 @@ export function Header() {
                   className={`${isScrolled ? 'text-white' : isBlackIcons ? 'text-black' : 'text-white'} hover:text-[#d4a89a] hover:bg-transparent relative`}
                   onClick={handleCartIconClick}
                 >
-                  <ShoppingBag className="w-5 h-5" />
+                  <ShoppingBag className="w-5 h-5 xl:w-6 xl:h-6" />
                   {cartCount > 0 && (
                     <Badge className="absolute -top-1 -right-1 w-5 h-5 p-0 flex items-center justify-center bg-[#d4a89a] text-white text-xs border-none">
                       {cartCount}
@@ -443,10 +449,10 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden text-white hover:text-amber-400 hover:bg-transparent"
+                className={`lg:hidden hover:bg-transparent ${isBlackIcons && !isScrolled ? 'text-black hover:text-[#d4a89a]' : 'text-white hover:text-[#d4a89a]'}`}
                 onClick={() => setIsMenuOpen(true)}
               >
-                <Menu className="w-6 h-6" />
+                <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
               </Button>
             </div>
           </div>
@@ -473,7 +479,7 @@ export function Header() {
           >
             <div className="flex flex-col h-full p-6">
               <div className="flex justify-between items-center">
-                <img src={logo} alt="Gem Mine" className="h-20 w-auto" />
+                <img src={logo} alt="Gem Mine" className="h-14 sm:h-20 w-auto" />
                 <Button variant="ghost" size="icon" className="text-white" onClick={() => setIsMenuOpen(false)}>
                   <X className="w-6 h-6" />
                 </Button>

@@ -361,7 +361,7 @@ export default function About() {
               <span className="text-[#d4a89a] tracking-[0.3em] uppercase text-sm font-medium">
                 {page.heroTag?.value}
               </span>
-              <h1 className="text-5xl md:text-7xl font-serif text-white mt-4 max-w-3xl leading-tight">
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif text-white mt-4 max-w-3xl leading-tight">
                 {page.heroTitle?.value}
               </h1>
             </motion.div>

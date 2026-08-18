@@ -1,6 +1,28 @@
-/**
- * Configure Tailwind v4 in this file using CSS variables and directives:
- * https://tailwindcss.com/docs/v4-beta#css-first-configuration
- */
-
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100..900;1,100..900&display=swap');
 @import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Playfair Display', ui-serif, Georgia, Cambria, serif;
+  --font-poppins: 'Poppins', sans-serif;
+}
+
+body,
+select {
+  font-family: 'Playfair Display', var(--font-serif);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+textarea,
+input,
+button,
+p,
+[class*="card"],
+[class*="card"] *,
+header *,
+nav *,
+footer,
+footer * {
+  font-family: 'Poppins', sans-serif !important;
+}

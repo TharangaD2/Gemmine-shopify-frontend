@@ -181,11 +181,15 @@ export function Footer({
                         No: 9A, St Anthonys's Mawatha, Colombo 03, Sri Lanka
                       </span>
                     </li>
-                    <li className="flex items-center gap-3">
-                      {Phone ? <Phone className="w-4 h-4 text-[#d4a89a] flex-shrink-0" /> : <div className="w-4 h-4 bg-[#d4a89a] rounded-full" />}
-                      <span className="text-white text-sm">
-                        +94 777 483 464
-                      </span>
+                    <li className="flex items-start gap-3">
+                      {Phone ? <Phone className="w-4 h-4 text-[#d4a89a] flex-shrink-0 mt-1" /> : <div className="w-4 h-4 bg-[#d4a89a] rounded-full mt-1" />}
+                      <div className="flex flex-col text-white text-sm">
+                        <span>+94 11 2375 196</span>
+                        <span>+94 11 2375 150</span>
+                        <span>+94 11 2577 083</span>
+                        <span>+94 77 7564 864</span>
+                        <span>+94 77 7317 622</span>
+                      </div>
                     </li>
                     <li className="flex items-center gap-3">
                       {Mail ? <Mail className="w-4 h-4 text-[#d4a89a] flex-shrink-0" /> : <div className="w-4 h-4 bg-[#d4a89a] rounded-full" />}

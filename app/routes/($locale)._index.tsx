@@ -693,7 +693,7 @@ function HeritageSection({ page }: { page?: any }) {
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-6 mt-10">
-            {[{ value: '6+', label: 'Years' }, { value: '10K+', label: 'Pieces' }, { value: '50+', label: 'Artisans' }].map((stat, index) => (
+            {[{ value: '38+', label: 'Years' }, { value: '63K+', label: 'Pieces' }, { value: '50+', label: 'Artisans' }].map((stat, index) => (
               <motion.div
                 key={stat.label}
                 initial={{ opacity: 0, y: 20 }}

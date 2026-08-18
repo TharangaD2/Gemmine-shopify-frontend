@@ -76,7 +76,13 @@ const contactInfo = [
   {
     icon: Phone,
     title: 'Call Us',
-    details: ['+94 777 483 464', '+94 112 375 196'],
+    details: [
+      '+94 11 2375 196',
+      '+94 11 2375 150',
+      '+94 11 2577 083',
+      '+94 77 7564 864',
+      '+94 77 7317 622',
+    ],
   },
   {
     icon: Mail,
@@ -204,7 +210,7 @@ export default function Contact() {
             <span className="text-amber-400 tracking-[0.3em] uppercase text-sm font-medium">
               {page?.heroTag?.value}
             </span>
-            <h1 className="text-5xl md:text-7xl font-serif text-white mt-4 leading-tight">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif text-white mt-4 leading-tight">
               {page?.heroTitle?.value}
             </h1>
             {page?.heroPara?.value && (
