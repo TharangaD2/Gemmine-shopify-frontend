@@ -116,7 +116,7 @@ export default function Collection() {
         <div className="absolute inset-0 flex items-center justify-center z-20">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={{ opacity: 0, y: 0 }}
             transition={{ duration: 0.8 }}
             className="text-center"
           >
@@ -124,8 +124,7 @@ export default function Collection() {
               {collection.title}
             </h1>
             <p className="text-gray-300 text-lg md:text-xl max-w-2xl mx-auto px-6 font-light tracking-wide">
-              {collection.description ||
-                'Discover exquisite pieces crafted with passion and precision'}
+              {collection.description}
             </p>
           </motion.div>
         </div>

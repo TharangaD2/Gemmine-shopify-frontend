@@ -19,10 +19,7 @@ input,
 button,
 p,
 [class*="card"],
-[class*="card"] *,
-header *,
-nav *,
-footer,
-footer * {
+
+[class*="card"] * {
   font-family: 'Poppins', sans-serif !important;
 }
