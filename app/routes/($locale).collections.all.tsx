@@ -381,29 +381,6 @@ function ProductCard({
   const firstVariant = product.variants?.nodes?.[0];
   const triggerRef = React.useRef<HTMLDivElement>(null);
   const [authOpen, setAuthOpen] = useState(false);
-  const hoverTimeoutRef = React.useRef<any>(null);
-
-  const handleMouseEnter = () => {
-    // 350ms delay to prevent accidental triggers while scrolling
-    hoverTimeoutRef.current = setTimeout(() => {
-      onQuickView();
-    }, 350);
-  };
-
-  const handleMouseLeave = () => {
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current);
-      hoverTimeoutRef.current = null;
-    }
-  };
-
-  React.useEffect(() => {
-    return () => {
-      if (hoverTimeoutRef.current) {
-        clearTimeout(hoverTimeoutRef.current);
-      }
-    };
-  }, []);
 
   const handleAddToCartClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -454,13 +431,15 @@ function ProductCard({
         className={`group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 ${viewMode === 'list' ? 'flex flex-col sm:flex-row' : 'flex flex-col'
           }`}
       >
-        <div
-          className={`relative overflow-hidden ${viewMode === 'list' ? 'sm:w-72 flex-shrink-0' : 'aspect-[4/5]'
-            }`}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <Link to={`/products/${product.handle}`} className="block h-full w-full">
+        <div className={`relative overflow-hidden ${viewMode === 'list' ? 'sm:w-72 flex-shrink-0' : 'aspect-[4/5]'}`}>
+          <Link
+            to={`/products/${product.handle}`}
+            className="block h-full w-full"
+            onClick={(e) => {
+              e.preventDefault();
+              onQuickView();
+            }}
+          >
             {product.featuredImage && (
               <Image
                 data={product.featuredImage}
