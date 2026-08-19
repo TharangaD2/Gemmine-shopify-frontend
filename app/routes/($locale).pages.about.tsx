@@ -168,6 +168,21 @@ const PAGE_QUERY = `#graphql
       }
       witnessV2Title: metafield(namespace: "custom", key: "witness_v2_title") { value }
       witnessV2Para: metafield(namespace: "custom", key: "witness_v2_para") { value }
+      witnessV3: metafield(namespace: "custom", key: "witness_v3") {
+        reference { ... on Video { sources { url } } ... on GenericFile { url } }
+      }
+      witnessV3Title: metafield(namespace: "custom", key: "witness_v3_title") { value }
+      witnessV3Para: metafield(namespace: "custom", key: "witness_v3_para") { value }
+      witnessV4: metafield(namespace: "custom", key: "witness_v4") {
+        reference { ... on Video { sources { url } } ... on GenericFile { url } }
+      }
+      witnessV4Title: metafield(namespace: "custom", key: "witness_v4_title") { value }
+      witnessV4Para: metafield(namespace: "custom", key: "witness_v4_para") { value }
+      witnessV5: metafield(namespace: "custom", key: "witness_v5") {
+        reference { ... on Video { sources { url } } ... on GenericFile { url } }
+      }
+      witnessV5Title: metafield(namespace: "custom", key: "witness_v5_title") { value }
+      witnessV5Para: metafield(namespace: "custom", key: "witness_v5_para") { value }
       soonSecTag: metafield(namespace: "custom", key: "soon_sec_tag") { value }
       soonSecTitle: metafield(namespace: "custom", key: "soon_sec_title") { value }
       soonSecPara: metafield(namespace: "custom", key: "soon_sec_para") { value }
@@ -329,6 +344,9 @@ export default function About() {
   const soonSecImgUrl = (page?.soonSecImg?.reference as any)?.image?.url || (page?.soonSecImg?.reference as any)?.url;
   const witnessV1Url = (page?.witnessV1?.reference as any)?.sources?.[0]?.url || (page?.witnessV1?.reference as any)?.url;
   const witnessV2Url = (page?.witnessV2?.reference as any)?.sources?.[0]?.url || (page?.witnessV2?.reference as any)?.url;
+  const witnessV3Url = (page?.witnessV3?.reference as any)?.sources?.[0]?.url || (page?.witnessV3?.reference as any)?.url;
+  const witnessV4Url = (page?.witnessV4?.reference as any)?.sources?.[0]?.url || (page?.witnessV4?.reference as any)?.url;
+  const witnessV5Url = (page?.witnessV5?.reference as any)?.sources?.[0]?.url || (page?.witnessV5?.reference as any)?.url;
   const fifthSecCountries = (() => {
     const raw = page?.fifthSecCounty?.value;
     if (!raw) return [];
@@ -939,52 +957,131 @@ export default function About() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="relative group rounded-3xl overflow-hidden shadow-2xl bg-black aspect-video"
-            >
-              <video
-                src={witnessV1Url}
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
-              <div className="absolute bottom-8 left-8 right-8 text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                <h3 className="text-2xl font-serif mb-2">{page?.witnessV1Title?.value}</h3>
-                <p className="text-amber-100/80 text-sm">
-                  {page?.witnessV1Para?.value}
-                </p>
-              </div>
-            </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {witnessV1Url && (
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="relative group rounded-3xl overflow-hidden shadow-2xl bg-black aspect-video"
+              >
+                <video
+                  src={witnessV1Url}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+                <div className="absolute bottom-8 left-8 right-8 text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                  <h3 className="text-2xl font-serif mb-2">{page?.witnessV1Title?.value}</h3>
+                  <p className="text-amber-100/80 text-sm">
+                    {page?.witnessV1Para?.value}
+                  </p>
+                </div>
+              </motion.div>
+            )}
 
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="relative group rounded-3xl overflow-hidden shadow-2xl bg-black aspect-video"
-            >
-              <video
-                src={witnessV2Url}
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
-              <div className="absolute bottom-8 left-8 right-8 text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                <h3 className="text-2xl font-serif mb-2">{page?.witnessV2Title?.value}</h3>
-                <p className="text-amber-100/80 text-sm">
-                  {page?.witnessV2Para?.value}
-                </p>
-              </div>
-            </motion.div>
+            {witnessV2Url && (
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="relative group rounded-3xl overflow-hidden shadow-2xl bg-black aspect-video"
+              >
+                <video
+                  src={witnessV2Url}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+                <div className="absolute bottom-8 left-8 right-8 text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                  <h3 className="text-2xl font-serif mb-2">{page?.witnessV2Title?.value}</h3>
+                  <p className="text-amber-100/80 text-sm">
+                    {page?.witnessV2Para?.value}
+                  </p>
+                </div>
+              </motion.div>
+            )}
+
+            {witnessV3Url && (
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="relative group rounded-3xl overflow-hidden shadow-2xl bg-black aspect-video"
+              >
+                <video
+                  src={witnessV3Url}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+                <div className="absolute bottom-8 left-8 right-8 text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                  <h3 className="text-2xl font-serif mb-2">{page?.witnessV3Title?.value}</h3>
+                  <p className="text-amber-100/80 text-sm">
+                    {page?.witnessV3Para?.value}
+                  </p>
+                </div>
+              </motion.div>
+            )}
+
+            {witnessV4Url && (
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="relative group rounded-3xl overflow-hidden shadow-2xl bg-black aspect-video"
+              >
+                <video
+                  src={witnessV4Url}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+                <div className="absolute bottom-8 left-8 right-8 text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                  <h3 className="text-2xl font-serif mb-2">{page?.witnessV4Title?.value}</h3>
+                  <p className="text-amber-100/80 text-sm">
+                    {page?.witnessV4Para?.value}
+                  </p>
+                </div>
+              </motion.div>
+            )}
+
+            {witnessV5Url && (
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="relative group rounded-3xl overflow-hidden shadow-2xl bg-black aspect-video"
+              >
+                <video
+                  src={witnessV5Url}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+                <div className="absolute bottom-8 left-8 right-8 text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                  <h3 className="text-2xl font-serif mb-2">{page?.witnessV5Title?.value}</h3>
+                  <p className="text-amber-100/80 text-sm">
+                    {page?.witnessV5Para?.value}
+                  </p>
+                </div>
+              </motion.div>
+            )}
           </div>
         </div>
       </section>
