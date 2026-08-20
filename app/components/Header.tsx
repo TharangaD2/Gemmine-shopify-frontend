@@ -17,6 +17,7 @@ const createPageUrl = (path: string) => {
   const handle = path.toLowerCase();
   if (handle === 'collections') return '/collections/all';
   if (handle === 'blog') return '/blogs';
+  //if (handle === 'story') return '/story';
   if (handle === 'wishlist') return '/pages/wishlist';
   if (handle === 'cart') return '/cart';
   return `/pages/${handle}`;
@@ -365,6 +366,7 @@ export function Header() {
   const navLinks = [
     { name: 'Collections', path: 'Collections' },
     { name: 'Blog', path: 'Blog' },
+    //{ name: 'Story', path: 'Story' },
     { name: 'About', path: 'About' },
     { name: 'Contact', path: 'Contact' },
   ];

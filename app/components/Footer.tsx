@@ -143,7 +143,9 @@ export function Footer({
                               ? '/collections/all'
                               : link === 'Blog'
                                 ? '/blogs'
-                                : `/pages/${link.toLowerCase()}`
+                                : link === 'Story'
+                                  ? '/story'
+                                  : `/pages/${link.toLowerCase()}`
                           }
                           className="text-white hover:text-[#d4a89a] transition-colors text-sm capitalize font-medium"
                         >
@@ -204,8 +206,7 @@ export function Footer({
                       {Phone ? <Phone className="w-4 h-4 text-[#d4a89a] flex-shrink-0 mt-1" /> : <div className="w-4 h-4 bg-[#d4a89a] rounded-full mt-1" />}
                       <div className="flex flex-col text-white text-sm">
                         <span>+94 11 2375 196</span>
-                        <span>+94 11 2375 150</span>
-                        <span>+94 11 2577 083</span>
+                        <span>+94 77 7483 464</span>
                         <span>+94 77 7564 864</span>
                         <span>+94 77 7317 622</span>
                       </div>
