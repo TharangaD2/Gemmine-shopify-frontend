@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useFetcher } from 'react-router';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -9,7 +10,7 @@ export type UserSession = {
   phone?: string;
 };
 
-type Modal = 'dropdown' | 'login' | 'signup' | 'inquiry' | null;
+type Modal = 'dropdown' | 'signup' | 'inquiry' | null;
 
 interface CartAuthFlowProps {
   /** Called when the user has authenticated AND submitted the inquiry form */
@@ -31,7 +32,6 @@ export interface InquiryData {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const STORAGE_KEY = 'gemmine_session';
-const USERS_KEY = 'gemmine_users';
 
 export function getStoredSession(): UserSession | null {
   if (typeof window === 'undefined') return null;
@@ -43,28 +43,16 @@ export function getStoredSession(): UserSession | null {
   }
 }
 
-function saveSession(session: UserSession) {
-  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(session));
-}
-
-function getUsers(): Array<{ name: string; email: string; password: string }> {
-  try {
-    const raw = localStorage.getItem(USERS_KEY);
-    return raw ? (JSON.parse(raw) as Array<{ name: string; email: string; password: string }>) : [];
-  } catch {
-    return [];
+export function setStoredSession(session: UserSession) {
+  if (typeof window !== 'undefined') {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(session));
   }
 }
 
-function saveUser(name: string, email: string, password: string) {
-  const users = getUsers();
-  users.push({ name, email, password });
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-}
-
-function validateCredentials(email: string, password: string) {
-  const users = getUsers();
-  return users.find((u) => u.email === email && u.password === password);
+export function clearStoredSession() {
+  if (typeof window !== 'undefined') {
+    sessionStorage.removeItem(STORAGE_KEY);
+  }
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -220,120 +208,146 @@ function FieldError({ msg }: { msg?: string }) {
   return <p style={{ color: '#ff7875', fontSize: '0.8rem', margin: '-0.75rem 0 0.75rem' }}>{msg}</p>;
 }
 
-// ─── Login Modal ──────────────────────────────────────────────────────────────
-
-function LoginModal({
-  onSuccess,
-  onSignup,
-  onClose,
-}: {
-  onSuccess: (session: UserSession) => void;
-  onSignup: () => void;
-  onClose: () => void;
-}) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    if (!email || !password) { setError('All fields are required.'); return; }
-    const user = validateCredentials(email, password);
-    if (!user) { setError('Invalid email or password.'); return; }
-    const session: UserSession = { type: 'customer', name: user.name, email: user.email };
-    saveSession(session);
-    onSuccess(session);
-  };
-
-  return (
-    <ModalCard title="Welcome Back" subtitle="Login to continue your purchase" onClose={onClose}>
-      <form onSubmit={handleSubmit}>
-        <input
-          style={inputStyle}
-          type="email"
-          placeholder="Email address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          autoFocus
-        />
-        <input
-          style={inputStyle}
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        {error && <FieldError msg={error} />}
-        <button type="submit" style={primaryBtnStyle}>
-          Login
-        </button>
-        <div style={{ textAlign: 'center', marginTop: '1rem', color: 'rgba(255,255,255,0.55)', fontSize: '0.85rem' }}>
-          Don't have an account?{' '}
-          <button type="button" style={linkBtnStyle} onClick={onSignup}>
-            Create account
-          </button>
-        </div>
-      </form>
-    </ModalCard>
-  );
-}
-
 // ─── Signup Modal ─────────────────────────────────────────────────────────────
 
-function SignupModal({
-  onSuccess,
-  onLogin,
+export function SignupModal({
   onClose,
+  onSuccess,
+  onSwitchToLogin,
 }: {
-  onSuccess: (session: UserSession) => void;
-  onLogin: () => void;
   onClose: () => void;
+  onSuccess: (session: UserSession) => void;
+  onSwitchToLogin?: () => void;
 }) {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirm, setConfirm] = useState('');
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const fetcher = useFetcher<any>();
+  const isSubmitting = fetcher.state === 'submitting';
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newErrors: Record<string, string> = {};
-    if (!name.trim()) newErrors.name = 'Name is required.';
-    if (!email) newErrors.email = 'Email is required.';
-    if (password.length < 6) newErrors.password = 'Password must be at least 6 characters.';
-    if (password !== confirm) newErrors.confirm = 'Passwords do not match.';
-    const existing = getUsers().find((u) => u.email === email);
-    if (existing) newErrors.email = 'An account with this email already exists.';
-    if (Object.keys(newErrors).length) { setErrors(newErrors); return; }
+  const [localSuccess, setLocalSuccess] = useState(false);
 
-    saveUser(name.trim(), email, password);
-    const session: UserSession = { type: 'customer', name: name.trim(), email };
-    saveSession(session);
-    onSuccess(session);
+  useEffect(() => {
+    if (fetcher.data?.success && fetcher.data?.customer) {
+      setLocalSuccess(true);
+      setTimeout(() => {
+        onSuccess({
+          type: 'customer',
+          name: fetcher.data.customer.firstName + ' ' + fetcher.data.customer.lastName,
+          email: fetcher.data.customer.email,
+        });
+      }, 1500);
+    }
+  }, [fetcher.data, onSuccess]);
+
+  if (localSuccess) {
+    return (
+      <ModalCard title="Account Created!" subtitle="Proceeding to your inquiry..." onClose={onClose}>
+        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+          <p style={{ color: '#fff' }}>Your customer account was successfully created.</p>
+        </div>
+      </ModalCard>
+    );
+  }
+
+  // Handle server errors
+  const serverError = fetcher.data?.error as string | undefined;
+  const userErrors = fetcher.data?.errors as Array<{ field: string[], message: string }> | undefined;
+
+  const getFieldError = (fieldName: string) => {
+    return userErrors?.find((e) => e.field.includes(fieldName))?.message;
   };
 
   return (
     <ModalCard title="Create Account" subtitle="Join Gem Mine to continue" onClose={onClose}>
-      <form onSubmit={handleSubmit}>
-        <input style={inputStyle} type="text" placeholder="Full name" value={name} onChange={(e) => setName(e.target.value)} autoFocus />
-        <FieldError msg={errors.name} />
-        <input style={inputStyle} type="email" placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <FieldError msg={errors.email} />
-        <input style={inputStyle} type="password" placeholder="Password (min. 6 characters)" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <FieldError msg={errors.password} />
-        <input style={inputStyle} type="password" placeholder="Confirm password" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
-        <FieldError msg={errors.confirm} />
-        <button type="submit" style={primaryBtnStyle}>
-          Create Account
+      <fetcher.Form method="post" action="/api/signup">
+        <input style={inputStyle} type="text" name="fullName" placeholder="Full name" autoFocus required />
+        <FieldError msg={getFieldError('firstName') || getFieldError('lastName')} />
+
+        <input style={inputStyle} type="email" name="email" placeholder="Email address" required />
+        <FieldError msg={getFieldError('email')} />
+
+        <input style={inputStyle} type="password" name="password" placeholder="Password (min. 6 characters)" minLength={6} required />
+        <FieldError msg={getFieldError('password')} />
+
+        <input style={inputStyle} type="password" name="confirmPassword" placeholder="Confirm password" minLength={6} required />
+
+        {serverError && <FieldError msg={serverError} />}
+
+        <button type="submit" style={{ ...primaryBtnStyle, opacity: isSubmitting ? 0.7 : 1 }} disabled={isSubmitting}>
+          {isSubmitting ? 'Creating Account...' : 'Create Account'}
         </button>
-        <div style={{ textAlign: 'center', marginTop: '1rem', color: 'rgba(255,255,255,0.55)', fontSize: '0.85rem' }}>
-          Already have an account?{' '}
-          <button type="button" style={linkBtnStyle} onClick={onLogin}>
-            Login
-          </button>
+        {onSwitchToLogin && (
+          <div style={{ textAlign: 'center', marginTop: '1rem', color: 'rgba(255,255,255,0.55)', fontSize: '0.85rem' }}>
+            Already have an account?{' '}
+            <button type="button" style={linkBtnStyle} onClick={onSwitchToLogin}>
+              Login
+            </button>
+          </div>
+        )}
+      </fetcher.Form>
+    </ModalCard>
+  );
+}
+
+// ─── Login Modal ──────────────────────────────────────────────────────────────
+
+export function LoginModal({
+  onClose,
+  onSuccess,
+  onSwitchToSignup,
+}: {
+  onClose: () => void;
+  onSuccess: (session: UserSession) => void;
+  onSwitchToSignup?: () => void;
+}) {
+  const fetcher = useFetcher<any>();
+  const isSubmitting = fetcher.state === 'submitting';
+  const [localSuccess, setLocalSuccess] = useState(false);
+
+  useEffect(() => {
+    if (fetcher.data?.success && fetcher.data?.customer) {
+      setLocalSuccess(true);
+      setTimeout(() => {
+        onSuccess({
+          type: 'customer',
+          name: fetcher.data.customer.firstName + ' ' + (fetcher.data.customer.lastName || ''),
+          email: fetcher.data.customer.email,
+          phone: fetcher.data.customer.phone || undefined,
+        });
+      }, 1000);
+    }
+  }, [fetcher.data, onSuccess]);
+
+  if (localSuccess) {
+    return (
+      <ModalCard title="Login Successful!" subtitle="Proceeding to your inquiry..." onClose={onClose}>
+        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+          <p style={{ color: '#fff' }}>Welcome back to Gem Mine.</p>
         </div>
-      </form>
+      </ModalCard>
+    );
+  }
+
+  const serverError = fetcher.data?.error as string | undefined;
+
+  return (
+    <ModalCard title="Login as Customer" subtitle="Use your Gem Mine account" onClose={onClose}>
+      <fetcher.Form method="post" action="/api/login">
+        <input style={inputStyle} type="email" name="email" placeholder="Email address" autoFocus required />
+        <input style={inputStyle} type="password" name="password" placeholder="Password" required />
+
+        {serverError && <FieldError msg={serverError} />}
+
+        <button type="submit" style={{ ...primaryBtnStyle, opacity: isSubmitting ? 0.7 : 1 }} disabled={isSubmitting}>
+          {isSubmitting ? 'Logging in...' : 'Login'}
+        </button>
+        {onSwitchToSignup && (
+          <div style={{ textAlign: 'center', marginTop: '1rem', color: 'rgba(255,255,255,0.55)', fontSize: '0.85rem' }}>
+            Don't have an account?{' '}
+            <button type="button" style={linkBtnStyle} onClick={onSwitchToSignup}>
+              Create account
+            </button>
+          </div>
+        )}
+      </fetcher.Form>
     </ModalCard>
   );
 }
@@ -394,11 +408,13 @@ function InquiryModal({
 
 function LoginDropdown({
   onGuest,
-  onCustomer,
+  onLogin,
+  onSignup,
   onClose,
 }: {
   onGuest: () => void;
-  onCustomer: () => void;
+  onLogin: () => void;
+  onSignup: () => void;
   onClose: () => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -464,7 +480,7 @@ function LoginDropdown({
         style={itemStyle}
         onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(212,168,154,0.15)'; }}
         onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
-        onClick={onCustomer}
+        onClick={onLogin}
       >
         <span style={{ fontSize: '1.2rem' }}>🔑</span>
         <div>
@@ -472,6 +488,8 @@ function LoginDropdown({
           <div style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.5)' }}>Use your Gem Mine account</div>
         </div>
       </button>
+
+
 
       <style>{`
         @keyframes caf-dropdown {
@@ -486,12 +504,20 @@ function LoginDropdown({
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function CartAuthFlow({ isOpen, onClose, onConfirm, triggerRef: _triggerRef }: CartAuthFlowProps) {
-  const [modal, setModal] = useState<Modal>('dropdown');
+  const [modal, setModal] = useState<Modal | 'login'>('dropdown');
   const [session, setSession] = useState<UserSession | null>(null);
 
   // Reset when opened
   useEffect(() => {
-    if (isOpen) setModal('dropdown');
+    if (isOpen) {
+      const stored = getStoredSession();
+      if (stored) {
+        setSession(stored);
+        setModal('inquiry');
+      } else {
+        setModal('dropdown');
+      }
+    }
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -507,19 +533,21 @@ export function CartAuthFlow({ isOpen, onClose, onConfirm, triggerRef: _triggerR
     setModal('inquiry');
   };
 
-  const handleCustomerSelect = () => {
-    const existing = getStoredSession();
-    if (existing && existing.type === 'customer') {
-      setSession(existing);
-      setModal('inquiry');
-    } else {
-      setModal('login');
-    }
+  const handleLoginSelect = () => {
+    setModal('login');
   };
 
-  const handleLoginSuccess = (s: UserSession) => {
-    setSession(s);
+  const handleSignupSelect = () => {
+    setModal('signup');
+  };
+
+  const handleAuthSuccess = (newSession: UserSession) => {
+    setStoredSession(newSession);
+    setSession(newSession);
     setModal('inquiry');
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('auth_updated'));
+    }
   };
 
   const handleInquirySubmit = (data: InquiryData) => {
@@ -536,7 +564,8 @@ export function CartAuthFlow({ isOpen, onClose, onConfirm, triggerRef: _triggerR
           <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 9999 }}>
             <LoginDropdown
               onGuest={handleGuestSelect}
-              onCustomer={handleCustomerSelect}
+              onLogin={handleLoginSelect}
+              onSignup={handleSignupSelect}
               onClose={handleClose}
             />
           </div>
@@ -545,17 +574,17 @@ export function CartAuthFlow({ isOpen, onClose, onConfirm, triggerRef: _triggerR
 
       {modal === 'login' && (
         <LoginModal
-          onSuccess={handleLoginSuccess}
-          onSignup={() => setModal('signup')}
           onClose={handleClose}
+          onSuccess={handleAuthSuccess}
+          onSwitchToSignup={handleSignupSelect}
         />
       )}
 
       {modal === 'signup' && (
         <SignupModal
-          onSuccess={handleLoginSuccess}
-          onLogin={() => setModal('login')}
           onClose={handleClose}
+          onSuccess={handleAuthSuccess}
+          onSwitchToLogin={handleLoginSelect}
         />
       )}
 

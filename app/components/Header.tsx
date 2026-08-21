@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import type { HeaderQuery } from 'storefrontapi.generated';
 import logo from '~/assets/img/logo.png';
+import { LoginModal, SignupModal, type UserSession } from './CartAuthFlow';
 
 const createPageUrl = (path: string) => {
   const handle = path.toLowerCase();
@@ -66,7 +67,7 @@ function ErrMsg({ msg }: { msg?: string }) {
 const SESSION_STORE = 'gemmine_session';
 const USERS_STORE = 'gemmine_users';
 
-type StoredSession = { type: 'guest' | 'customer'; name: string; email: string };
+type StoredSession = UserSession;
 
 function readSession(): StoredSession | null {
   if (typeof window === 'undefined') return null;
@@ -74,13 +75,6 @@ function readSession(): StoredSession | null {
 }
 function writeSession(s: StoredSession) { sessionStorage.setItem(SESSION_STORE, JSON.stringify(s)); }
 function clearSession() { sessionStorage.removeItem(SESSION_STORE); }
-function readUsers(): Array<{ name: string; email: string; password: string }> {
-  try { const r = localStorage.getItem(USERS_STORE); return r ? JSON.parse(r) as Array<{ name: string; email: string; password: string }> : []; } catch { return []; }
-}
-function writeUser(name: string, email: string, pw: string) {
-  const u = readUsers(); u.push({ name, email, password: pw }); localStorage.setItem(USERS_STORE, JSON.stringify(u));
-}
-function checkCreds(email: string, pw: string) { return readUsers().find(u => u.email === email && u.password === pw); }
 
 // ─── Cart Dropdown ─────────────────────────────────────────────────────────────
 function CartDropdown({ onGuest, onCustomer, onViewCart, isLoggedIn, onLogout, onClose }: {
@@ -163,77 +157,7 @@ function ModalCard({ children, title, subtitle, onClose }: {
   );
 }
 
-// ─── Auth modals ──────────────────────────────────────────────────────────────
-function LoginModal({ onSuccess, onSignup, onClose }: {
-  onSuccess: (s: StoredSession) => void; onSignup: () => void; onClose: () => void;
-}) {
-  const [email, setEmail] = useState('');
-  const [pw, setPw] = useState('');
-  const [err, setErr] = useState('');
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault(); setErr('');
-    if (!email || !pw) { setErr('All fields required.'); return; }
-    const user = checkCreds(email, pw);
-    if (!user) { setErr('Invalid email or password.'); return; }
-    const s: StoredSession = { type: 'customer', name: user.name, email: user.email };
-    writeSession(s); onSuccess(s);
-  };
-  return (
-    <ModalCard title="Welcome Back" subtitle="Login to continue your purchase" onClose={onClose}>
-      <form onSubmit={submit}>
-        <input style={inputSt} type="email" placeholder="Email address" value={email} onChange={e => setEmail(e.target.value)} autoFocus />
-        <input style={inputSt} type="password" placeholder="Password" value={pw} onChange={e => setPw(e.target.value)} />
-        <ErrMsg msg={err} />
-        <button type="submit" style={primaryBtnSt}>Login</button>
-        <div style={{ textAlign: 'center', marginTop: '1rem', color: 'rgba(255,255,255,0.55)', fontSize: '0.85rem' }}>
-          Don't have an account?{' '}<button type="button" style={linkBtnSt} onClick={onSignup}>Create account</button>
-        </div>
-      </form>
-    </ModalCard>
-  );
-}
-
-function SignupModal({ onSuccess, onLogin, onClose }: {
-  onSuccess: (s: StoredSession) => void; onLogin: () => void; onClose: () => void;
-}) {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [pw, setPw] = useState('');
-  const [cpw, setCpw] = useState('');
-  const [errs, setErrs] = useState<Record<string, string>>({});
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const ne: Record<string, string> = {};
-    if (!name.trim()) ne.name = 'Name is required.';
-    if (!email) ne.email = 'Email is required.';
-    if (pw.length < 6) ne.pw = 'Min. 6 characters.';
-    if (pw !== cpw) ne.cpw = 'Passwords do not match.';
-    if (readUsers().find(u => u.email === email)) ne.email = 'Account already exists.';
-    if (Object.keys(ne).length) { setErrs(ne); return; }
-    writeUser(name.trim(), email, pw);
-    const s: StoredSession = { type: 'customer', name: name.trim(), email };
-    writeSession(s); onSuccess(s);
-  };
-  return (
-    <ModalCard title="Create Account" subtitle="Join Gem Mine to continue" onClose={onClose}>
-      <form onSubmit={submit}>
-        <input style={inputSt} type="text" placeholder="Full name" value={name} onChange={e => setName(e.target.value)} autoFocus />
-        <ErrMsg msg={errs.name} />
-        <input style={inputSt} type="email" placeholder="Email address" value={email} onChange={e => setEmail(e.target.value)} />
-        <ErrMsg msg={errs.email} />
-        <input style={inputSt} type="password" placeholder="Password (min. 6 characters)" value={pw} onChange={e => setPw(e.target.value)} />
-        <ErrMsg msg={errs.pw} />
-        <input style={inputSt} type="password" placeholder="Confirm password" value={cpw} onChange={e => setCpw(e.target.value)} />
-        <ErrMsg msg={errs.cpw} />
-        <button type="submit" style={primaryBtnSt}>Create Account</button>
-        <div style={{ textAlign: 'center', marginTop: '1rem', color: 'rgba(255,255,255,0.55)', fontSize: '0.85rem' }}>
-          Already have an account?{' '}<button type="button" style={linkBtnSt} onClick={onLogin}>Login</button>
-        </div>
-      </form>
-    </ModalCard>
-  );
-}
-
+// ─── Auth modals imported from CartAuthFlow ─────────────────────────────────────
 type InquiryData = { name: string; email: string; phone: string; message: string };
 
 function InquiryModal({ session, onSubmit, onClose }: {
@@ -308,15 +232,25 @@ export function Header() {
   useEffect(() => {
     updateCounts();
     setCurrentSession(readSession());
+    
+    const onAuthUpdated = () => {
+      updateCounts();
+      setCurrentSession(readSession());
+    };
+    
     window.addEventListener('storage', updateCounts);
     window.addEventListener('cartUpdated', updateCounts);
     window.addEventListener('wishlistUpdated', updateCounts);
+    window.addEventListener('auth_updated', onAuthUpdated);
+    
     const onScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', onScroll);
+    
     return () => {
       window.removeEventListener('storage', updateCounts);
       window.removeEventListener('cartUpdated', updateCounts);
       window.removeEventListener('wishlistUpdated', updateCounts);
+      window.removeEventListener('auth_updated', onAuthUpdated);
       window.removeEventListener('scroll', onScroll);
     };
   }, []);
@@ -342,7 +276,10 @@ export function Header() {
   };
 
   const handleLoginSuccess = (s: StoredSession) => {
-    setCurrentSession(s); setModalStep('inquiry'); updateCounts();
+    writeSession(s); setCurrentSession(s); setModalStep('inquiry'); updateCounts();
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('auth_updated'));
+    }
   };
 
   const handleInquirySubmit = (data: InquiryData) => {
@@ -359,6 +296,9 @@ export function Header() {
 
   const handleLogout = () => {
     clearSession(); setCurrentSession(null); closeAll(); updateCounts();
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('auth_updated'));
+    }
   };
 
   const isLoggedIn = !!(currentSession && currentSession.type === 'customer');
@@ -462,10 +402,10 @@ export function Header() {
 
       {/* Auth modals */}
       {modalStep === 'login' && (
-        <LoginModal onSuccess={handleLoginSuccess} onSignup={() => setModalStep('signup')} onClose={closeAll} />
+        <LoginModal onSuccess={handleLoginSuccess} onSwitchToSignup={() => setModalStep('signup')} onClose={closeAll} />
       )}
       {modalStep === 'signup' && (
-        <SignupModal onSuccess={handleLoginSuccess} onLogin={() => setModalStep('login')} onClose={closeAll} />
+        <SignupModal onSuccess={handleLoginSuccess} onSwitchToLogin={() => setModalStep('login')} onClose={closeAll} />
       )}
       {modalStep === 'inquiry' && currentSession && (
         <InquiryModal session={currentSession} onSubmit={handleInquirySubmit} onClose={closeAll} />
